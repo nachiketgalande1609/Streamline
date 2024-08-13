@@ -1,13 +1,16 @@
-import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+// Navbar.jsx
+import React, { useContext } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
-  Drawer,
-  List,
-  ListItem,
-  ListItemText,
-  IconButton,
-  ListItemIcon,
+    Drawer,
+    List,
+    ListItem,
+    ListItemText,
+    Toolbar,
+    ListItemIcon,
+    Typography,
 } from "@mui/material";
+import { UserContext } from "../context/UserContext";
 
 import HomeIcon from "@mui/icons-material/Home";
 import LoginIcon from "@mui/icons-material/Login";
@@ -25,95 +28,198 @@ import axios from "axios";
 const drawerWidth = 240;
 
 const Navbar = () => {
-  const navigate = useNavigate();
+    const navigate = useNavigate();
+    const location = useLocation();
+    const { user, logout } = useContext(UserContext);
 
-  const handleLogout = async () => {
-    try {
-      await axios.post("/api/logout");
-      localStorage.removeItem("token");
-      navigate("/login");
-    } catch (error) {
-      console.error("Logout failed:", error);
-    }
-  };
+    const handleLogout = async () => {
+        try {
+            await axios.post("/api/logout");
+            logout(); // Clear user context and localStorage, then navigate to login
+        } catch (error) {
+            console.error("Logout failed:", error);
+        }
+    };
 
-  return (
-    <Drawer
-      sx={{
-        width: drawerWidth,
-        flexShrink: 0,
-        "& .MuiDrawer-paper": {
-          width: drawerWidth,
-          boxSizing: "border-box",
-        },
-      }}
-      variant="permanent"
-      anchor="left"
-    >
-      <List>
-        <ListItem button component={Link} to="/">
-          <ListItemIcon>
-            <HomeIcon />
-          </ListItemIcon>
-          <ListItemText primary="Home" />
-        </ListItem>
-        <ListItem button component={Link} to="/login">
-          <ListItemIcon>
-            <LoginIcon />
-          </ListItemIcon>
-          <ListItemText primary="Login" />
-        </ListItem>
-        <ListItem button component={Link} to="/register">
-          <ListItemIcon>
-            <RegisterIcon />
-          </ListItemIcon>
-          <ListItemText primary="Register" />
-        </ListItem>
-        <ListItem button component={Link} to="/profile">
-          <ListItemIcon>
-            <ProfileIcon />
-          </ListItemIcon>
-          <ListItemText primary="Profile" />
-        </ListItem>
-        <ListItem button component={Link} to="/dashboard">
-          <ListItemIcon>
-            <DashboardIcon />
-          </ListItemIcon>
-          <ListItemText primary="Dashboard" />
-        </ListItem>
-        <ListItem button component={Link} to="/users">
-          <ListItemIcon>
-            <UsersIcon />
-          </ListItemIcon>
-          <ListItemText primary="Users" />
-        </ListItem>
-        <ListItem button component={Link} to="/inventory">
-          <ListItemIcon>
-            <InventoryIcon />
-          </ListItemIcon>
-          <ListItemText primary="Inventory" />
-        </ListItem>
-        <ListItem button component={Link} to="/orders">
-          <ListItemIcon>
-            <OrdersIcon />
-          </ListItemIcon>
-          <ListItemText primary="Orders" />
-        </ListItem>
-        <ListItem button component={Link} to="/sales">
-          <ListItemIcon>
-            <SalesIcon />
-          </ListItemIcon>
-          <ListItemText primary="Sales" />
-        </ListItem>
-        <ListItem button onClick={handleLogout} sx={{ marginTop: "auto" }}>
-          <ListItemIcon>
-            <LogoutIcon />
-          </ListItemIcon>
-          <ListItemText primary="Logout" />
-        </ListItem>
-      </List>
-    </Drawer>
-  );
+    const isActive = (path) => location.pathname === path;
+
+    return (
+        <Drawer
+            sx={{
+                width: drawerWidth,
+                flexShrink: 0,
+                "& .MuiDrawer-paper": {
+                    width: drawerWidth,
+                    boxSizing: "border-box",
+                    backgroundColor: "#1d282d",
+                    color: "#99a6a5",
+                },
+            }}
+            variant="permanent"
+            anchor="left"
+        >
+            <Toolbar>
+                <Typography variant="h6">Streamline</Typography>
+            </Toolbar>
+            <List>
+                <ListItem
+                    button
+                    component={Link}
+                    to="/"
+                    sx={{
+                        backgroundColor: isActive("/")
+                            ? "#37474f"
+                            : "transparent",
+                    }}
+                >
+                    <ListItemIcon sx={{ color: "#99a6a5" }}>
+                        <HomeIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Home" />
+                </ListItem>
+
+                {!user && (
+                    <>
+                        <ListItem
+                            button
+                            component={Link}
+                            to="/login"
+                            sx={{
+                                backgroundColor: isActive("/login")
+                                    ? "#37474f"
+                                    : "transparent",
+                            }}
+                        >
+                            <ListItemIcon sx={{ color: "#99a6a5" }}>
+                                <LoginIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Login" />
+                        </ListItem>
+                        <ListItem
+                            button
+                            component={Link}
+                            to="/register"
+                            sx={{
+                                backgroundColor: isActive("/register")
+                                    ? "#37474f"
+                                    : "transparent",
+                            }}
+                        >
+                            <ListItemIcon sx={{ color: "#99a6a5" }}>
+                                <RegisterIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Register" />
+                        </ListItem>
+                    </>
+                )}
+
+                {user && (
+                    <>
+                        <ListItem
+                            button
+                            component={Link}
+                            to="/profile"
+                            sx={{
+                                backgroundColor: isActive("/profile")
+                                    ? "#37474f"
+                                    : "transparent",
+                            }}
+                        >
+                            <ListItemIcon sx={{ color: "#99a6a5" }}>
+                                <ProfileIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Profile" />
+                        </ListItem>
+                        <ListItem
+                            button
+                            component={Link}
+                            to="/dashboard"
+                            sx={{
+                                backgroundColor: isActive("/dashboard")
+                                    ? "#37474f"
+                                    : "transparent",
+                            }}
+                        >
+                            <ListItemIcon sx={{ color: "#99a6a5" }}>
+                                <DashboardIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Dashboard" />
+                        </ListItem>
+                        <ListItem
+                            button
+                            component={Link}
+                            to="/users"
+                            sx={{
+                                backgroundColor: isActive("/users")
+                                    ? "#37474f"
+                                    : "transparent",
+                            }}
+                        >
+                            <ListItemIcon sx={{ color: "#99a6a5" }}>
+                                <UsersIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Users" />
+                        </ListItem>
+                        <ListItem
+                            button
+                            component={Link}
+                            to="/inventory"
+                            sx={{
+                                backgroundColor: isActive("/inventory")
+                                    ? "#37474f"
+                                    : "transparent",
+                            }}
+                        >
+                            <ListItemIcon sx={{ color: "#99a6a5" }}>
+                                <InventoryIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Inventory" />
+                        </ListItem>
+                        <ListItem
+                            button
+                            component={Link}
+                            to="/orders"
+                            sx={{
+                                backgroundColor: isActive("/orders")
+                                    ? "#37474f"
+                                    : "transparent",
+                            }}
+                        >
+                            <ListItemIcon sx={{ color: "#99a6a5" }}>
+                                <OrdersIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Orders" />
+                        </ListItem>
+                        <ListItem
+                            button
+                            component={Link}
+                            to="/sales"
+                            sx={{
+                                backgroundColor: isActive("/sales")
+                                    ? "#37474f"
+                                    : "transparent",
+                            }}
+                        >
+                            <ListItemIcon sx={{ color: "#99a6a5" }}>
+                                <SalesIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Sales" />
+                        </ListItem>
+                        <ListItem
+                            button
+                            onClick={handleLogout}
+                            sx={{ marginTop: "auto" }}
+                        >
+                            <ListItemIcon sx={{ color: "#99a6a5" }}>
+                                <LogoutIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Logout" />
+                        </ListItem>
+                    </>
+                )}
+            </List>
+        </Drawer>
+    );
 };
 
 export default Navbar;
