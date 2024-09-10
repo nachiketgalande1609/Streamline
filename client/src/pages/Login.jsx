@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import {
     Container,
     TextField,
@@ -10,6 +10,7 @@ import {
     CircularProgress,
     Snackbar,
     Alert,
+    Grid,
 } from "@mui/material";
 
 export default function Login() {
@@ -117,6 +118,18 @@ export default function Login() {
                             "Login"
                         )}
                     </Button>
+                    <Grid container>
+                        <Grid item>
+                            <Link
+                                to="/register"
+                                style={{ textDecoration: "none" }}
+                            >
+                                <Button variant="text" color="primary">
+                                    Don't have an account? Register
+                                </Button>
+                            </Link>
+                        </Grid>
+                    </Grid>
                 </Box>
             </Box>
             <Snackbar

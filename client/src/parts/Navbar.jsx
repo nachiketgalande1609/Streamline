@@ -22,6 +22,8 @@ import InventoryIcon from "@mui/icons-material/Inventory";
 import OrdersIcon from "@mui/icons-material/ShoppingCart";
 import SalesIcon from "@mui/icons-material/ShowChart";
 import LogoutIcon from "@mui/icons-material/Logout";
+import WarehouseIcon from "@mui/icons-material/Warehouse";
+import ContactsIcon from "@mui/icons-material/Contacts";
 
 import axios from "axios";
 
@@ -189,6 +191,36 @@ const Navbar = () => {
                                 <OrdersIcon />
                             </ListItemIcon>
                             <ListItemText primary="Orders" />
+                        </ListItem>
+                        <ListItem
+                            button
+                            component={Link}
+                            to="/warehouses"
+                            sx={{
+                                backgroundColor: isActive("/warehouses")
+                                    ? "#37474f"
+                                    : "transparent",
+                            }}
+                        >
+                            <ListItemIcon sx={{ color: "#99a6a5" }}>
+                                <WarehouseIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Warehouses" />
+                        </ListItem>
+                        <ListItem
+                            button
+                            component={Link}
+                            to="/customers"
+                            sx={{
+                                backgroundColor: isActive("/customers")
+                                    ? "#37474f"
+                                    : "transparent",
+                            }}
+                        >
+                            <ListItemIcon sx={{ color: "#99a6a5" }}>
+                                <ContactsIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Customers" />
                         </ListItem>
                         <ListItem
                             button

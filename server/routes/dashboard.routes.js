@@ -1,18 +1,23 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+const User = require("../models/user.model");
 const Warehouse = require("../models/warehouse.models");
+const Order = require("../models/orders.models");
 
 const dashboard = express.Router();
 
 dashboard.get("/", async (req, res) => {
-    const data = await Warehouse.find(
-        {},
-        "warehouse_id name capacity current_stock"
-    );
+    const userCount = await User.countDocuments();
+    const warehouseCount = await Warehouse.countDocuments();
+    const orderCount = await Order.countDocuments();
     res.json({
         success: true,
-        data: data,
+        data: {
+            userCount,
+            warehouseCount,
+            orderCount,
+        },
         error: false,
     });
 });

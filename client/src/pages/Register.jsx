@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import {
     Container,
     TextField,
@@ -10,11 +10,13 @@ import {
     CircularProgress,
     Snackbar,
     Alert,
+    Grid,
 } from "@mui/material";
 
 export default function Register() {
     const navigate = useNavigate();
-    const [name, setName] = useState("");
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
@@ -30,7 +32,8 @@ export default function Register() {
             const response = await axios.post(
                 "/api/register",
                 {
-                    name,
+                    firstName,
+                    lastName,
                     email,
                     password,
                 },
@@ -86,11 +89,23 @@ export default function Register() {
                         margin="normal"
                         required
                         fullWidth
-                        label="Name"
+                        label="First Name"
                         type="text"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        autoComplete="name"
+                        value={firstName}
+                        onChange={(e) => setFirstName(e.target.value)}
+                        autoComplete="firstName"
+                        autoFocus
+                    />
+                    <TextField
+                        variant="outlined"
+                        margin="normal"
+                        required
+                        fullWidth
+                        label="Last Name"
+                        type="text"
+                        value={lastName}
+                        onChange={(e) => setLastName(e.target.value)}
+                        autoComplete="lastName"
                         autoFocus
                     />
                     <TextField
@@ -129,6 +144,18 @@ export default function Register() {
                             "Register"
                         )}
                     </Button>
+                    <Grid container>
+                        <Grid item>
+                            <Link
+                                to="/login"
+                                style={{ textDecoration: "none" }}
+                            >
+                                <Button variant="text" color="primary">
+                                    Already have an account? Login
+                                </Button>
+                            </Link>
+                        </Grid>
+                    </Grid>
                 </Box>
             </Box>
             <Snackbar

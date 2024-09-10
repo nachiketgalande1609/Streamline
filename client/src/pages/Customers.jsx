@@ -4,16 +4,16 @@ import Typography from "@mui/material/Typography";
 import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
 
-export default function Users() {
+export default function Customers() {
     const [rows, setRows] = useState([]);
 
     useEffect(() => {
         async function fetchData() {
             try {
-                const response = await axios.get("/api/users");
+                const response = await axios.get("/api/customers");
                 setRows(response.data.data); // Ensure this matches the API response structure
             } catch (error) {
-                console.error("Error fetching user data:", error);
+                console.error("Error fetching customer data:", error);
             }
         }
         fetchData();
@@ -25,40 +25,26 @@ export default function Users() {
     };
 
     const columnNames = [
-        {
-            field: "profile_picture",
-            headerName: "",
-            renderCell: (params) => (
-                <div
-                    style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        height: "100%",
-                    }}
-                >
-                    <img
-                        src={params.value}
-                        alt="Profile"
-                        style={{ width: 50, height: 50, borderRadius: "50%" }}
-                    />
-                </div>
-            ),
-        },
-        { field: "first_name", headerName: "First Name" },
-        { field: "last_name", headerName: "Last Name" },
+        { field: "customer_name", headerName: "Customer Name" },
+        { field: "contact_number", headerName: "Contact Number" },
         { field: "email", headerName: "Email" },
-        { field: "phone_number", headerName: "Phone Number" },
-        { field: "role", headerName: "Role" },
-        { field: "status", headerName: "Status" },
+        { field: "address", headerName: "Address" },
+        { field: "city", headerName: "City" },
+        { field: "state", headerName: "State" },
+        { field: "zip_code", headerName: "Zip Code" },
+        { field: "country", headerName: "Country" },
+        { field: "company_name", headerName: "Company Name" },
+        { field: "customer_type", headerName: "Customer Type" },
+        { field: "credit_limit", headerName: "Credit Limit" },
+        { field: "balance_due", headerName: "Balance Due" },
         {
             field: "created_at",
-            headerName: "Joined",
+            headerName: "Created At",
             valueFormatter: (params) => formatDate(params),
         },
         {
-            field: "last_login",
-            headerName: "Last Login",
+            field: "updated_at",
+            headerName: "Updated At",
             valueFormatter: (params) => formatDate(params),
         },
     ];
@@ -73,7 +59,7 @@ export default function Users() {
     return (
         <div>
             <Typography variant="h4" gutterBottom>
-                Users
+                Customers
             </Typography>
             <Box sx={{ height: 631, width: "100%" }}>
                 <DataGrid

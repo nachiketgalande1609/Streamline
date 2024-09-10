@@ -20,6 +20,8 @@ import Users from "./pages/Users";
 import Inventory from "./pages/Inventory";
 import Orders from "./pages/Orders";
 import Sales from "./pages/Sales";
+import Warehouses from "./pages/Warehouses";
+import Customers from "./pages/Customers";
 import axios from "axios";
 import "@fontsource/roboto/400.css";
 import "./App.css";
@@ -33,9 +35,12 @@ axios.defaults.headers.common["token"] = `Bearer ${localStorage.getItem(
 const drawerWidth = 240;
 
 function Layout() {
+    const location = useLocation();
+    const hideNavbar =
+        location.pathname === "/login" || location.pathname === "/register";
     return (
         <div style={{ display: "flex", height: "100vh" }}>
-            <Navbar />
+            {!hideNavbar && <Navbar />}
             <main
                 style={{
                     flexGrow: 1,
@@ -53,6 +58,8 @@ function Layout() {
                     <Route path="/inventory" element={<Inventory />} />
                     <Route path="/orders" element={<Orders />} />
                     <Route path="/sales" element={<Sales />} />
+                    <Route path="/warehouses" element={<Warehouses />} />
+                    <Route path="/customers" element={<Customers />} />
                 </Routes>
             </main>
         </div>

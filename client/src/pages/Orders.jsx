@@ -87,6 +87,44 @@ export default function Orders() {
             align: "left",
         },
         {
+            field: "taxAmount",
+            headerName: "Tax Amount",
+            type: "number",
+            flex: 1,
+            headerAlign: "left",
+            align: "left",
+        },
+        {
+            field: "discount",
+            headerName: "Discount",
+            type: "number",
+            flex: 1,
+            headerAlign: "left",
+            align: "left",
+        },
+        {
+            field: "netAmount",
+            headerName: "Net Amount",
+            type: "number",
+            flex: 1,
+            headerAlign: "left",
+            align: "left",
+        },
+        {
+            field: "paymentMethod",
+            headerName: "Payment Method",
+            flex: 1,
+            headerAlign: "left",
+            align: "left",
+        },
+        {
+            field: "paymentStatus",
+            headerName: "Payment Status",
+            flex: 1,
+            headerAlign: "left",
+            align: "left",
+        },
+        {
             field: "shippingAddress",
             headerName: "Shipping Address",
             flex: 2,
@@ -118,7 +156,7 @@ export default function Orders() {
     const lineItemColumns = [
         {
             field: "productId",
-            headerName: "Product Id",
+            headerName: "Product ID",
             flex: 1,
             headerAlign: "left",
             align: "left",
@@ -146,6 +184,30 @@ export default function Orders() {
             headerAlign: "left",
             align: "left",
         },
+        {
+            field: "discount",
+            headerName: "Discount",
+            type: "number",
+            flex: 1,
+            headerAlign: "left",
+            align: "left",
+        },
+        {
+            field: "totalPrice",
+            headerName: "Total Price",
+            type: "number",
+            flex: 1,
+            headerAlign: "left",
+            align: "left",
+        },
+        {
+            field: "taxRate",
+            headerName: "Tax Rate",
+            type: "number",
+            flex: 1,
+            headerAlign: "left",
+            align: "left",
+        },
     ];
 
     return (
@@ -157,7 +219,7 @@ export default function Orders() {
                 <DataGrid
                     rows={rows}
                     columns={columns}
-                    getRowId={(row) => row._id}
+                    getRowId={(row) => row.orderId}
                     initialState={{
                         pagination: {
                             paginationModel: {
@@ -202,7 +264,7 @@ export default function Orders() {
                                 rows={selectedOrder.items}
                                 columns={lineItemColumns}
                                 getRowId={(row) =>
-                                    row.productName + row.unitPrice
+                                    row.productId + row.unitPrice
                                 } // Unique key for each row
                                 pageSize={5}
                                 checkboxSelection

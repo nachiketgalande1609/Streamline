@@ -28,10 +28,14 @@ export default function Inventory() {
         category: "",
         quantity: "",
         price: "",
+        cost: "",
+        min_stock_level: "",
+        reorder_point: "",
         supplier: "",
         warehouse: "",
         dateAdded: "",
         expiryDate: "",
+        status: "in stock",
     });
     const [warehouses, setWarehouses] = useState([]);
 
@@ -46,7 +50,7 @@ export default function Inventory() {
 
     const fetchWarehouseData = async () => {
         try {
-            const response = await axios.get("/api/warehouse");
+            const response = await axios.get("/api/warehouse/lov");
             setWarehouses(response.data.data);
         } catch (error) {
             console.error("Error fetching warehouse data:", error);
@@ -90,10 +94,14 @@ export default function Inventory() {
                 category: "",
                 quantity: "",
                 price: "",
+                cost: "",
+                min_stock_level: "",
+                reorder_point: "",
                 supplier: "",
                 warehouse: "",
                 dateAdded: "",
                 expiryDate: "",
+                status: "in stock",
             });
         } catch (error) {
             console.error("Error adding item to inventory:", error);
@@ -106,6 +114,13 @@ export default function Inventory() {
         { field: "category", headerName: "Category" },
         { field: "quantity", headerName: "Quantity", type: "number" },
         { field: "price", headerName: "Price", type: "number" },
+        { field: "cost", headerName: "Cost", type: "number" },
+        {
+            field: "min_stock_level",
+            headerName: "Min Stock Level",
+            type: "number",
+        },
+        { field: "reorder_point", headerName: "Reorder Point", type: "number" },
         { field: "supplier", headerName: "Supplier" },
         { field: "warehouse", headerName: "Warehouse" },
         {
@@ -118,6 +133,7 @@ export default function Inventory() {
             headerName: "Expiry Date",
             valueFormatter: (params) => formatDate(params),
         },
+        { field: "status", headerName: "Status" },
     ];
 
     const columns = columnNames.map((col) => ({
@@ -141,8 +157,6 @@ export default function Inventory() {
             </Button>
             <Modal open={open} onClose={handleClose}>
                 <Box sx={{ ...style, width: 900 }}>
-                    {" "}
-                    {/* Increase width for better layout */}
                     <Typography variant="h6" component="h2">
                         Add New Item
                     </Typography>
@@ -207,6 +221,42 @@ export default function Inventory() {
                             </Grid>
                             <Grid item xs={4}>
                                 <TextField
+                                    label="Cost"
+                                    name="cost"
+                                    type="number"
+                                    value={formData.cost}
+                                    onChange={handleChange}
+                                    fullWidth
+                                    margin="normal"
+                                    required
+                                />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <TextField
+                                    label="Min Stock Level"
+                                    name="min_stock_level"
+                                    type="number"
+                                    value={formData.min_stock_level}
+                                    onChange={handleChange}
+                                    fullWidth
+                                    margin="normal"
+                                    required
+                                />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <TextField
+                                    label="Reorder Point"
+                                    name="reorder_point"
+                                    type="number"
+                                    value={formData.reorder_point}
+                                    onChange={handleChange}
+                                    fullWidth
+                                    margin="normal"
+                                    required
+                                />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <TextField
                                     label="Supplier"
                                     name="supplier"
                                     value={formData.supplier}
@@ -228,10 +278,10 @@ export default function Inventory() {
                                 >
                                     {warehouses.map((warehouse) => (
                                         <MenuItem
-                                            key={warehouse.name}
-                                            value={warehouse.name}
+                                            key={warehouse.warehouse_id}
+                                            value={warehouse.warehouse_id}
                                         >
-                                            {warehouse.name}
+                                            {warehouse.warehouse_id}
                                         </MenuItem>
                                     ))}
                                 </Select>
@@ -259,8 +309,28 @@ export default function Inventory() {
                                     fullWidth
                                     margin="normal"
                                     InputLabelProps={{ shrink: true }}
-                                    required
                                 />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <InputLabel>Status</InputLabel>
+                                <Select
+                                    name="status"
+                                    value={formData.status}
+                                    onChange={handleChange}
+                                    fullWidth
+                                    margin="normal"
+                                    required
+                                >
+                                    <MenuItem value="in stock">
+                                        In Stock
+                                    </MenuItem>
+                                    <MenuItem value="out of stock">
+                                        Out of Stock
+                                    </MenuItem>
+                                    <MenuItem value="discontinued">
+                                        Discontinued
+                                    </MenuItem>
+                                </Select>
                             </Grid>
                             <Grid item xs={12}>
                                 <Box
