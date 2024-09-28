@@ -65,92 +65,131 @@ export default function Login() {
     };
 
     return (
-        <Container component="main" maxWidth="xs">
-            <Box
-                sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    mt: 8,
-                    p: 3,
-                    borderRadius: 1,
-                    boxShadow: 3,
-                }}
-            >
-                <Typography component="h1" variant="h5">
-                    Login
-                </Typography>
-                <Box component="form" onSubmit={loginUser} sx={{ mt: 1 }}>
-                    <TextField
-                        variant="outlined"
-                        margin="normal"
-                        required
-                        fullWidth
-                        label="Email"
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        autoComplete="email"
-                        autoFocus
-                    />
-                    <TextField
-                        variant="outlined"
-                        margin="normal"
-                        required
-                        fullWidth
-                        label="Password"
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        autoComplete="current-password"
-                    />
-                    <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        color="primary"
-                        sx={{ mt: 3, mb: 2 }}
-                        disabled={loading}
-                    >
-                        {loading ? (
-                            <CircularProgress size={24} color="inherit" />
-                        ) : (
-                            "Login"
-                        )}
-                    </Button>
-                    <Grid container>
-                        <Grid item>
-                            <Link
-                                to="/register"
-                                style={{ textDecoration: "none" }}
-                            >
-                                <Button variant="text" color="primary">
-                                    Don't have an account? Register
-                                </Button>
-                            </Link>
-                        </Grid>
-                    </Grid>
-                </Box>
-            </Box>
-            <Snackbar
-                open={open}
-                autoHideDuration={6000}
-                onClose={handleClose}
-                anchorOrigin={{ vertical: "top", horizontal: "right" }}
-                action={
-                    <Button color="inherit" onClick={handleClose}>
-                        Close
-                    </Button>
-                }
-            >
-                <Alert
-                    onClose={handleClose}
-                    severity={severity}
-                    sx={{ width: "100%" }}
+        <div
+            style={{
+                display: "flex",
+                flexDirection: "column",
+                height: "100vh",
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundImage: "url('/assets/duplo30.jpg')",
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                backgroundRepeat: "no-repeat",
+            }}
+        >
+            <Container component="main" maxWidth="xs">
+                <Box
+                    sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        mt: 8,
+                        p: 3,
+                        borderRadius: 2,
+                        boxShadow: 3,
+                        backgroundColor: "#ffffff",
+                    }}
                 >
-                    {message}
-                </Alert>
-            </Snackbar>
-        </Container>
+                    <Typography
+                        component="h1"
+                        variant="h5"
+                        sx={{ color: "#37474f" }}
+                    >
+                        Login
+                    </Typography>
+                    <Box component="form" onSubmit={loginUser} sx={{ mt: 1 }}>
+                        <TextField
+                            variant="outlined"
+                            margin="normal"
+                            required
+                            fullWidth
+                            label="Email"
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            autoComplete="email"
+                            autoFocus
+                        />
+                        <TextField
+                            variant="outlined"
+                            margin="normal"
+                            required
+                            fullWidth
+                            label="Password"
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            autoComplete="current-password"
+                        />
+                        <Button
+                            type="submit"
+                            fullWidth
+                            variant="contained"
+                            sx={{
+                                mt: 3,
+                                mb: 2,
+                                backgroundColor: "#37474f",
+                                "&:hover": {
+                                    backgroundColor: "#1d282d",
+                                },
+                            }}
+                            disabled={loading}
+                        >
+                            {loading ? (
+                                <CircularProgress size={24} color="inherit" />
+                            ) : (
+                                "Login"
+                            )}
+                        </Button>
+                        <Grid container>
+                            <Grid item>
+                                <Link
+                                    to="/register"
+                                    style={{ textDecoration: "none" }}
+                                >
+                                    <Button
+                                        variant="text"
+                                        sx={{
+                                            color: "#37474f",
+                                            "&:hover": {
+                                                backgroundColor: "#ffffff",
+                                            },
+                                        }}
+                                    >
+                                        Don't have an account? Register
+                                    </Button>
+                                </Link>
+                            </Grid>
+                        </Grid>
+                    </Box>
+                </Box>
+                <Snackbar
+                    open={open}
+                    autoHideDuration={6000}
+                    onClose={handleClose}
+                    anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                    action={
+                        <Button color="inherit" onClick={handleClose}>
+                            Close
+                        </Button>
+                    }
+                >
+                    <Alert
+                        onClose={handleClose}
+                        severity={severity}
+                        sx={{ width: "100%" }}
+                    >
+                        {message}
+                    </Alert>
+                </Snackbar>
+            </Container>
+            <Box sx={{ mt: 5, textAlign: "center" }}>
+                <Typography variant="body2" color="textSecondary">
+                    © {new Date().getFullYear()} Streamline. All rights
+                    reserved.
+                </Typography>
+            </Box>
+        </div>
     );
 }

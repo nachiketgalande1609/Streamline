@@ -11,11 +11,14 @@ const orderRoutes = require("./routes/orders.routes");
 const warehouseRoutes = require("./routes/warehouse.routes");
 const dashboardRoutes = require("./routes/dashboard.routes");
 const customerRoutes = require("./routes/customers.routes");
+const salesRoutes = require("./routes/sales.routes");
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
+
+mongoose.set("debug", true);
 
 mongoose.connect("mongodb://localhost:27017/Streamline");
 
@@ -26,6 +29,7 @@ app.use("/api/orders", orderRoutes);
 app.use("/api/warehouse", warehouseRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/customers", customerRoutes);
+app.use("/api/sales", salesRoutes);
 
 app.listen(3001, () => {
     "Server Started";

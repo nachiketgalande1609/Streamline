@@ -1,10 +1,21 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Grid, Card, CardContent, Typography, Divider } from "@mui/material";
+import {
+    Grid,
+    Card,
+    CardContent,
+    Typography,
+    Divider,
+    Accordion,
+    AccordionSummary,
+    AccordionDetails,
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { Gauge, gaugeClasses } from "@mui/x-charts/Gauge";
 
 const StyledCard = styled(Card)(({ theme }) => ({
-    backgroundColor: "#1d282d", // Dark background color
+    backgroundColor: "#37474f", // Dark background color
     color: "#FFFFFF", // White text color
     boxShadow: theme.shadows[5],
 }));
@@ -22,9 +33,11 @@ export default function Dashboard() {
         userCount: 0,
         warehouseCount: 0,
         orderCount: 0,
+        customerCount: 0,
+        warehouse_summary: [],
     });
 
-    useEffect(() => {
+    const fetchData = () => {
         axios
             .get("/api/dashboard")
             .then((response) => {
@@ -38,13 +51,12 @@ export default function Dashboard() {
                     error
                 );
             });
-    }, []);
+    };
 
-    return (
-        <div style={{ padding: 20 }}>
-            <Typography variant="h4" gutterBottom>
-                Dashboard
-            </Typography>
+    useEffect(() => fetchData(), []);
+
+    const CountCards = () => {
+        return (
             <Grid container spacing={3}>
                 <Grid item xs={12} sm={6} md={4} lg={3}>
                     <StyledCard>
@@ -84,11 +96,129 @@ export default function Dashboard() {
                 <Grid item xs={12} sm={6} md={4} lg={3}>
                     <StyledCard>
                         <CardContent>
-                            {/* Empty Card for future use or design consistency */}
+                            <CardTitle>Total Customers</CardTitle>
+                            <Divider
+                                sx={{ marginY: 2, borderColor: "#FFFFFF" }}
+                            />
+                            <CardValue>{dashboardData.customerCount}</CardValue>
                         </CardContent>
                     </StyledCard>
                 </Grid>
             </Grid>
+        );
+    };
+
+    const WarehouseGauge = () => {
+        return (
+            <Accordion
+                defaultExpanded
+                sx={{ marginTop: 2, borderRadius: "4px", boxShadow: 2 }}
+            >
+                <AccordionSummary
+                    sx={(theme) => ({
+                        backgroundColor: "#37474f",
+                        color: "#ffffff",
+                        borderRadius: "4px",
+                    })}
+                    expandIcon={<ExpandMoreIcon sx={{ color: "#ffffff" }} />}
+                >
+                    <Typography>Warehouse Stock vs Capacity</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                    <Grid
+                        container
+                        justifyContent="center"
+                        alignItems="center"
+                        marginTop={2}
+                        marginBottom={2}
+                        gap={5}
+                    >
+                        {dashboardData.warehouse_summary.map(
+                            (warehouse, index) => {
+                                const stockPercentage =
+                                    (warehouse.currentStock /
+                                        warehouse.capacity) *
+                                    100;
+
+                                return (
+                                    <Grid
+                                        item
+                                        xs={12}
+                                        sm={6}
+                                        md={4}
+                                        lg={2}
+                                        key={index}
+                                        sx={{
+                                            display: "flex",
+                                            flexDirection: "column",
+                                            alignItems: "center",
+                                        }}
+                                    >
+                                        <Typography
+                                            variant="subtitle1"
+                                            align="center"
+                                            sx={{ fontWeight: "600" }}
+                                        >
+                                            {warehouse.warehouse_id}
+                                        </Typography>
+                                        <Gauge
+                                            value={Math.floor(stockPercentage)}
+                                            startAngle={0}
+                                            innerRadius="75%"
+                                            outerRadius="100%"
+                                            width={120}
+                                            height={120}
+                                            cornerRadius="50%"
+                                            arcBackgroundColor="#fff"
+                                            sx={(theme) => ({
+                                                [`& .${gaugeClasses.valueText}`]:
+                                                    {
+                                                        fontSize: 20,
+                                                    },
+                                                [`& .${gaugeClasses.valueArc}`]:
+                                                    {
+                                                        fill:
+                                                            stockPercentage >
+                                                                70 &&
+                                                            stockPercentage <=
+                                                                100
+                                                                ? "#D2222D"
+                                                                : stockPercentage >
+                                                                      30 &&
+                                                                  stockPercentage <=
+                                                                      70
+                                                                ? "#FFBF00"
+                                                                : "#349934",
+                                                    },
+                                                [`& .${gaugeClasses.referenceArc}`]:
+                                                    {
+                                                        fill: "#cee2ed",
+                                                    },
+                                            })}
+                                        />
+                                        <Typography
+                                            variant="body2"
+                                            align="center"
+                                            marginTop={2}
+                                        >
+                                            Current Stock:{" "}
+                                            {warehouse.currentStock}/
+                                            {warehouse.capacity}
+                                        </Typography>
+                                    </Grid>
+                                );
+                            }
+                        )}
+                    </Grid>
+                </AccordionDetails>
+            </Accordion>
+        );
+    };
+
+    return (
+        <div style={{ padding: 20 }}>
+            <CountCards />
+            <WarehouseGauge />
         </div>
     );
 }

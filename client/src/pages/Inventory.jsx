@@ -1,16 +1,38 @@
 import React, { useState, useEffect } from "react";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
 import { DataGrid } from "@mui/x-data-grid";
-import Button from "@mui/material/Button";
-import Modal from "@mui/material/Modal";
-import TextField from "@mui/material/TextField";
 import axios from "axios";
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
-import InputLabel from "@mui/material/InputLabel";
 import AddIcon from "@mui/icons-material/Add";
+import FileDownloadIcon from "@mui/icons-material/FileDownload";
+import Chip from "@mui/material/Chip";
+
 import Grid from "@mui/material/Grid";
+import * as Papa from "papaparse";
+
+import {
+    Modal,
+    Box,
+    Typography,
+    TextField,
+    Select,
+    MenuItem,
+    Button,
+    FormControl,
+    InputLabel,
+    Snackbar,
+    Alert,
+    IconButton,
+} from "@mui/material";
+
+const style = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    bgcolor: "background.paper",
+    boxShadow: 24,
+    p: 4,
+    borderRadius: 2,
+};
 
 const dateFormatter = new Intl.DateTimeFormat("en-US");
 
@@ -38,6 +60,9 @@ export default function Inventory() {
         status: "in stock",
     });
     const [warehouses, setWarehouses] = useState([]);
+    const [alertOpen, setAlertOpen] = useState(false);
+    const [message, setMessage] = useState("");
+    const [severity, setSeverity] = useState("success");
 
     const fetchInventoryData = async () => {
         try {
@@ -60,6 +85,52 @@ export default function Inventory() {
     useEffect(() => {
         fetchInventoryData();
     }, []);
+
+    const handleAlertClose = () => {
+        setAlertOpen(false);
+    };
+
+    const handleExport = async () => {
+        try {
+            const response = await axios.get("/api/inventory");
+            const data = response.data.data;
+
+            const csv = Papa.unparse(data, {
+                header: true,
+                columns: [
+                    "sku",
+                    "name",
+                    "description",
+                    "category",
+                    "quantity",
+                    "price",
+                    "cost",
+                    "min_stock_level",
+                    "reorder_point",
+                    "supplier",
+                    "warehouse",
+                    "dateAdded",
+                    "expiryDate",
+                    "status",
+                ],
+            });
+
+            // Create a downloadable link
+            const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.setAttribute("download", "inventory.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            setMessage("Exported file downloaded successfully!");
+            setSeverity("success");
+            setAlertOpen(true);
+        } catch (error) {
+            console.error("Error exporting customer data:", error);
+        }
+    };
 
     const handleOpen = () => {
         fetchWarehouseData();
@@ -108,53 +179,150 @@ export default function Inventory() {
         }
     };
 
-    const columnNames = [
-        { field: "name", headerName: "Name" },
-        { field: "description", headerName: "Description" },
-        { field: "category", headerName: "Category" },
-        { field: "quantity", headerName: "Quantity", type: "number" },
-        { field: "price", headerName: "Price", type: "number" },
-        { field: "cost", headerName: "Cost", type: "number" },
+    const columns = [
+        {
+            field: "status",
+            headerName: "Status",
+            width: 150, // Constant width
+            headerAlign: "center",
+            align: "center",
+            renderCell: (params) => {
+                let chipColor;
+                if (params.value === "In Stock") {
+                    chipColor = "success";
+                } else if (params.value === "Out of Stock") {
+                    chipColor = "error";
+                } else {
+                    chipColor = "default";
+                }
+
+                return (
+                    <Chip
+                        label={params.value}
+                        color={chipColor}
+                        sx={{ width: 100 }}
+                    />
+                );
+            },
+        },
+
+        {
+            field: "name",
+            headerName: "Name",
+            width: 150,
+            headerAlign: "left",
+            align: "left",
+        },
+        {
+            field: "description",
+            headerName: "Description",
+            width: 200,
+            headerAlign: "left",
+            align: "left",
+        },
+        {
+            field: "category",
+            headerName: "Category",
+            width: 150,
+            headerAlign: "center",
+            align: "center",
+        },
+        {
+            field: "quantity",
+            headerName: "Quantity",
+            type: "number",
+            width: 150,
+            headerAlign: "center",
+            align: "center",
+        },
+        {
+            field: "price",
+            headerName: "Price",
+            type: "number",
+            width: 150,
+            headerAlign: "center",
+            align: "center",
+        },
+        {
+            field: "cost",
+            headerName: "Cost",
+            type: "number",
+            width: 150,
+            headerAlign: "center",
+            align: "center",
+        },
         {
             field: "min_stock_level",
             headerName: "Min Stock Level",
             type: "number",
+            width: 150,
+            headerAlign: "center",
+            align: "center",
         },
-        { field: "reorder_point", headerName: "Reorder Point", type: "number" },
-        { field: "supplier", headerName: "Supplier" },
-        { field: "warehouse", headerName: "Warehouse" },
+        {
+            field: "reorder_point",
+            headerName: "Reorder Point",
+            type: "number",
+            width: 150,
+            headerAlign: "center",
+            align: "center",
+        },
+        {
+            field: "supplier",
+            headerName: "Supplier",
+            width: 150,
+            headerAlign: "center",
+            align: "center",
+        },
+        {
+            field: "warehouse",
+            headerName: "Warehouse",
+            width: 150,
+            headerAlign: "center",
+            align: "center",
+        },
         {
             field: "dateAdded",
             headerName: "Date Added",
             valueFormatter: (params) => formatDate(params),
+            width: 150,
+            headerAlign: "center",
+            align: "center",
         },
         {
             field: "expiryDate",
             headerName: "Expiry Date",
             valueFormatter: (params) => formatDate(params),
+            width: 150,
+            headerAlign: "center",
+            align: "center",
         },
-        { field: "status", headerName: "Status" },
     ];
 
-    const columns = columnNames.map((col) => ({
-        ...col,
-        flex: 1,
-        headerAlign: "left",
-        align: "left",
-    }));
-
     return (
-        <div>
-            <Typography variant="h4" gutterBottom>
-                Inventory Management
-            </Typography>
-            <Button
-                variant="outlined"
-                startIcon={<AddIcon />}
-                onClick={handleOpen}
-            >
-                Add Items
-            </Button>
+        <div style={{ padding: 20 }}>
+            <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+                <Typography variant="h4" gutterBottom sx={{ flexGrow: 1 }}>
+                    Inventory
+                </Typography>
+                <Box sx={{ display: "flex", gap: 1 }}>
+                    <IconButton
+                        size="small"
+                        onClick={handleOpen}
+                        aria-label="Add Items"
+                        sx={{ mr: 1 }}
+                    >
+                        <AddIcon />
+                    </IconButton>
+                    <IconButton
+                        size="small"
+                        onClick={handleExport}
+                        aria-label="Export to CSV"
+                    >
+                        <FileDownloadIcon />
+                    </IconButton>
+                </Box>
+            </Box>
             <Modal open={open} onClose={handleClose}>
                 <Box sx={{ ...style, width: 900 }}>
                     <Typography variant="h6" component="h2">
@@ -267,24 +435,27 @@ export default function Inventory() {
                                 />
                             </Grid>
                             <Grid item xs={4}>
-                                <InputLabel>Warehouse</InputLabel>
-                                <Select
-                                    value={formData.warehouse}
-                                    onChange={handleSelectChange}
-                                    fullWidth
-                                    name="warehouse"
-                                    margin="normal"
-                                    required
-                                >
-                                    {warehouses.map((warehouse) => (
-                                        <MenuItem
-                                            key={warehouse.warehouse_id}
-                                            value={warehouse.warehouse_id}
-                                        >
-                                            {warehouse.warehouse_id}
-                                        </MenuItem>
-                                    ))}
-                                </Select>
+                                <FormControl fullWidth margin="normal">
+                                    <InputLabel id="role-label">
+                                        Role
+                                    </InputLabel>
+                                    <Select
+                                        labelId="role-label"
+                                        name="warehouse"
+                                        value={formData.warehouse}
+                                        onChange={handleSelectChange}
+                                        label="Role"
+                                    >
+                                        {warehouses.map((warehouse) => (
+                                            <MenuItem
+                                                key={warehouse.warehouse_id}
+                                                value={warehouse.warehouse_id}
+                                            >
+                                                {warehouse.warehouse_id}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
                             </Grid>
                             <Grid item xs={4}>
                                 <TextField
@@ -352,7 +523,15 @@ export default function Inventory() {
                     </form>
                 </Box>
             </Modal>
-            <Box sx={{ height: 631, width: "100%", marginTop: 2 }}>
+            <Box
+                sx={{
+                    height: 631,
+                    width: "100%",
+                    maxWidth: "calc(100vw - 280px)",
+                    marginTop: 2,
+                    overflowX: "auto", // Enable horizontal scrolling if content overflows
+                }}
+            >
                 <DataGrid
                     rows={rows}
                     columns={columns}
@@ -367,19 +546,36 @@ export default function Inventory() {
                     pageSizeOptions={[5]}
                     checkboxSelection
                     disableRowSelectionOnClick
+                    sx={{
+                        "& .MuiDataGrid-columnHeader": {
+                            backgroundColor: "#37474f",
+                            color: "#fff",
+                        },
+                        "& .MuiDataGrid-columnHeader .MuiSvgIcon-root": {
+                            color: "#fff",
+                        },
+                    }}
                 />
             </Box>
+            <Snackbar
+                open={alertOpen}
+                autoHideDuration={6000}
+                onClose={handleAlertClose}
+                anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                action={
+                    <Button color="inherit" onClick={handleAlertClose}>
+                        Close
+                    </Button>
+                }
+            >
+                <Alert
+                    onClose={handleAlertClose}
+                    severity={severity}
+                    sx={{ width: "100%" }}
+                >
+                    {message}
+                </Alert>
+            </Snackbar>
         </div>
     );
 }
-
-const style = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    bgcolor: "background.paper",
-    border: "2px solid #000",
-    boxShadow: 24,
-    p: 4,
-};

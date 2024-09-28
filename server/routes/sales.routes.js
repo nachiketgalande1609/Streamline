@@ -1,7 +1,7 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const Sales = require("../models/user.model");
+const Sales = require("../models/sales.model");
 
 const sales = express.Router();
 
@@ -14,4 +14,4 @@ sales.get("/", async (req, res) => {
     });
 });
 
-module.exports = user;
+module.exports = sales;

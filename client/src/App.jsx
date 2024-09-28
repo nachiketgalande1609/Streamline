@@ -13,7 +13,6 @@ import {
 import Navbar from "./parts/Navbar";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
-import Home from "./pages/Home";
 import Profile from "./pages/Profile";
 import Dashboard from "./pages/Dashboard/";
 import Users from "./pages/Users";
@@ -44,16 +43,14 @@ function Layout() {
             <main
                 style={{
                     flexGrow: 1,
-                    padding: "16px",
                     marginLeft: 0,
                 }}
             >
                 <Routes>
-                    <Route path="/" element={<Home />} />
+                    <Route path="/" element={<Dashboard />} />
                     <Route path="/register" element={<Register />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/profile" element={<Profile />} />
-                    <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/users" element={<Users />} />
                     <Route path="/inventory" element={<Inventory />} />
                     <Route path="/orders" element={<Orders />} />

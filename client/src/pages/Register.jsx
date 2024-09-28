@@ -68,115 +68,159 @@ export default function Register() {
     };
 
     return (
-        <Container component="main" maxWidth="xs">
-            <Box
-                sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    mt: 8,
-                    p: 3,
-                    borderRadius: 1,
-                    boxShadow: 3,
-                }}
-            >
-                <Typography component="h1" variant="h5">
-                    Register
-                </Typography>
-                <Box component="form" onSubmit={registerUser} sx={{ mt: 1 }}>
-                    <TextField
-                        variant="outlined"
-                        margin="normal"
-                        required
-                        fullWidth
-                        label="First Name"
-                        type="text"
-                        value={firstName}
-                        onChange={(e) => setFirstName(e.target.value)}
-                        autoComplete="firstName"
-                        autoFocus
-                    />
-                    <TextField
-                        variant="outlined"
-                        margin="normal"
-                        required
-                        fullWidth
-                        label="Last Name"
-                        type="text"
-                        value={lastName}
-                        onChange={(e) => setLastName(e.target.value)}
-                        autoComplete="lastName"
-                        autoFocus
-                    />
-                    <TextField
-                        variant="outlined"
-                        margin="normal"
-                        required
-                        fullWidth
-                        label="Email"
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        autoComplete="email"
-                    />
-                    <TextField
-                        variant="outlined"
-                        margin="normal"
-                        required
-                        fullWidth
-                        label="Password"
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        autoComplete="current-password"
-                    />
-                    <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        color="primary"
-                        sx={{ mt: 3, mb: 2 }}
-                        disabled={loading}
-                    >
-                        {loading ? (
-                            <CircularProgress size={24} color="inherit" />
-                        ) : (
-                            "Register"
-                        )}
-                    </Button>
-                    <Grid container>
-                        <Grid item>
-                            <Link
-                                to="/login"
-                                style={{ textDecoration: "none" }}
-                            >
-                                <Button variant="text" color="primary">
-                                    Already have an account? Login
-                                </Button>
-                            </Link>
-                        </Grid>
-                    </Grid>
-                </Box>
-            </Box>
-            <Snackbar
-                open={open}
-                autoHideDuration={6000}
-                onClose={handleClose}
-                anchorOrigin={{ vertical: "top", horizontal: "right" }}
-                action={
-                    <Button color="inherit" onClick={handleClose}>
-                        Close
-                    </Button>
-                }
-            >
-                <Alert
-                    onClose={handleClose}
-                    severity={severity}
-                    sx={{ width: "100%" }}
+        <div
+            style={{
+                display: "flex",
+                flexDirection: "column",
+                height: "100vh",
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundImage: "url('/assets/duplo30.jpg')",
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                backgroundRepeat: "no-repeat",
+            }}
+        >
+            <Container component="main" maxWidth="xs">
+                <Box
+                    sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        mt: 8,
+                        p: 3,
+                        borderRadius: 2,
+                        boxShadow: 3,
+                        backgroundColor: "#ffffff",
+                    }}
                 >
-                    {message}
-                </Alert>
-            </Snackbar>
-        </Container>
+                    <Typography
+                        component="h1"
+                        variant="h5"
+                        sx={{ color: "#37474f" }}
+                    >
+                        Register
+                    </Typography>
+                    <Box
+                        component="form"
+                        onSubmit={registerUser}
+                        sx={{ mt: 1 }}
+                    >
+                        <TextField
+                            variant="outlined"
+                            margin="normal"
+                            required
+                            fullWidth
+                            label="First Name"
+                            type="text"
+                            value={firstName}
+                            onChange={(e) => setFirstName(e.target.value)}
+                            autoComplete="firstName"
+                            autoFocus
+                        />
+                        <TextField
+                            variant="outlined"
+                            margin="normal"
+                            required
+                            fullWidth
+                            label="Last Name"
+                            type="text"
+                            value={lastName}
+                            onChange={(e) => setLastName(e.target.value)}
+                            autoComplete="lastName"
+                            autoFocus
+                        />
+                        <TextField
+                            variant="outlined"
+                            margin="normal"
+                            required
+                            fullWidth
+                            label="Email"
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            autoComplete="email"
+                        />
+                        <TextField
+                            variant="outlined"
+                            margin="normal"
+                            required
+                            fullWidth
+                            label="Password"
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            autoComplete="current-password"
+                        />
+                        <Button
+                            type="submit"
+                            fullWidth
+                            variant="contained"
+                            color="primary"
+                            sx={{
+                                mt: 3,
+                                mb: 2,
+                                backgroundColor: "#37474f",
+                                "&:hover": {
+                                    backgroundColor: "#1d282d",
+                                },
+                            }}
+                            disabled={loading}
+                        >
+                            {loading ? (
+                                <CircularProgress size={24} color="inherit" />
+                            ) : (
+                                "Register"
+                            )}
+                        </Button>
+                        <Grid container>
+                            <Grid item>
+                                <Link
+                                    to="/login"
+                                    style={{ textDecoration: "none" }}
+                                >
+                                    <Button
+                                        variant="text"
+                                        sx={{
+                                            color: "#37474f",
+                                            "&:hover": {
+                                                backgroundColor: "#ffffff",
+                                            },
+                                        }}
+                                    >
+                                        Already have an account? Login
+                                    </Button>
+                                </Link>
+                            </Grid>
+                        </Grid>
+                    </Box>
+                </Box>
+                <Snackbar
+                    open={open}
+                    autoHideDuration={6000}
+                    onClose={handleClose}
+                    anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                    action={
+                        <Button color="inherit" onClick={handleClose}>
+                            Close
+                        </Button>
+                    }
+                >
+                    <Alert
+                        onClose={handleClose}
+                        severity={severity}
+                        sx={{ width: "100%" }}
+                    >
+                        {message}
+                    </Alert>
+                </Snackbar>
+            </Container>
+            <Box sx={{ mt: 5, textAlign: "center" }}>
+                <Typography variant="body2" color="textSecondary">
+                    © {new Date().getFullYear()} Streamline. All rights
+                    reserved.
+                </Typography>
+            </Box>
+        </div>
     );
 }

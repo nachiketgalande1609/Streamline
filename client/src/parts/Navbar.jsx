@@ -12,7 +12,6 @@ import {
 } from "@mui/material";
 import { UserContext } from "../context/UserContext";
 
-import HomeIcon from "@mui/icons-material/Home";
 import LoginIcon from "@mui/icons-material/Login";
 import RegisterIcon from "@mui/icons-material/PersonAdd";
 import ProfileIcon from "@mui/icons-material/AccountCircle";
@@ -64,22 +63,6 @@ const Navbar = () => {
                 <Typography variant="h6">Streamline</Typography>
             </Toolbar>
             <List>
-                <ListItem
-                    button
-                    component={Link}
-                    to="/"
-                    sx={{
-                        backgroundColor: isActive("/")
-                            ? "#37474f"
-                            : "transparent",
-                    }}
-                >
-                    <ListItemIcon sx={{ color: "#99a6a5" }}>
-                        <HomeIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Home" />
-                </ListItem>
-
                 {!user && (
                     <>
                         <ListItem
@@ -120,6 +103,21 @@ const Navbar = () => {
                         <ListItem
                             button
                             component={Link}
+                            to="/"
+                            sx={{
+                                backgroundColor: isActive("/")
+                                    ? "#37474f"
+                                    : "transparent",
+                            }}
+                        >
+                            <ListItemIcon sx={{ color: "#99a6a5" }}>
+                                <DashboardIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Dashboard" />
+                        </ListItem>
+                        <ListItem
+                            button
+                            component={Link}
                             to="/profile"
                             sx={{
                                 backgroundColor: isActive("/profile")
@@ -132,21 +130,7 @@ const Navbar = () => {
                             </ListItemIcon>
                             <ListItemText primary="Profile" />
                         </ListItem>
-                        <ListItem
-                            button
-                            component={Link}
-                            to="/dashboard"
-                            sx={{
-                                backgroundColor: isActive("/dashboard")
-                                    ? "#37474f"
-                                    : "transparent",
-                            }}
-                        >
-                            <ListItemIcon sx={{ color: "#99a6a5" }}>
-                                <DashboardIcon />
-                            </ListItemIcon>
-                            <ListItemText primary="Dashboard" />
-                        </ListItem>
+
                         <ListItem
                             button
                             component={Link}

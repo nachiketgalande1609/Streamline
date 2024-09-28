@@ -6,12 +6,41 @@ const User = require("../models/user.model");
 const user = express.Router();
 
 user.get("/", async (req, res) => {
-    const data = await User.find();
-    res.json({
-        success: true,
-        data: data,
-        error: false,
-    });
+    const { role } = req.query;
+    const query = role ? { role } : {};
+    try {
+        const data = await User.find(query).select("-password");
+        res.json({
+            success: true,
+            data: data,
+            error: false,
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            data: [],
+            error: true,
+            message: "Error fetching user data.",
+        });
+    }
+});
+
+user.get("/roles", async (req, res) => {
+    try {
+        const roles = ["admin", "sales", "manager", "user"];
+        res.json({
+            success: true,
+            data: roles,
+            error: false,
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            data: [],
+            error: true,
+            message: "Error fetching roles.",
+        });
+    }
 });
 
 user.post("/profile", async (req, res) => {

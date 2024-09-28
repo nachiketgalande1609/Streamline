@@ -1,21 +1,28 @@
 import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
-import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
-import Modal from "@mui/material/Modal";
-import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableRow,
+    Paper,
+    Grid,
+    Card,
+    CardContent,
+    Typography,
+    Button,
+    Modal,
+    Box,
+    TextField,
+    Select,
+    MenuItem,
+    FormControl,
+    InputLabel,
+    Tooltip,
+} from "@mui/material";
 import { UserContext } from "../context/UserContext";
 import ModeEditOutlineIcon from "@mui/icons-material/ModeEditOutline";
-import InputLabel from "@mui/material/InputLabel";
 
 const modalStyle = {
     position: "absolute",
@@ -24,9 +31,9 @@ const modalStyle = {
     transform: "translate(-50%, -50%)",
     width: 400,
     bgcolor: "background.paper",
-    border: "2px solid #000",
     boxShadow: 24,
     p: 4,
+    borderRadius: 2,
 };
 
 export default function Profile() {
@@ -45,8 +52,8 @@ export default function Profile() {
     });
 
     // Define options for status and role
-    const roles = ["admin", "user", "manager"]; // Example roles
-    const statuses = ["active", "inactive", "pending"]; // Example statuses
+    const roles = ["admin", "sales", "user", "manager"];
+    const statuses = ["active", "inactive", "pending"];
 
     useEffect(() => {
         const fetchUserProfile = async () => {
@@ -61,10 +68,8 @@ export default function Profile() {
             }
         };
 
-        if (user?.email) {
-            fetchUserProfile();
-        }
-    }, [user?.email]);
+        fetchUserProfile();
+    }, [user]);
 
     const handleOpenModal = () => setModalOpen(true);
     const handleCloseModal = () => setModalOpen(false);
@@ -78,12 +83,10 @@ export default function Profile() {
         e.preventDefault();
         try {
             await axios.put("api/users/update", formData);
-
             const response = await axios.post("api/users/profile", {
-                email: formData.email,
+                email: formData?.email,
             });
             setUserData(response?.data?.data);
-
             handleCloseModal();
         } catch (error) {
             console.error("Error updating profile:", error);
@@ -92,11 +95,11 @@ export default function Profile() {
 
     const formatDate = (dateString) => {
         const date = new Date(dateString);
-        return date.toLocaleDateString(); // Customize the format as needed
+        return date?.toLocaleDateString(); // Customize the format as needed
     };
 
     return (
-        <div>
+        <div style={{ padding: 20 }}>
             <Typography variant="h4" gutterBottom>
                 Profile
             </Typography>
@@ -104,71 +107,106 @@ export default function Profile() {
                 variant="outlined"
                 startIcon={<ModeEditOutlineIcon />}
                 onClick={handleOpenModal}
+                sx={{ marginBottom: 2 }}
             >
                 Edit Profile
             </Button>
 
-            {/* Display Profile Picture */}
-            {userData?.profilePicture && (
-                <div style={{ textAlign: "center", marginBottom: 16 }}>
-                    <img
-                        src={userData.profilePicture}
-                        alt="Profile"
-                        style={{
-                            width: 100,
-                            height: 100,
-                            borderRadius: "50%",
-                        }}
-                    />
-                </div>
-            )}
+            <Grid container spacing={2}>
+                <Grid item xs={12} md={4}>
+                    <Card>
+                        <CardContent style={{ textAlign: "center" }}>
+                            <img
+                                src={
+                                    userData?.profilePicture
+                                        ? userData?.profilePicture
+                                        : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+                                }
+                                alt="Profile"
+                                style={{
+                                    width: 100,
+                                    height: 100,
+                                    borderRadius: "50%",
+                                    marginBottom: 16,
+                                }}
+                            />
+                            <Typography variant="h6">
+                                {userData?.firstName} {userData?.lastName}
+                            </Typography>
+                            <Typography variant="body2">
+                                {userData?.email}
+                            </Typography>
+                        </CardContent>
+                    </Card>
+                </Grid>
 
-            <TableContainer component={Paper} sx={{ marginTop: 2 }}>
-                <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                    <TableBody>
-                        <TableRow>
-                            <TableCell>First Name</TableCell>
-                            <TableCell>{userData?.firstName}</TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell>Last Name</TableCell>
-                            <TableCell>{userData?.lastName}</TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell>Email</TableCell>
-                            <TableCell>{userData?.email}</TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell>Phone Number</TableCell>
-                            <TableCell>{userData?.phoneNumber}</TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell>Role</TableCell>
-                            <TableCell>{userData?.role}</TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell>Status</TableCell>
-                            <TableCell>{userData?.status}</TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell>Joined</TableCell>
-                            <TableCell>
-                                {userData?.createdAt
-                                    ? formatDate(userData.createdAt)
-                                    : "N/A"}
-                            </TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell>Last Login</TableCell>
-                            <TableCell>
-                                {userData?.lastLogin
-                                    ? formatDate(userData.lastLogin)
-                                    : "N/A"}
-                            </TableCell>
-                        </TableRow>
-                    </TableBody>
-                </Table>
-            </TableContainer>
+                <Grid item xs={12} md={8}>
+                    <TableContainer component={Card}>
+                        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                            <TableBody>
+                                <TableRow>
+                                    <TableCell>
+                                        <strong>First Name</strong>
+                                    </TableCell>
+                                    <TableCell>{userData?.firstName}</TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell>
+                                        <strong>Last Name</strong>
+                                    </TableCell>
+                                    <TableCell>{userData?.lastName}</TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell>
+                                        <strong>Email</strong>
+                                    </TableCell>
+                                    <TableCell>{userData?.email}</TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell>
+                                        <strong>Phone Number</strong>
+                                    </TableCell>
+                                    <TableCell>
+                                        {userData?.phoneNumber}
+                                    </TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell>
+                                        <strong>Role</strong>
+                                    </TableCell>
+                                    <TableCell>{userData?.role}</TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell>
+                                        <strong>Status</strong>
+                                    </TableCell>
+                                    <TableCell>{userData?.status}</TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell>
+                                        <strong>Joined</strong>
+                                    </TableCell>
+                                    <TableCell>
+                                        {userData?.createdAt
+                                            ? formatDate(userData?.createdAt)
+                                            : "N/A"}
+                                    </TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell>
+                                        <strong>Last Login</strong>
+                                    </TableCell>
+                                    <TableCell>
+                                        {userData?.lastLogin
+                                            ? formatDate(userData?.lastLogin)
+                                            : "N/A"}
+                                    </TableCell>
+                                </TableRow>
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </Grid>
+            </Grid>
 
             <Modal
                 open={modalOpen}
@@ -184,7 +222,7 @@ export default function Profile() {
                         <TextField
                             label="First Name"
                             name="firstName"
-                            value={formData.firstName}
+                            value={formData?.firstName}
                             onChange={handleChange}
                             fullWidth
                             margin="normal"
@@ -192,7 +230,7 @@ export default function Profile() {
                         <TextField
                             label="Last Name"
                             name="lastName"
-                            value={formData.lastName}
+                            value={formData?.lastName}
                             onChange={handleChange}
                             fullWidth
                             margin="normal"
@@ -200,7 +238,7 @@ export default function Profile() {
                         <TextField
                             label="Email"
                             name="email"
-                            value={formData.email}
+                            value={formData?.email}
                             onChange={handleChange}
                             fullWidth
                             margin="normal"
@@ -208,7 +246,7 @@ export default function Profile() {
                         <TextField
                             label="Phone Number"
                             name="phoneNumber"
-                            value={formData.phoneNumber}
+                            value={formData?.phoneNumber}
                             onChange={handleChange}
                             fullWidth
                             margin="normal"
@@ -216,48 +254,52 @@ export default function Profile() {
                         <TextField
                             label="Profile Picture URL"
                             name="profilePicture"
-                            value={formData.profilePicture}
+                            value={formData?.profilePicture}
                             onChange={handleChange}
                             fullWidth
                             margin="normal"
                         />
-                        <InputLabel>Role</InputLabel>
-                        <Select
-                            label="Role"
-                            name="role"
-                            value={formData.role}
-                            onChange={handleChange}
-                            fullWidth
-                            margin="normal"
-                        >
-                            {roles.map((role) => (
-                                <MenuItem key={role} value={role}>
-                                    {role}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                        <InputLabel>Status</InputLabel>
-                        <Select
-                            label="Status"
-                            name="status"
-                            value={formData.status}
-                            onChange={handleChange}
-                            fullWidth
-                            margin="normal"
-                        >
-                            {statuses.map((status) => (
-                                <MenuItem key={status} value={status}>
-                                    {status}
-                                </MenuItem>
-                            ))}
-                        </Select>
+                        <FormControl fullWidth margin="normal">
+                            <InputLabel id="role-label">Role</InputLabel>
+                            <Select
+                                labelId="role-label"
+                                name="role"
+                                value={formData?.role}
+                                onChange={handleChange}
+                                label="Role"
+                            >
+                                {roles?.map((role) => (
+                                    <MenuItem key={role} value={role}>
+                                        {role}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+
+                        <FormControl fullWidth margin="normal">
+                            <InputLabel id="status-label">Status</InputLabel>
+                            <Select
+                                labelId="status-label"
+                                name="status"
+                                value={formData?.status}
+                                onChange={handleChange}
+                                label="Status"
+                            >
+                                {statuses?.map((status) => (
+                                    <MenuItem key={status} value={status}>
+                                        {status}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
                         <Button
                             type="submit"
                             variant="contained"
                             color="primary"
                             fullWidth
+                            sx={{ marginTop: "10px" }}
                         >
-                            Save Changes
+                            Update
                         </Button>
                     </form>
                 </Box>
