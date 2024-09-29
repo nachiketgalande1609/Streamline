@@ -205,10 +205,9 @@ export default function Inventory() {
                 );
             },
         },
-
         {
             field: "name",
-            headerName: "Name",
+            headerName: "Item Name",
             width: 150,
             headerAlign: "left",
             align: "left",

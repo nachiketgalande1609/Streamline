@@ -14,6 +14,10 @@ import {
     Snackbar,
     Alert,
     Tooltip,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -29,6 +33,8 @@ export default function Customers() {
     const [formData, setFormData] = useState({});
     const [isEditMode, setIsEditMode] = useState(false);
     const [currentCustomerId, setCurrentCustomerId] = useState(null);
+    const [confirmOpen, setConfirmOpen] = useState(false);
+    const [customerToDelete, setCustomerToDelete] = useState(null);
 
     const style = {
         position: "absolute",
@@ -59,12 +65,27 @@ export default function Customers() {
         return date.toLocaleDateString(); // Customize the format as needed
     };
 
-    const handleDelete = async (id) => {
+    const handleDelete = (id) => {
+        setCustomerToDelete(id);
+        setConfirmOpen(true); // Open confirmation dialog
+    };
+
+    // Function to actually delete the customer after confirmation
+    const confirmDelete = async () => {
+        const params = { id: customerToDelete }; // Declare param object with id
+
         try {
-            await axios.delete(`/api/customers/${id}`);
+            await axios.post("/api/customers/delete", params); // Send param object in the request body
             fetchCustomers();
+            setConfirmOpen(false); // Close the confirmation dialog
+            setMessage("Customer deleted successfully!");
+            setSeverity("success");
+            setAlertOpen(true);
         } catch (error) {
             console.error("Error deleting customer:", error);
+            setMessage("Error deleting customer.");
+            setSeverity("error");
+            setAlertOpen(true);
         }
     };
 
@@ -528,6 +549,26 @@ export default function Customers() {
                     </form>
                 </Box>
             </Modal>
+            <Dialog open={confirmOpen} onClose={() => setConfirmOpen(false)}>
+                <DialogTitle>Confirm Delete</DialogTitle>
+                <DialogContent>
+                    <Typography>
+                        Are you sure you want to delete this customer?
+                    </Typography>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setConfirmOpen(false)}>
+                        Cancel
+                    </Button>
+                    <Button
+                        onClick={confirmDelete}
+                        variant="contained"
+                        color="error"
+                    >
+                        Delete
+                    </Button>
+                </DialogActions>
+            </Dialog>
             <Box
                 sx={{
                     height: 631,

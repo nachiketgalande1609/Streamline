@@ -23,20 +23,20 @@ customerRouter.get("/", async (req, res) => {
 });
 
 // Delete a customer by ID
-customerRouter.delete("/:id", async (req, res) => {
-    const { id } = req.params;
+customerRouter.post("/delete", async (req, res) => {
+    const { id } = req.body;
 
     try {
-        const deletedCustomer = await Customer.deleteOne({
-            _id: id,
-        });
+        // Query using _id as a string, since the _id in your document is a string
+        const deletedCustomer = await Customer.deleteOne({ _id: id });
 
-        if (!deletedCustomer) {
+        if (deletedCustomer.deletedCount === 0) {
             return res.status(404).json({
                 success: false,
                 message: "Customer not found",
             });
         }
+
         res.status(200).json({
             success: true,
             message: "Customer deleted successfully",
