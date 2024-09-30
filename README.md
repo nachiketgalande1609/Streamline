@@ -35,7 +35,7 @@ A comprehensive ERP system built using the MERN stack (MongoDB, Express, React, 
 3. **Install dependencies for the frontend:**
     ```bash
     cd ./client
-    npm install
+    pnpm install
     ```
 
 4. **Configure environment variables:**
