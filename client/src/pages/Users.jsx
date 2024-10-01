@@ -173,9 +173,9 @@ export default function Users() {
             align: "center",
             renderCell: (params) => {
                 let chipColor;
-                if (params.value === "Active") {
+                if (params.value === "active") {
                     chipColor = "success";
-                } else if (params.value === "Inactive") {
+                } else if (params.value === "inactive") {
                     chipColor = "error";
                 } else {
                     chipColor = "default";

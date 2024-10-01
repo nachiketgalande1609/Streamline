@@ -188,9 +188,9 @@ export default function Inventory() {
             align: "center",
             renderCell: (params) => {
                 let chipColor;
-                if (params.value === "In Stock") {
+                if (params.value === "in stock") {
                     chipColor = "success";
-                } else if (params.value === "Out of Stock") {
+                } else if (params.value === "out of stock") {
                     chipColor = "error";
                 } else {
                     chipColor = "default";

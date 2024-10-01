@@ -23,7 +23,10 @@ orders.get("/", async (req, res) => {
                 },
             },
             {
-                $unwind: "$customerInfo", // Unwind to deconstruct the customerInfo array
+                $unwind: {
+                    path: "$customerInfo",
+                    preserveNullAndEmptyArrays: true, // Include orders even without customer info
+                },
             },
             {
                 $project: {
@@ -66,6 +69,7 @@ orders.get("/", async (req, res) => {
         });
     }
 });
+
 
 orders.get("/status", async (req, res) => {
     try {
