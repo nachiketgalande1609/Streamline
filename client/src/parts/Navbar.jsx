@@ -33,7 +33,6 @@ const Navbar = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const { user, logout } = useContext(UserContext);
-    console.log(user);
 
     const handleLogout = async () => {
         try {

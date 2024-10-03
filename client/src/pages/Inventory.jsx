@@ -71,8 +71,6 @@ export default function Inventory() {
     const [statusFilter, setStatusFilter] = useState("");
     const [totalCount, setTotalCount] = useState(0);
 
-    console.log(totalCount, currentPage, pageSize);
-
     const fetchInventoryData = async (
         page = 1,
         limit = 10,
