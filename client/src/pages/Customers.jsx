@@ -20,6 +20,8 @@ import {
     DialogActions,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { Close } from "@mui/icons-material";
+
 import EditIcon from "@mui/icons-material/Edit";
 import * as Papa from "papaparse";
 
@@ -379,6 +381,18 @@ export default function Customers() {
             </Box>
             <Modal open={open} onClose={handleClose}>
                 <Box sx={{ ...style, width: 900 }}>
+                    <IconButton
+                        aria-label="close"
+                        onClick={handleClose}
+                        sx={{
+                            position: "absolute",
+                            right: 8,
+                            top: 8,
+                            color: (theme) => theme.palette.grey[500],
+                        }}
+                    >
+                        <Close />
+                    </IconButton>
                     <Typography variant="h6" component="h2">
                         {isEditMode ? "Edit Customer" : "Add New Customer"}
                     </Typography>
@@ -540,6 +554,14 @@ export default function Customers() {
                                         type="submit"
                                         variant="contained"
                                         color="primary"
+                                        sx={{
+                                            width: "150px",
+                                            borderRadius: "16px",
+                                            backgroundColor: "#778887",
+                                            "&:hover": {
+                                                backgroundColor: "#1d282d",
+                                            },
+                                        }}
                                     >
                                         {isEditMode ? "Update" : "Add"}
                                     </Button>
@@ -593,6 +615,7 @@ export default function Customers() {
                     checkboxSelection
                     disableRowSelectionOnClick
                     sx={{
+                        borderRadius: "16px",
                         "& .MuiDataGrid-columnHeader": {
                             backgroundColor: "#37474f",
                             color: "#fff",

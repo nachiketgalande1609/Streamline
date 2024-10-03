@@ -4,6 +4,7 @@ import axios from "axios";
 import AddIcon from "@mui/icons-material/Add";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import Chip from "@mui/material/Chip";
+import { Close } from "@mui/icons-material";
 
 import Grid from "@mui/material/Grid";
 import * as Papa from "papaparse";
@@ -64,10 +65,31 @@ export default function Inventory() {
     const [message, setMessage] = useState("");
     const [severity, setSeverity] = useState("success");
 
-    const fetchInventoryData = async () => {
+    const [currentPage, setCurrentPage] = useState(1);
+    const [pageSize, setPageSize] = useState(10);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [statusFilter, setStatusFilter] = useState("");
+    const [totalCount, setTotalCount] = useState(0);
+
+    console.log(totalCount, currentPage, pageSize);
+
+    const fetchInventoryData = async (
+        page = 1,
+        limit = 10,
+        search = "",
+        status = ""
+    ) => {
         try {
-            const response = await axios.get("/api/inventory");
+            const response = await axios.get("/api/inventory", {
+                params: {
+                    page,
+                    limit,
+                    search,
+                    status,
+                },
+            });
             setRows(response.data.data);
+            setTotalCount(response.data.totalItems);
         } catch (error) {
             console.error("Error fetching inventory data:", error);
         }
@@ -83,8 +105,8 @@ export default function Inventory() {
     };
 
     useEffect(() => {
-        fetchInventoryData();
-    }, []);
+        fetchInventoryData(currentPage, pageSize, searchQuery, statusFilter);
+    }, [currentPage, pageSize, searchQuery, statusFilter]);
 
     const handleAlertClose = () => {
         setAlertOpen(false);
@@ -320,10 +342,47 @@ export default function Inventory() {
                     >
                         <FileDownloadIcon />
                     </IconButton>
+                    <TextField
+                        label="Search"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        variant="outlined"
+                        size="small"
+                    />
+                    <FormControl size="small">
+                        <InputLabel>Status</InputLabel>
+                        <Select
+                            value={statusFilter}
+                            onChange={(e) => setStatusFilter(e.target.value)}
+                            label="Status"
+                            sx={{ width: 150 }}
+                        >
+                            <MenuItem value="">All</MenuItem>
+                            <MenuItem value="in stock">In Stock</MenuItem>
+                            <MenuItem value="out of stock">
+                                Out of Stock
+                            </MenuItem>
+                            <MenuItem value="discontinued">
+                                Discontinued
+                            </MenuItem>
+                        </Select>
+                    </FormControl>
                 </Box>
             </Box>
             <Modal open={open} onClose={handleClose}>
-                <Box sx={{ ...style, width: 900 }}>
+                <Box sx={{ ...style, width: 900, borderRadius: "16px" }}>
+                    <IconButton
+                        aria-label="close"
+                        onClick={handleClose}
+                        sx={{
+                            position: "absolute",
+                            right: 8,
+                            top: 8,
+                            color: (theme) => theme.palette.grey[500],
+                        }}
+                    >
+                        <Close />
+                    </IconButton>
                     <Typography variant="h6" component="h2">
                         Add New Item
                     </Typography>
@@ -513,6 +572,14 @@ export default function Inventory() {
                                         type="submit"
                                         variant="contained"
                                         color="primary"
+                                        sx={{
+                                            width: "150px",
+                                            borderRadius: "16px",
+                                            backgroundColor: "#778887",
+                                            "&:hover": {
+                                                backgroundColor: "#1d282d",
+                                            },
+                                        }}
                                     >
                                         Add
                                     </Button>
@@ -528,24 +595,28 @@ export default function Inventory() {
                     width: "100%",
                     maxWidth: "calc(100vw - 280px)",
                     marginTop: 2,
-                    overflowX: "auto", // Enable horizontal scrolling if content overflows
+                    overflowX: "auto",
                 }}
             >
                 <DataGrid
                     rows={rows}
                     columns={columns}
                     getRowId={(row) => row._id}
-                    initialState={{
-                        pagination: {
-                            paginationModel: {
-                                pageSize: 10,
-                            },
-                        },
+                    paginationMode="server"
+                    rowCount={totalCount}
+                    pageSizeOptions={[10, 25, 50]}
+                    paginationModel={{
+                        page: currentPage - 1,
+                        pageSize: pageSize,
                     }}
-                    pageSizeOptions={[5]}
-                    checkboxSelection
+                    onPaginationModelChange={(model) => {
+                        setCurrentPage(model.page + 1);
+                        setPageSize(model.pageSize);
+                    }}
                     disableRowSelectionOnClick
+                    checkboxSelection
                     sx={{
+                        borderRadius: "16px",
                         "& .MuiDataGrid-columnHeader": {
                             backgroundColor: "#37474f",
                             color: "#fff",

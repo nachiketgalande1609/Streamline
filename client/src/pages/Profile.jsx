@@ -1,28 +1,24 @@
 import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import {
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableRow,
-    Paper,
-    Grid,
+    Box,
+    Button,
     Card,
     CardContent,
-    Typography,
-    Button,
+    Grid,
+    IconButton,
     Modal,
-    Box,
-    TextField,
     Select,
     MenuItem,
     FormControl,
     InputLabel,
-    Tooltip,
+    TextField,
+    Typography,
+    Avatar,
 } from "@mui/material";
 import { UserContext } from "../context/UserContext";
 import ModeEditOutlineIcon from "@mui/icons-material/ModeEditOutline";
+import { Close } from "@mui/icons-material";
 
 const modalStyle = {
     position: "absolute",
@@ -48,10 +44,8 @@ export default function Profile() {
         profilePicture: "",
         role: "",
         status: "",
-        lastLogin: "",
     });
 
-    // Define options for status and role
     const roles = ["admin", "sales", "user", "manager"];
     const statuses = ["active", "inactive", "pending"];
 
@@ -62,12 +56,11 @@ export default function Profile() {
                     email: user?.email,
                 });
                 setUserData(response?.data?.data);
-                setFormData(response?.data?.data); // Initialize form data
+                setFormData(response?.data?.data);
             } catch (error) {
                 console.error("Error fetching user profile:", error);
             }
         };
-
         fetchUserProfile();
     }, [user]);
 
@@ -95,119 +88,136 @@ export default function Profile() {
 
     const formatDate = (dateString) => {
         const date = new Date(dateString);
-        return date?.toLocaleDateString(); // Customize the format as needed
+        return date?.toLocaleDateString();
     };
 
     return (
-        <div style={{ padding: 20 }}>
+        <Box sx={{ padding: 4, minHeight: "100vh" }}>
             <Typography variant="h4" gutterBottom>
                 Profile
             </Typography>
+
             <Button
-                variant="outlined"
+                variant="contained"
                 startIcon={<ModeEditOutlineIcon />}
                 onClick={handleOpenModal}
-                sx={{ marginBottom: 2 }}
+                sx={{
+                    mb: 3,
+                    borderRadius: "16px",
+                    backgroundColor: "#778887",
+                    "&:hover": { backgroundColor: "#1d282d" },
+                }}
             >
                 Edit Profile
             </Button>
 
-            <Grid container spacing={2}>
+            <Grid container spacing={4}>
+                {/* Profile Picture and Basic Info */}
                 <Grid item xs={12} md={4}>
-                    <Card>
-                        <CardContent style={{ textAlign: "center" }}>
-                            <img
+                    <Card
+                        sx={{
+                            boxShadow: 3,
+                            textAlign: "center",
+                            borderRadius: "16px",
+                        }}
+                    >
+                        <CardContent
+                            sx={{
+                                display: "flex",
+                                flexDirection: "column",
+                                alignItems: "center",
+                            }}
+                        >
+                            <Avatar
                                 src={
                                     userData?.profilePicture
                                         ? userData?.profilePicture
                                         : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
                                 }
                                 alt="Profile"
-                                style={{
-                                    width: 100,
-                                    height: 100,
+                                sx={{
+                                    width: 120,
+                                    height: 120,
                                     borderRadius: "50%",
-                                    marginBottom: 16,
+                                    marginBottom: 2,
                                 }}
                             />
-                            <Typography variant="h6">
+                            <Typography variant="h6" sx={{ color: "#606c76" }}>
                                 {userData?.firstName} {userData?.lastName}
                             </Typography>
-                            <Typography variant="body2">
+                            <Typography variant="body2" color="textSecondary">
                                 {userData?.email}
                             </Typography>
                         </CardContent>
                     </Card>
                 </Grid>
 
+                {/* User Information Section */}
                 <Grid item xs={12} md={8}>
-                    <TableContainer component={Card}>
-                        <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                            <TableBody>
-                                <TableRow>
-                                    <TableCell>
-                                        <strong>First Name</strong>
-                                    </TableCell>
-                                    <TableCell>{userData?.firstName}</TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell>
-                                        <strong>Last Name</strong>
-                                    </TableCell>
-                                    <TableCell>{userData?.lastName}</TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell>
-                                        <strong>Email</strong>
-                                    </TableCell>
-                                    <TableCell>{userData?.email}</TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell>
-                                        <strong>Phone Number</strong>
-                                    </TableCell>
-                                    <TableCell>
+                    <Card sx={{ boxShadow: 3, borderRadius: "16px" }}>
+                        <CardContent>
+                            <Typography variant="h6" gutterBottom>
+                                User Information
+                            </Typography>
+                            <Grid container spacing={2}>
+                                <Grid item xs={12} sm={6}>
+                                    <Typography>
+                                        <strong>First Name:</strong>{" "}
+                                        {userData?.firstName}
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <Typography>
+                                        <strong>Last Name:</strong>{" "}
+                                        {userData?.lastName}
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <Typography>
+                                        <strong>Email:</strong>{" "}
+                                        {userData?.email}
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <Typography>
+                                        <strong>Phone Number:</strong>{" "}
                                         {userData?.phoneNumber}
-                                    </TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell>
-                                        <strong>Role</strong>
-                                    </TableCell>
-                                    <TableCell>{userData?.role}</TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell>
-                                        <strong>Status</strong>
-                                    </TableCell>
-                                    <TableCell>{userData?.status}</TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell>
-                                        <strong>Joined</strong>
-                                    </TableCell>
-                                    <TableCell>
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <Typography>
+                                        <strong>Role:</strong> {userData?.role}
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <Typography>
+                                        <strong>Status:</strong>{" "}
+                                        {userData?.status}
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <Typography>
+                                        <strong>Joined:</strong>{" "}
                                         {userData?.createdAt
                                             ? formatDate(userData?.createdAt)
                                             : "N/A"}
-                                    </TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell>
-                                        <strong>Last Login</strong>
-                                    </TableCell>
-                                    <TableCell>
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <Typography>
+                                        <strong>Last Login:</strong>{" "}
                                         {userData?.lastLogin
                                             ? formatDate(userData?.lastLogin)
                                             : "N/A"}
-                                    </TableCell>
-                                </TableRow>
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
+                                    </Typography>
+                                </Grid>
+                            </Grid>
+                        </CardContent>
+                    </Card>
                 </Grid>
             </Grid>
 
+            {/* Edit Modal */}
             <Modal
                 open={modalOpen}
                 onClose={handleCloseModal}
@@ -215,6 +225,18 @@ export default function Profile() {
                 aria-describedby="edit-profile-form"
             >
                 <Box sx={modalStyle}>
+                    <IconButton
+                        aria-label="close"
+                        onClick={handleCloseModal}
+                        sx={{
+                            position: "absolute",
+                            right: 8,
+                            top: 8,
+                            color: (theme) => theme.palette.grey[500],
+                        }}
+                    >
+                        <Close />
+                    </IconButton>
                     <Typography variant="h6" gutterBottom>
                         Edit Profile
                     </Typography>
@@ -297,13 +319,18 @@ export default function Profile() {
                             variant="contained"
                             color="primary"
                             fullWidth
-                            sx={{ marginTop: "10px" }}
+                            sx={{
+                                marginTop: "10px",
+                                borderRadius: "16px",
+                                backgroundColor: "#778887",
+                                "&:hover": { backgroundColor: "#1d282d" },
+                            }}
                         >
                             Update
                         </Button>
                     </form>
                 </Box>
             </Modal>
-        </div>
+        </Box>
     );
 }

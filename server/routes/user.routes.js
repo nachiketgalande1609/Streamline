@@ -6,8 +6,19 @@ const User = require("../models/user.model");
 const user = express.Router();
 
 user.get("/", async (req, res) => {
-    const { role } = req.query;
-    const query = role ? { role } : {};
+    const { role, status } = req.query;
+    const query = {};
+
+    if (role) {
+        query.role = role;
+    }
+
+    if (status) {
+        query.status = status;
+    }
+
+    console.log(query);
+
     try {
         const data = await User.find(query).select("-password");
         res.json({

@@ -48,10 +48,16 @@ auth.post("/login", async (req, res) => {
         user.password
     );
 
+    user.last_login = new Date();
+    await user.save();
+
     if (is_password_valid) {
         const token = jwt.sign(
             {
                 email: user.email,
+                profile: user.profile_picture,
+                first_name: user.first_name,
+                last_name: user.last_name,
             },
             "secret123"
         );

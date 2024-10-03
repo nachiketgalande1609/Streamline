@@ -18,7 +18,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-mongoose.set("debug", true);
+// mongoose.set("debug", true);
 
 mongoose.connect("mongodb://localhost:27017/Streamline");
 

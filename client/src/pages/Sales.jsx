@@ -190,6 +190,7 @@ export default function Sales() {
                     checkboxSelection
                     disableRowSelectionOnClick
                     sx={{
+                        borderRadius: "16px",
                         "& .MuiDataGrid-columnHeader": {
                             backgroundColor: "#37474f",
                             color: "#fff",

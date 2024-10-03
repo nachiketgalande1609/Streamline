@@ -1,14 +1,14 @@
 import React from "react";
 import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import {
-    Drawer,
-    List,
-    ListItem,
-    ListItemText,
-    Toolbar,
-    AppBar,
-    Typography,
-    Divider,
+  Drawer,
+  List,
+  ListItem,
+  ListItemText,
+  Toolbar,
+  AppBar,
+  Typography,
+  Divider,
 } from "@mui/material";
 import Navbar from "./parts/Navbar";
 import Register from "./pages/Register";
@@ -28,47 +28,59 @@ import { UserProvider } from "./context/UserContext";
 
 axios.defaults.baseURL = "http://localhost:3001";
 axios.defaults.headers.common["token"] = `Bearer ${localStorage.getItem(
-    "token"
+  "token"
 )}`;
 
 const drawerWidth = 240;
 
 function Layout() {
-    const location = useLocation();
-    const hideNavbar =
-        location.pathname === "/login" || location.pathname === "/register";
-    return (
-        <div style={{ display: "flex", height: "100vh" }}>
-            {!hideNavbar && <Navbar />}
-            <main
-                style={{
-                    flexGrow: 1,
-                    marginLeft: 0,
-                }}
-            >
-                <Routes>
-                    <Route path="/" element={<Dashboard />} />
-                    <Route path="/register" element={<Register />} />
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/profile" element={<Profile />} />
-                    <Route path="/users" element={<Users />} />
-                    <Route path="/inventory" element={<Inventory />} />
-                    <Route path="/orders" element={<Orders />} />
-                    <Route path="/sales" element={<Sales />} />
-                    <Route path="/warehouses" element={<Warehouses />} />
-                    <Route path="/customers" element={<Customers />} />
-                </Routes>
-            </main>
+  const location = useLocation();
+  const hideNavbar =
+    location.pathname === "/login" || location.pathname === "/register";
+  return (
+    <div style={{ display: "flex", height: "100vh" }}>
+      {!hideNavbar && <Navbar />}
+      <main style={{ flexGrow: 1, display: "flex", flexDirection: "column" }}>
+        <div style={{ flexGrow: 1 }}>
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/users" element={<Users />} />
+            <Route path="/inventory" element={<Inventory />} />
+            <Route path="/orders" element={<Orders />} />
+            <Route path="/sales" element={<Sales />} />
+            <Route path="/warehouses" element={<Warehouses />} />
+            <Route path="/customers" element={<Customers />} />
+          </Routes>
         </div>
-    );
+        <footer
+          style={{
+            padding: "10px 20px",
+            backgroundColor: "#1d282d",
+            textAlign: "center",
+            marginTop: "auto",
+          }}
+        >
+          <Typography
+            variant="body2"
+            sx={{ color: (theme) => theme.palette.grey[500] }}
+          >
+            © {new Date().getFullYear()} Streamline. All rights reserved.
+          </Typography>
+        </footer>
+      </main>
+    </div>
+  );
 }
 
 export default function App() {
-    return (
-        <BrowserRouter>
-            <UserProvider>
-                <Layout />
-            </UserProvider>
-        </BrowserRouter>
-    );
+  return (
+    <BrowserRouter>
+      <UserProvider>
+        <Layout />
+      </UserProvider>
+    </BrowserRouter>
+  );
 }

@@ -18,6 +18,7 @@ const StyledCard = styled(Card)(({ theme }) => ({
     backgroundColor: "#37474f", // Dark background color
     color: "#FFFFFF", // White text color
     boxShadow: theme.shadows[5],
+    borderRadius: "16px",
 }));
 
 const CardTitle = styled(Typography)(({ theme }) => ({
@@ -140,6 +141,42 @@ export default function Dashboard() {
                                         warehouse.capacity) *
                                     100;
 
+                                const [animatedValue, setAnimatedValue] =
+                                    useState(0);
+
+                                useEffect(() => {
+                                    let start = null;
+                                    const duration = 1000;
+
+                                    const animate = (timestamp) => {
+                                        if (!start) start = timestamp;
+                                        const progress = timestamp - start;
+                                        const newValue = Math.min(
+                                            Math.floor(
+                                                (progress / duration) *
+                                                    stockPercentage
+                                            ),
+                                            Math.floor(stockPercentage)
+                                        );
+                                        setAnimatedValue(newValue);
+                                        if (progress < duration) {
+                                            requestAnimationFrame(animate);
+                                        }
+                                    };
+
+                                    requestAnimationFrame(animate);
+                                }, [stockPercentage]); // Run the animation when stockPercentage changes
+
+                                // Determine color based on stockPercentage
+                                const gaugeColor =
+                                    stockPercentage > 70 &&
+                                    stockPercentage <= 100
+                                        ? "#D2222D"
+                                        : stockPercentage > 30 &&
+                                          stockPercentage <= 70
+                                        ? "#FFBF00"
+                                        : "#349934";
+
                                 return (
                                     <Grid
                                         item
@@ -162,7 +199,7 @@ export default function Dashboard() {
                                             {warehouse.warehouse_id}
                                         </Typography>
                                         <Gauge
-                                            value={Math.floor(stockPercentage)}
+                                            value={animatedValue} // Use animated value for display
                                             startAngle={0}
                                             innerRadius="75%"
                                             outerRadius="100%"
@@ -177,18 +214,7 @@ export default function Dashboard() {
                                                     },
                                                 [`& .${gaugeClasses.valueArc}`]:
                                                     {
-                                                        fill:
-                                                            stockPercentage >
-                                                                70 &&
-                                                            stockPercentage <=
-                                                                100
-                                                                ? "#D2222D"
-                                                                : stockPercentage >
-                                                                      30 &&
-                                                                  stockPercentage <=
-                                                                      70
-                                                                ? "#FFBF00"
-                                                                : "#349934",
+                                                        fill: gaugeColor, // Use constant gauge color
                                                     },
                                                 [`& .${gaugeClasses.referenceArc}`]:
                                                     {

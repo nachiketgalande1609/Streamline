@@ -23,6 +23,7 @@ export default function Users() {
     const [severity, setSeverity] = useState("success");
     const [roles, setRoles] = useState([]);
     const [selectedRole, setSelectedRole] = useState("");
+    const [selectedStatus, setSelectedStatus] = useState("");
 
     useEffect(() => {
         fetchRoles(); // Fetch roles when component mounts
@@ -40,10 +41,10 @@ export default function Users() {
     };
 
     // Fetch user data with optional role filtering
-    const fetchData = async (role = "") => {
+    const fetchData = async (role = "", status = "") => {
         try {
             const response = await axios.get("/api/users", {
-                params: { role }, // Send selected role as query parameter
+                params: { role, status },
             });
             setRows(response.data.data);
         } catch (error) {
@@ -51,9 +52,9 @@ export default function Users() {
         }
     };
 
-    const formatDate = (dateString) => {
+    const formatDateTime = (dateString) => {
         const date = new Date(dateString);
-        return date.toLocaleDateString(); // Customize the format as needed
+        return date.toLocaleString();
     };
 
     const handleAlertClose = () => {
@@ -102,6 +103,12 @@ export default function Users() {
         fetchData(selectedRole); // Fetch data filtered by the selected role
     };
 
+    const handleStatusChange = (event) => {
+        const status = event.target.value;
+        setSelectedStatus(status);
+        fetchData(selectedRole, status); // Fetch data filtered by role and status
+    };
+
     const columns = [
         {
             field: "profile_picture",
@@ -109,6 +116,8 @@ export default function Users() {
             width: 100,
             headerAlign: "center",
             align: "center",
+            filterable: false,
+            sortable: false,
             renderCell: (params) => (
                 <div
                     style={{
@@ -193,16 +202,16 @@ export default function Users() {
         {
             field: "created_at",
             headerName: "Joined",
-            valueFormatter: (params) => formatDate(params),
-            flex: 1,
+            valueFormatter: (params) => formatDateTime(params),
+            width: 200,
             headerAlign: "center",
             align: "center",
         },
         {
             field: "last_login",
             headerName: "Last Login",
-            valueFormatter: (params) => formatDate(params),
-            flex: 1,
+            valueFormatter: (params) => formatDateTime(params),
+            width: 200,
             headerAlign: "center",
             align: "center",
         },
@@ -224,9 +233,28 @@ export default function Users() {
                     </IconButton>
                     <FormControl size="small" sx={{ minWidth: 150 }}>
                         <Select
+                            value={selectedStatus}
+                            onChange={handleStatusChange}
+                            displayEmpty
+                            sx={{
+                                borderRadius: "16px",
+                            }}
+                        >
+                            <MenuItem value="">
+                                <em>All Status</em>
+                            </MenuItem>
+                            <MenuItem value="active">Active</MenuItem>
+                            <MenuItem value="inactive">Inactive</MenuItem>
+                        </Select>
+                    </FormControl>
+                    <FormControl size="small" sx={{ minWidth: 150 }}>
+                        <Select
                             value={selectedRole}
                             onChange={handleRoleChange}
                             displayEmpty
+                            sx={{
+                                borderRadius: "16px",
+                            }}
                         >
                             <MenuItem value="">
                                 <em>All Roles</em>
@@ -264,6 +292,7 @@ export default function Users() {
                     checkboxSelection
                     disableRowSelectionOnClick
                     sx={{
+                        borderRadius: "16px",
                         "& .MuiDataGrid-columnHeader": {
                             backgroundColor: "#37474f",
                             color: "#fff",
