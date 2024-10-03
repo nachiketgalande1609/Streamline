@@ -17,8 +17,6 @@ user.get("/", async (req, res) => {
         query.status = status;
     }
 
-    console.log(query);
-
     try {
         const data = await User.find(query).select("-password");
         res.json({
