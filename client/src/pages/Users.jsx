@@ -25,12 +25,18 @@ export default function Users() {
     const [selectedRole, setSelectedRole] = useState("");
     const [selectedStatus, setSelectedStatus] = useState("");
 
+    const [currentPage, setCurrentPage] = useState(1);
+    const [pageSize, setPageSize] = useState(10);
+    const [totalCount, setTotalCount] = useState(0);
+
     useEffect(() => {
-        fetchRoles(); // Fetch roles when component mounts
-        fetchData(); // Fetch user data when component mounts
+        fetchData(selectedRole, selectedStatus, currentPage, pageSize);
+    }, [selectedRole, selectedStatus, currentPage, pageSize]);
+
+    useEffect(() => {
+        fetchRoles();
     }, []);
 
-    // Fetch roles from the backend or define them statically
     const fetchRoles = async () => {
         try {
             const response = await axios.get("/api/users/roles");
@@ -40,13 +46,13 @@ export default function Users() {
         }
     };
 
-    // Fetch user data with optional role filtering
-    const fetchData = async (role = "", status = "") => {
+    const fetchData = async (role = "", status = "", page = 1, limit = 10) => {
         try {
             const response = await axios.get("/api/users", {
-                params: { role, status },
+                params: { role, status, page, limit },
             });
             setRows(response.data.data);
+            setTotalCount(response.data.totalCount);
         } catch (error) {
             console.error("Error fetching user data:", error);
         }
@@ -100,13 +106,11 @@ export default function Users() {
     const handleRoleChange = (event) => {
         const selectedRole = event.target.value;
         setSelectedRole(selectedRole);
-        fetchData(selectedRole); // Fetch data filtered by the selected role
     };
 
     const handleStatusChange = (event) => {
         const status = event.target.value;
         setSelectedStatus(status);
-        fetchData(selectedRole, status); // Fetch data filtered by role and status
     };
 
     const columns = [
@@ -217,12 +221,29 @@ export default function Users() {
         },
     ];
 
+    // const sendEmail = async () => {
+    //     const params = { subject: "Streamline", body: "Dont reply" };
+
+    //     try {
+    //         await axios.post("/api/utils/email", params);
+    //         setMessage("Email sent successfully!");
+    //         setSeverity("success");
+    //         setAlertOpen(true);
+    //     } catch (error) {
+    //         console.error("Error sending email:", error);
+    //         setMessage("Error sending email.");
+    //         setSeverity("error");
+    //         setAlertOpen(true);
+    //     }
+    // };
+
     return (
         <div style={{ padding: 20 }}>
             <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
                 <Typography variant="h4" gutterBottom sx={{ flexGrow: 1 }}>
                     Users
                 </Typography>
+                <Button onClick={sendEmail}>Send</Button>
                 <Box sx={{ display: "flex", gap: 1 }}>
                     <IconButton
                         size="small"
@@ -281,14 +302,17 @@ export default function Users() {
                     rows={rows}
                     columns={columns}
                     getRowId={(row) => row._id}
-                    initialState={{
-                        pagination: {
-                            paginationModel: {
-                                pageSize: 10,
-                            },
-                        },
+                    paginationMode="server"
+                    rowCount={totalCount}
+                    pageSizeOptions={[10, 25, 50]}
+                    paginationModel={{
+                        page: currentPage - 1,
+                        pageSize: pageSize,
                     }}
-                    pageSizeOptions={[5, 10, 20]}
+                    onPaginationModelChange={(model) => {
+                        setCurrentPage(model.page + 1);
+                        setPageSize(model.pageSize);
+                    }}
                     checkboxSelection
                     disableRowSelectionOnClick
                     sx={{

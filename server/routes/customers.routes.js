@@ -6,14 +6,24 @@ const customerRouter = express.Router();
 
 // Get all customers
 customerRouter.get("/", async (req, res) => {
+    const { page = 1, limit = 10 } = req.query;
+
     try {
-        const customers = await Customer.find();
+        const totalCount = await Customer.countDocuments();
+
+        const customers = await Customer.find()
+            .skip((page - 1) * limit)
+            .limit(parseInt(limit))
+            .exec();
+
         res.json({
             success: true,
             data: customers,
+            totalCount,
             error: false,
         });
     } catch (err) {
+        console.error("Error fetching customer data:", err);
         res.status(500).json({
             success: false,
             data: null,

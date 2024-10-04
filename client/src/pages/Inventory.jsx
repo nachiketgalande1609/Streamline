@@ -589,7 +589,7 @@ export default function Inventory() {
             </Modal>
             <Box
                 sx={{
-                    height: 631,
+                    height: "636px",
                     width: "100%",
                     maxWidth: "calc(100vw - 280px)",
                     marginTop: 2,

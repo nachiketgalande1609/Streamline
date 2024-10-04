@@ -38,6 +38,10 @@ export default function Customers() {
     const [confirmOpen, setConfirmOpen] = useState(false);
     const [customerToDelete, setCustomerToDelete] = useState(null);
 
+    const [currentPage, setCurrentPage] = useState(1);
+    const [pageSize, setPageSize] = useState(10);
+    const [totalCount, setTotalCount] = useState(0);
+
     const style = {
         position: "absolute",
         top: "50%",
@@ -50,13 +54,16 @@ export default function Customers() {
     };
 
     useEffect(() => {
-        fetchCustomers();
-    }, []);
+        fetchCustomers(currentPage, pageSize);
+    }, [currentPage, pageSize]);
 
-    const fetchCustomers = async () => {
+    const fetchCustomers = async (page = 1, limit = 10) => {
         try {
-            const response = await axios.get("/api/customers");
-            setRows(response.data.data); // Ensure this matches the API response structure
+            const response = await axios.get("/api/customers", {
+                params: { page, limit },
+            });
+            setRows(response.data.data);
+            setTotalCount(response.data.totalCount);
         } catch (error) {
             console.error("Error fetching customer data:", error);
         }
@@ -604,14 +611,17 @@ export default function Customers() {
                     rows={rows}
                     columns={columns}
                     getRowId={(row) => row._id}
-                    initialState={{
-                        pagination: {
-                            paginationModel: {
-                                pageSize: 10,
-                            },
-                        },
+                    paginationMode="server"
+                    rowCount={totalCount}
+                    pageSizeOptions={[10, 25, 50]}
+                    paginationModel={{
+                        page: currentPage - 1,
+                        pageSize: pageSize,
                     }}
-                    pageSizeOptions={[5, 10, 20]}
+                    onPaginationModelChange={(model) => {
+                        setCurrentPage(model.page + 1);
+                        setPageSize(model.pageSize);
+                    }}
                     checkboxSelection
                     disableRowSelectionOnClick
                     sx={{

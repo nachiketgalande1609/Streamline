@@ -23,10 +23,12 @@ const StyledCard = styled(Card)(({ theme }) => ({
 
 const CardTitle = styled(Typography)(({ theme }) => ({
     marginBottom: theme.spacing(1),
+    textAlign: "center",
 }));
 
 const CardValue = styled(Typography)(({ theme }) => ({
     fontSize: "1.2rem",
+    textAlign: "center",
 }));
 
 export default function Dashboard() {

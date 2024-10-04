@@ -19,23 +19,31 @@ export default function Sales() {
     const [message, setMessage] = useState("");
     const [severity, setSeverity] = useState("success");
 
-    useEffect(() => {
-        async function fetchData() {
-            try {
-                const response = await axios.get("/api/sales");
-                const flattenedData = response.data.data.map((sale) => ({
-                    ...sale,
-                    customerName: sale.customer?.name || "N/A",
-                    customerEmail: sale.customer?.email || "N/A",
-                    customerPhone: sale.customer?.phone || "N/A",
-                }));
-                setRows(flattenedData);
-            } catch (error) {
-                console.error("Error fetching sales data:", error);
-            }
+    const [currentPage, setCurrentPage] = useState(1);
+    const [pageSize, setPageSize] = useState(10);
+    const [totalCount, setTotalCount] = useState(0);
+
+    const fetchData = async (page = 1, limit = 10) => {
+        try {
+            const response = await axios.get("/api/sales", {
+                params: { page, limit },
+            });
+            const flattenedData = response.data.data.map((sale) => ({
+                ...sale,
+                customerName: sale.customer?.name || "N/A",
+                customerEmail: sale.customer?.email || "N/A",
+                customerPhone: sale.customer?.phone || "N/A",
+            }));
+            setRows(flattenedData);
+            setTotalCount(response.data.totalCount);
+        } catch (error) {
+            console.error("Error fetching sales data:", error);
         }
-        fetchData();
-    }, []);
+    };
+
+    useEffect(() => {
+        fetchData(currentPage, pageSize);
+    }, [currentPage, pageSize]);
 
     const formatDate = (dateString) => {
         const date = new Date(dateString);
@@ -179,14 +187,17 @@ export default function Sales() {
                     rows={rows}
                     columns={columns}
                     getRowId={(row) => row._id}
-                    initialState={{
-                        pagination: {
-                            paginationModel: {
-                                pageSize: 10,
-                            },
-                        },
+                    paginationMode="server"
+                    rowCount={totalCount}
+                    pageSizeOptions={[10, 25, 50]}
+                    paginationModel={{
+                        page: currentPage - 1,
+                        pageSize: pageSize,
                     }}
-                    pageSizeOptions={[5, 10, 20]}
+                    onPaginationModelChange={(model) => {
+                        setCurrentPage(model.page + 1);
+                        setPageSize(model.pageSize);
+                    }}
                     checkboxSelection
                     disableRowSelectionOnClick
                     sx={{

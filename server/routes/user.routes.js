@@ -6,9 +6,10 @@ const User = require("../models/user.model");
 const user = express.Router();
 
 user.get("/", async (req, res) => {
-    const { role, status } = req.query;
+    const { role, status, page = 1, limit = 10 } = req.query; // Get page and limit from query parameters
     const query = {};
 
+    // Add filters to the query based on role and status
     if (role) {
         query.role = role;
     }
@@ -18,13 +19,24 @@ user.get("/", async (req, res) => {
     }
 
     try {
-        const data = await User.find(query).select("-password");
+        // Count total number of users based on filters
+        const totalCount = await User.countDocuments(query);
+
+        // Fetch paginated user data based on filters
+        const users = await User.find(query)
+            .select("-password") // Exclude password field
+            .skip((page - 1) * limit) // Skip to the correct page
+            .limit(parseInt(limit)) // Limit the number of users fetched
+            .exec(); // Execute the query
+
         res.json({
             success: true,
-            data: data,
+            data: users,
+            totalCount, // Return total count of users based on filters
             error: false,
         });
     } catch (error) {
+        console.error("Error fetching user data:", error); // Log error for debugging
         res.status(500).json({
             success: false,
             data: [],

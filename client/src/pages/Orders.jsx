@@ -44,6 +44,10 @@ export default function Orders() {
     const [items, setItems] = useState([]);
     const [selectedCustomer, setSelectedCustomer] = useState("");
 
+    const [currentPage, setCurrentPage] = useState(1);
+    const [pageSize, setPageSize] = useState(10);
+    const [totalCount, setTotalCount] = useState(0);
+
     const [newOrder, setNewOrder] = useState({
         customerName: "",
         customerNumber: "",
@@ -57,14 +61,17 @@ export default function Orders() {
     });
 
     useEffect(() => {
+        fetchData(selectedStatus, currentPage, pageSize);
+    }, [selectedStatus, currentPage, pageSize]);
+
+    useEffect(() => {
         fetchStatuses();
-        fetchData();
     }, []);
 
-    const fetchData = async (status = "") => {
+    const fetchData = async (status = "", page = 1, limit = 10) => {
         try {
             const response = await axios.get("/api/orders", {
-                params: { status },
+                params: { page, limit, status },
             });
             const ordersWithCustomerDetails = response.data.data.map(
                 (order) => ({
@@ -76,6 +83,7 @@ export default function Orders() {
                 })
             );
             setRows(ordersWithCustomerDetails);
+            setTotalCount(response.data.totalCount);
         } catch (error) {
             console.error("Error fetching order data:", error);
         }
@@ -154,7 +162,6 @@ export default function Orders() {
     const handleStatusChange = (event) => {
         const selectedStatus = event.target.value;
         setSelectedStatus(selectedStatus);
-        fetchData(selectedStatus);
     };
 
     const handleGenerateInvoice = async (order) => {
@@ -945,14 +952,17 @@ export default function Orders() {
                     rows={rows}
                     columns={columns}
                     getRowId={(row) => row.orderId}
-                    initialState={{
-                        pagination: {
-                            paginationModel: {
-                                pageSize: 10,
-                            },
-                        },
+                    paginationMode="server"
+                    rowCount={totalCount}
+                    pageSizeOptions={[10, 25, 50]}
+                    paginationModel={{
+                        page: currentPage - 1,
+                        pageSize: pageSize,
                     }}
-                    pageSizeOptions={[5]}
+                    onPaginationModelChange={(model) => {
+                        setCurrentPage(model.page + 1);
+                        setPageSize(model.pageSize);
+                    }}
                     checkboxSelection
                     disableRowSelectionOnClick
                     sx={{

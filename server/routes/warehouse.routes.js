@@ -6,21 +6,30 @@ const Warehouse = require("../models/warehouse.models");
 const warehouse = express.Router();
 
 warehouse.get("/", async (req, res) => {
-    const { status } = req.query;
+    const { status, page = 1, limit = 10 } = req.query;
     const query = status ? { status } : {};
+
     try {
-        const warehouses = await Warehouse.find(query);
+        const totalCount = await Warehouse.countDocuments(query);
+
+        const warehouses = await Warehouse.find(query)
+            .skip((page - 1) * limit)
+            .limit(parseInt(limit))
+            .exec();
+
         res.json({
             success: true,
             data: warehouses,
+            totalCount,
             error: false,
         });
     } catch (error) {
+        console.error("Error fetching warehouse data:", error);
         res.status(500).json({
             success: false,
             data: [],
             error: true,
-            message: "Error fetching status data.",
+            message: "Error fetching warehouse data.",
         });
     }
 });
