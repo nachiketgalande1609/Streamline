@@ -243,7 +243,7 @@ export default function Users() {
                 <Typography variant="h4" gutterBottom sx={{ flexGrow: 1 }}>
                     Users
                 </Typography>
-                <Button onClick={sendEmail}>Send</Button>
+                {/* <Button onClick={sendEmail}>Send</Button> */}
                 <Box sx={{ display: "flex", gap: 1 }}>
                     <IconButton
                         size="small"
