@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+
 import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
 import {
@@ -22,6 +24,7 @@ import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import SimCardDownloadIcon from "@mui/icons-material/SimCardDownload";
 import AddIcon from "@mui/icons-material/Add";
 import { Close } from "@mui/icons-material";
+import BreadcrumbsComponent from "../parts/BreadcrumbsComponent";
 
 const dateFormatter = new Intl.DateTimeFormat("en-US");
 
@@ -31,6 +34,8 @@ function formatDate(dateString) {
 }
 
 export default function Orders() {
+    const navigate = useNavigate();
+
     const [rows, setRows] = useState([]);
     const [alertOpen, setAlertOpen] = useState(false);
     const [message, setMessage] = useState("");
@@ -47,6 +52,11 @@ export default function Orders() {
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
     const [totalCount, setTotalCount] = useState(0);
+
+    const breadcrumbs = [
+        { label: "Home", path: "/" },
+        { label: "Orders", path: "" },
+    ];
 
     const [newOrder, setNewOrder] = useState({
         customerName: "",
@@ -283,13 +293,8 @@ export default function Orders() {
         }
     };
 
-    const handleViewItems = (items) => {
-        setSelectedOrderItems(items);
-        setOpenModal(true);
-    };
-
-    const handleCloseModal = () => {
-        setOpenModal(false);
+    const handleViewOrder = (orderId) => {
+        navigate(`/order/${orderId}`);
     };
 
     const taxRate = 0.18;
@@ -381,60 +386,6 @@ export default function Orders() {
         { field: "price", headerName: "Price", width: 100 },
         { field: "totalPrice", headerName: "Total Price", width: 100 },
     ];
-
-    const ViewOrderModal = () => {
-        return (
-            <Modal
-                open={openModal}
-                onClose={handleCloseModal}
-                aria-labelledby="order-items-modal"
-                aria-describedby="order-items-modal-description"
-            >
-                <Box
-                    sx={{
-                        position: "absolute",
-                        top: "50%",
-                        left: "50%",
-                        transform: "translate(-50%, -50%)",
-                        width: "80%", // Adjust width based on screen size
-                        bgcolor: "background.paper",
-                        borderRadius: "16px",
-                        p: 4,
-                        boxShadow: 24,
-                    }}
-                >
-                    {/* Close button */}
-                    <IconButton
-                        aria-label="close"
-                        onClick={handleCloseModal}
-                        sx={{
-                            position: "absolute",
-                            right: 8,
-                            top: 8,
-                            color: (theme) => theme.palette.grey[500],
-                        }}
-                    >
-                        <Close />
-                    </IconButton>
-
-                    <Typography variant="h6" gutterBottom>
-                        Order Items
-                    </Typography>
-
-                    <Box sx={{ height: 400, width: "100%" }}>
-                        <DataGrid
-                            rows={selectedOrderItems}
-                            columns={itemColumns}
-                            getRowId={(row) => row.itemId}
-                            pageSize={5}
-                            rowsPerPageOptions={[5]}
-                            sx={{ borderRadius: "16px" }}
-                        />
-                    </Box>
-                </Box>
-            </Modal>
-        );
-    };
 
     const CreateOrderModal = () => {
         return (
@@ -713,20 +664,23 @@ export default function Orders() {
                             </IconButton>
                         </Box>
                     ))}
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={handleCreateOrder}
-                        fullWidth
-                        sx={{
-                            mt: 2,
-                            borderRadius: "16px",
-                            backgroundColor: "#778887",
-                            "&:hover": { backgroundColor: "#1d282d" },
-                        }}
-                    >
-                        Create Order
-                    </Button>
+                    <Box sx={{ display: "flex", justifyContent: "end" }}>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={handleCreateOrder}
+                            fullWidth
+                            sx={{
+                                mt: 2,
+                                width: "150px",
+                                borderRadius: "16px",
+                                backgroundColor: "#000000",
+                                "&:hover": { backgroundColor: "#424242" },
+                            }}
+                        >
+                            Create Order
+                        </Button>
+                    </Box>
                 </Box>
             </Modal>
         );
@@ -776,7 +730,7 @@ export default function Orders() {
                     href="#"
                     onClick={(e) => {
                         e.preventDefault();
-                        handleViewItems(params.row.items);
+                        handleViewOrder(params.id, selectedOrderItems);
                     }}
                     style={{
                         textDecoration: "none",
@@ -894,8 +848,8 @@ export default function Orders() {
     ];
 
     return (
-        <div style={{ padding: 20 }}>
-            <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+        <div>
+            <Box sx={{ display: "flex", alignItems: "center" }}>
                 <Typography variant="h4" gutterBottom sx={{ flexGrow: 1 }}>
                     Orders
                 </Typography>
@@ -939,6 +893,7 @@ export default function Orders() {
                     </FormControl>
                 </Box>
             </Box>
+            <BreadcrumbsComponent breadcrumbs={breadcrumbs} />
             <Box
                 sx={{
                     height: 631,
@@ -968,7 +923,7 @@ export default function Orders() {
                     sx={{
                         borderRadius: "16px",
                         "& .MuiDataGrid-columnHeader": {
-                            backgroundColor: "#37474f",
+                            backgroundColor: "#000000",
                             color: "#fff",
                         },
                         "& .MuiDataGrid-columnHeader .MuiSvgIcon-root": {
@@ -997,7 +952,6 @@ export default function Orders() {
                     {message}
                 </Alert>
             </Snackbar>
-            <ViewOrderModal />
             <CreateOrderModal />
         </div>
     );

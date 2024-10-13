@@ -19,6 +19,7 @@ import {
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import AddIcon from "@mui/icons-material/Add";
 import { Close } from "@mui/icons-material";
+import BreadcrumbsComponent from "../parts/BreadcrumbsComponent";
 
 import * as Papa from "papaparse";
 
@@ -41,6 +42,11 @@ export default function Warehouses() {
         manager_id: "",
         manager_name: "",
     });
+
+    const breadcrumbs = [
+        { label: "Home", path: "/" },
+        { label: "Warehouses", path: "" },
+    ];
 
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
@@ -236,8 +242,8 @@ export default function Warehouses() {
     };
 
     return (
-        <div style={{ padding: 20 }}>
-            <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+        <div>
+            <Box sx={{ display: "flex", alignItems: "center" }}>
                 <Typography variant="h4" gutterBottom sx={{ flexGrow: 1 }}>
                     Warehouses
                 </Typography>
@@ -278,6 +284,7 @@ export default function Warehouses() {
                     </FormControl>
                 </Box>
             </Box>
+            <BreadcrumbsComponent breadcrumbs={breadcrumbs} />
             <Box
                 sx={{
                     height: 631,
@@ -307,7 +314,7 @@ export default function Warehouses() {
                     sx={{
                         borderRadius: "16px",
                         "& .MuiDataGrid-columnHeader": {
-                            backgroundColor: "#37474f",
+                            backgroundColor: "#000000",
                             color: "#fff",
                         },
                         "& .MuiDataGrid-columnHeader .MuiSvgIcon-root": {

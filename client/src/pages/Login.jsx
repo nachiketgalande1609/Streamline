@@ -131,7 +131,7 @@ export default function Login() {
                                 mb: 2,
                                 backgroundColor: "#37474f",
                                 "&:hover": {
-                                    backgroundColor: "#1d282d",
+                                    backgroundColor: "#000000",
                                 },
                             }}
                             disabled={loading}

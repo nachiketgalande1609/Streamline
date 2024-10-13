@@ -10,7 +10,7 @@ import {
     IconButton,
 } from "@mui/material";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
-
+import BreadcrumbsComponent from "../parts/BreadcrumbsComponent";
 import * as Papa from "papaparse";
 
 export default function Sales() {
@@ -22,6 +22,11 @@ export default function Sales() {
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
     const [totalCount, setTotalCount] = useState(0);
+
+    const breadcrumbs = [
+        { label: "Home", path: "/" },
+        { label: "Sales", path: "" },
+    ];
 
     const fetchData = async (page = 1, limit = 10) => {
         try {
@@ -159,8 +164,8 @@ export default function Sales() {
     ];
 
     return (
-        <div style={{ padding: 20 }}>
-            <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+        <div>
+            <Box sx={{ display: "flex", alignItems: "center" }}>
                 <Typography variant="h4" gutterBottom sx={{ flexGrow: 1 }}>
                     Sales
                 </Typography>
@@ -174,6 +179,7 @@ export default function Sales() {
                     </IconButton>
                 </Box>
             </Box>
+            <BreadcrumbsComponent breadcrumbs={breadcrumbs} />
             <Box
                 sx={{
                     height: 631,
@@ -203,7 +209,7 @@ export default function Sales() {
                     sx={{
                         borderRadius: "16px",
                         "& .MuiDataGrid-columnHeader": {
-                            backgroundColor: "#37474f",
+                            backgroundColor: "#000000",
                             color: "#fff",
                         },
                         "& .MuiDataGrid-columnHeader .MuiSvgIcon-root": {

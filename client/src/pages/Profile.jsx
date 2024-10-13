@@ -14,7 +14,7 @@ import {
     InputLabel,
 } from "@mui/material";
 import { UserContext } from "../context/UserContext";
-
+import BreadcrumbsComponent from "../parts/BreadcrumbsComponent";
 export default function Profile() {
     const { user } = useContext(UserContext);
     const [userData, setUserData] = useState(null);
@@ -32,6 +32,11 @@ export default function Profile() {
 
     const roles = ["admin", "sales", "user", "manager"];
     const statuses = ["active", "inactive", "pending"];
+
+    const breadcrumbs = [
+        { label: "Home", path: "/" },
+        { label: "Profile", path: "" },
+    ];
 
     // Move this function out to reuse it
     const fetchUserProfile = async () => {
@@ -69,12 +74,12 @@ export default function Profile() {
     };
 
     return (
-        <div style={{ padding: 20 }}>
+        <div>
             <Typography variant="h4" gutterBottom>
                 Profile
             </Typography>
+            <BreadcrumbsComponent breadcrumbs={breadcrumbs} />
             <Grid container spacing={4}>
-                {/* Left Profile Info */}
                 <Grid item xs={12} md={4}>
                     <Card
                         sx={{
@@ -245,9 +250,9 @@ export default function Profile() {
                                         marginTop: 2,
                                         borderRadius: "16px",
                                         width: "150px",
-                                        backgroundColor: "#778887",
+                                        backgroundColor: "#000000",
                                         "&:hover": {
-                                            backgroundColor: "#1d282d",
+                                            backgroundColor: "#424242",
                                         },
                                     }}
                                 >

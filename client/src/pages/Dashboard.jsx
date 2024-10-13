@@ -6,30 +6,40 @@ import {
     CardContent,
     Typography,
     Divider,
-    Accordion,
-    AccordionSummary,
-    AccordionDetails,
+    CircularProgress,
+    Box,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { Gauge, gaugeClasses } from "@mui/x-charts/Gauge";
+import BreadcrumbsComponent from "../parts/BreadcrumbsComponent";
 
-const StyledCard = styled(Card)(({ theme }) => ({
-    backgroundColor: "#37474f", // Dark background color
-    color: "#FFFFFF", // White text color
-    boxShadow: theme.shadows[5],
+const StyledCard = styled(Card)(({ theme, cardcolor }) => ({
+    backgroundColor: cardcolor || "#1E1E1E", // Dark card background
+    color: "#FFFFFF", // White text
     borderRadius: "16px",
+    boxShadow: "0px 4px 10px rgba(0,0,0,0.2)",
+    padding: "20px",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
 }));
 
-const CardTitle = styled(Typography)(({ theme }) => ({
-    marginBottom: theme.spacing(1),
-    textAlign: "center",
-}));
-
-const CardValue = styled(Typography)(({ theme }) => ({
+const CardTitle = styled(Typography)({
     fontSize: "1.2rem",
-    textAlign: "center",
-}));
+    fontWeight: "bold",
+    color: "#FFFFFF",
+    marginBottom: "8px",
+});
+
+const CardValue = styled(Typography)({
+    fontSize: "2rem",
+    fontWeight: "600",
+});
+
+const StyledDivider = styled(Divider)({
+    backgroundColor: "#3E3E3E",
+    margin: "10px 0",
+});
 
 export default function Dashboard() {
     const [dashboardData, setDashboardData] = useState({
@@ -39,6 +49,8 @@ export default function Dashboard() {
         customerCount: 0,
         warehouse_summary: [],
     });
+
+    const breadcrumbs = [{ label: "Home", path: "" }];
 
     const fetchData = () => {
         axios
@@ -58,193 +70,90 @@ export default function Dashboard() {
 
     useEffect(() => fetchData(), []);
 
+    // Color mappings for the cards
+    const cardColors = ["#4CAF50", "#FF9800", "#2196F3", "#F44336"];
+
     const CountCards = () => {
+        const cardDetails = [
+            { title: "Total Users", value: dashboardData.userCount },
+            { title: "Total Warehouses", value: dashboardData.warehouseCount },
+            { title: "Total Orders", value: dashboardData.orderCount },
+            { title: "Total Customers", value: dashboardData.customerCount },
+        ];
+
         return (
             <Grid container spacing={3}>
-                <Grid item xs={12} sm={6} md={4} lg={3}>
-                    <StyledCard>
-                        <CardContent>
-                            <CardTitle>Total Users</CardTitle>
-                            <Divider
-                                sx={{ marginY: 2, borderColor: "#FFFFFF" }}
-                            />
-                            <CardValue>{dashboardData.userCount}</CardValue>
-                        </CardContent>
-                    </StyledCard>
-                </Grid>
-                <Grid item xs={12} sm={6} md={4} lg={3}>
-                    <StyledCard>
-                        <CardContent>
-                            <CardTitle>Total Warehouses</CardTitle>
-                            <Divider
-                                sx={{ marginY: 2, borderColor: "#FFFFFF" }}
-                            />
-                            <CardValue>
-                                {dashboardData.warehouseCount}
-                            </CardValue>
-                        </CardContent>
-                    </StyledCard>
-                </Grid>
-                <Grid item xs={12} sm={6} md={4} lg={3}>
-                    <StyledCard>
-                        <CardContent>
-                            <CardTitle>Total Orders</CardTitle>
-                            <Divider
-                                sx={{ marginY: 2, borderColor: "#FFFFFF" }}
-                            />
-                            <CardValue>{dashboardData.orderCount}</CardValue>
-                        </CardContent>
-                    </StyledCard>
-                </Grid>
-                <Grid item xs={12} sm={6} md={4} lg={3}>
-                    <StyledCard>
-                        <CardContent>
-                            <CardTitle>Total Customers</CardTitle>
-                            <Divider
-                                sx={{ marginY: 2, borderColor: "#FFFFFF" }}
-                            />
-                            <CardValue>{dashboardData.customerCount}</CardValue>
-                        </CardContent>
-                    </StyledCard>
-                </Grid>
+                {cardDetails.map((card, index) => (
+                    <Grid item xs={12} sm={6} md={3} key={index}>
+                        <StyledCard cardcolor={cardColors[index]}>
+                            <CardTitle>{card.title}</CardTitle>
+                            <StyledDivider />
+                            <CardValue>{card.value}</CardValue>
+                        </StyledCard>
+                    </Grid>
+                ))}
             </Grid>
         );
     };
 
     const WarehouseGauge = () => {
         return (
-            <Accordion
-                defaultExpanded
-                sx={{ marginTop: 2, borderRadius: "4px", boxShadow: 2 }}
-            >
-                <AccordionSummary
-                    sx={(theme) => ({
-                        backgroundColor: "#37474f",
-                        color: "#ffffff",
-                        borderRadius: "4px",
-                    })}
-                    expandIcon={<ExpandMoreIcon sx={{ color: "#ffffff" }} />}
-                >
-                    <Typography>Warehouse Stock vs Capacity</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                    <Grid
-                        container
-                        justifyContent="center"
-                        alignItems="center"
-                        marginTop={2}
-                        marginBottom={2}
-                        gap={5}
-                    >
-                        {dashboardData.warehouse_summary.map(
-                            (warehouse, index) => {
-                                const stockPercentage =
-                                    (warehouse.currentStock /
-                                        warehouse.capacity) *
-                                    100;
+            <Grid container spacing={3} marginTop={3}>
+                {dashboardData.warehouse_summary.map((warehouse, index) => {
+                    const stockPercentage =
+                        (warehouse.currentStock / warehouse.capacity) * 100;
 
-                                const [animatedValue, setAnimatedValue] =
-                                    useState(0);
+                    // Dynamically set the gauge color based on stock levels
+                    const gaugeColor =
+                        stockPercentage > 70
+                            ? "#FF5252"
+                            : stockPercentage > 50
+                            ? "#FFC107"
+                            : "#4CAF50";
 
-                                useEffect(() => {
-                                    let start = null;
-                                    const duration = 1000;
-
-                                    const animate = (timestamp) => {
-                                        if (!start) start = timestamp;
-                                        const progress = timestamp - start;
-                                        const newValue = Math.min(
-                                            Math.floor(
-                                                (progress / duration) *
-                                                    stockPercentage
-                                            ),
-                                            Math.floor(stockPercentage)
-                                        );
-                                        setAnimatedValue(newValue);
-                                        if (progress < duration) {
-                                            requestAnimationFrame(animate);
-                                        }
-                                    };
-
-                                    requestAnimationFrame(animate);
-                                }, [stockPercentage]); // Run the animation when stockPercentage changes
-
-                                // Determine color based on stockPercentage
-                                const gaugeColor =
-                                    stockPercentage > 70 &&
-                                    stockPercentage <= 100
-                                        ? "#D2222D"
-                                        : stockPercentage > 30 &&
-                                          stockPercentage <= 70
-                                        ? "#FFBF00"
-                                        : "#349934";
-
-                                return (
-                                    <Grid
-                                        item
-                                        xs={12}
-                                        sm={6}
-                                        md={4}
-                                        lg={2}
-                                        key={index}
+                    return (
+                        <Grid item xs={12} sm={6} md={2.4} lg={2.4} key={index}>
+                            <StyledCard>
+                                <CardTitle>{`Warehouse ${warehouse.warehouse_id}`}</CardTitle>
+                                <StyledDivider />
+                                <Box position="relative" display="inline-flex">
+                                    <CircularProgress
+                                        variant="determinate"
+                                        value={100} // To create the full background track
+                                        size={80}
+                                        thickness={6}
                                         sx={{
-                                            display: "flex",
-                                            flexDirection: "column",
-                                            alignItems: "center",
+                                            color: "#dbdbdb", // Color of the track
+                                            position: "absolute",
                                         }}
-                                    >
-                                        <Typography
-                                            variant="subtitle1"
-                                            align="center"
-                                            sx={{ fontWeight: "600" }}
-                                        >
-                                            {warehouse.warehouse_id}
-                                        </Typography>
-                                        <Gauge
-                                            value={animatedValue} // Use animated value for display
-                                            startAngle={0}
-                                            innerRadius="75%"
-                                            outerRadius="100%"
-                                            width={120}
-                                            height={120}
-                                            cornerRadius="50%"
-                                            arcBackgroundColor="#fff"
-                                            sx={(theme) => ({
-                                                [`& .${gaugeClasses.valueText}`]:
-                                                    {
-                                                        fontSize: 20,
-                                                    },
-                                                [`& .${gaugeClasses.valueArc}`]:
-                                                    {
-                                                        fill: gaugeColor, // Use constant gauge color
-                                                    },
-                                                [`& .${gaugeClasses.referenceArc}`]:
-                                                    {
-                                                        fill: "#cee2ed",
-                                                    },
-                                            })}
-                                        />
-                                        <Typography
-                                            variant="body2"
-                                            align="center"
-                                            marginTop={2}
-                                        >
-                                            Current Stock:{" "}
-                                            {warehouse.currentStock}/
-                                            {warehouse.capacity}
-                                        </Typography>
-                                    </Grid>
-                                );
-                            }
-                        )}
-                    </Grid>
-                </AccordionDetails>
-            </Accordion>
+                                    />
+                                    <CircularProgress
+                                        variant="determinate"
+                                        value={stockPercentage}
+                                        size={80}
+                                        thickness={6}
+                                        sx={{
+                                            color: gaugeColor,
+                                        }}
+                                    />
+                                </Box>
+                                <Typography sx={{ marginTop: "30px" }}>
+                                    {`Stock: ${warehouse.currentStock}/${warehouse.capacity}`}
+                                </Typography>
+                            </StyledCard>
+                        </Grid>
+                    );
+                })}
+            </Grid>
         );
     };
 
     return (
-        <div style={{ padding: 20 }}>
+        <div>
+            <Typography variant="h4" sx={{ marginBottom: "12px" }}>
+                Dashboard
+            </Typography>
+            <BreadcrumbsComponent breadcrumbs={breadcrumbs} />
             <CountCards />
             <WarehouseGauge />
         </div>

@@ -7,6 +7,7 @@ import Chip from "@mui/material/Chip";
 import { Close } from "@mui/icons-material";
 
 import Grid from "@mui/material/Grid";
+import BreadcrumbsComponent from "../parts/BreadcrumbsComponent";
 import * as Papa from "papaparse";
 
 import {
@@ -70,6 +71,11 @@ export default function Inventory() {
     const [searchQuery, setSearchQuery] = useState("");
     const [statusFilter, setStatusFilter] = useState("");
     const [totalCount, setTotalCount] = useState(0);
+
+    const breadcrumbs = [
+        { label: "Home", path: "/" },
+        { label: "Inventory", path: "" },
+    ];
 
     const fetchInventoryData = async (
         page = 1,
@@ -319,8 +325,8 @@ export default function Inventory() {
     ];
 
     return (
-        <div style={{ padding: 20 }}>
-            <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+        <div>
+            <Box sx={{ display: "flex", alignItems: "center" }}>
                 <Typography variant="h4" gutterBottom sx={{ flexGrow: 1 }}>
                     Inventory
                 </Typography>
@@ -346,6 +352,11 @@ export default function Inventory() {
                         onChange={(e) => setSearchQuery(e.target.value)}
                         variant="outlined"
                         size="small"
+                        InputProps={{
+                            style: {
+                                borderRadius: "16px",
+                            },
+                        }}
                     />
                     <FormControl size="small">
                         <InputLabel>Status</InputLabel>
@@ -353,7 +364,7 @@ export default function Inventory() {
                             value={statusFilter}
                             onChange={(e) => setStatusFilter(e.target.value)}
                             label="Status"
-                            sx={{ width: 150 }}
+                            sx={{ width: 150, borderRadius: "16px" }}
                         >
                             <MenuItem value="">All</MenuItem>
                             <MenuItem value="in stock">In Stock</MenuItem>
@@ -367,6 +378,7 @@ export default function Inventory() {
                     </FormControl>
                 </Box>
             </Box>
+            <BreadcrumbsComponent breadcrumbs={breadcrumbs} />
             <Modal open={open} onClose={handleClose}>
                 <Box sx={{ ...style, width: 900, borderRadius: "16px" }}>
                     <IconButton
@@ -392,6 +404,7 @@ export default function Inventory() {
                                     name="name"
                                     value={formData.name}
                                     onChange={handleChange}
+                                    size="small"
                                     fullWidth
                                     margin="normal"
                                     required
@@ -403,6 +416,7 @@ export default function Inventory() {
                                     name="description"
                                     value={formData.description}
                                     onChange={handleChange}
+                                    size="small"
                                     fullWidth
                                     margin="normal"
                                     required
@@ -414,6 +428,7 @@ export default function Inventory() {
                                     name="category"
                                     value={formData.category}
                                     onChange={handleChange}
+                                    size="small"
                                     fullWidth
                                     margin="normal"
                                     required
@@ -426,6 +441,7 @@ export default function Inventory() {
                                     type="number"
                                     value={formData.quantity}
                                     onChange={handleChange}
+                                    size="small"
                                     fullWidth
                                     margin="normal"
                                     required
@@ -438,6 +454,7 @@ export default function Inventory() {
                                     type="number"
                                     value={formData.price}
                                     onChange={handleChange}
+                                    size="small"
                                     fullWidth
                                     margin="normal"
                                     required
@@ -450,6 +467,7 @@ export default function Inventory() {
                                     type="number"
                                     value={formData.cost}
                                     onChange={handleChange}
+                                    size="small"
                                     fullWidth
                                     margin="normal"
                                     required
@@ -462,6 +480,7 @@ export default function Inventory() {
                                     type="number"
                                     value={formData.min_stock_level}
                                     onChange={handleChange}
+                                    size="small"
                                     fullWidth
                                     margin="normal"
                                     required
@@ -474,6 +493,7 @@ export default function Inventory() {
                                     type="number"
                                     value={formData.reorder_point}
                                     onChange={handleChange}
+                                    size="small"
                                     fullWidth
                                     margin="normal"
                                     required
@@ -485,6 +505,7 @@ export default function Inventory() {
                                     name="supplier"
                                     value={formData.supplier}
                                     onChange={handleChange}
+                                    size="small"
                                     fullWidth
                                     margin="normal"
                                     required
@@ -500,6 +521,7 @@ export default function Inventory() {
                                         name="warehouse"
                                         value={formData.warehouse}
                                         onChange={handleSelectChange}
+                                        size="small"
                                         label="Role"
                                     >
                                         {warehouses.map((warehouse) => (
@@ -520,6 +542,7 @@ export default function Inventory() {
                                     type="date"
                                     value={formData.dateAdded}
                                     onChange={handleChange}
+                                    size="small"
                                     fullWidth
                                     margin="normal"
                                     InputLabelProps={{ shrink: true }}
@@ -533,17 +556,22 @@ export default function Inventory() {
                                     type="date"
                                     value={formData.expiryDate}
                                     onChange={handleChange}
+                                    size="small"
                                     fullWidth
                                     margin="normal"
                                     InputLabelProps={{ shrink: true }}
                                 />
                             </Grid>
                             <Grid item xs={4}>
-                                <InputLabel>Status</InputLabel>
+                                <InputLabel id="status-label">
+                                    Status
+                                </InputLabel>
                                 <Select
+                                    labelId="status-label"
                                     name="status"
                                     value={formData.status}
                                     onChange={handleChange}
+                                    size="small"
                                     fullWidth
                                     margin="normal"
                                     required
@@ -573,9 +601,9 @@ export default function Inventory() {
                                         sx={{
                                             width: "150px",
                                             borderRadius: "16px",
-                                            backgroundColor: "#778887",
+                                            backgroundColor: "#000000",
                                             "&:hover": {
-                                                backgroundColor: "#1d282d",
+                                                backgroundColor: "#424242",
                                             },
                                         }}
                                     >
@@ -589,7 +617,7 @@ export default function Inventory() {
             </Modal>
             <Box
                 sx={{
-                    height: "636px",
+                    height: "100%",
                     width: "100%",
                     maxWidth: "calc(100vw - 280px)",
                     marginTop: 2,
@@ -614,9 +642,10 @@ export default function Inventory() {
                     disableRowSelectionOnClick
                     checkboxSelection
                     sx={{
+                        height: "70vh",
                         borderRadius: "16px",
                         "& .MuiDataGrid-columnHeader": {
-                            backgroundColor: "#37474f",
+                            backgroundColor: "#000000",
                             color: "#fff",
                         },
                         "& .MuiDataGrid-columnHeader .MuiSvgIcon-root": {

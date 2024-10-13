@@ -14,6 +14,7 @@ import {
     Chip,
 } from "@mui/material";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
+import BreadcrumbsComponent from "../parts/BreadcrumbsComponent";
 import * as Papa from "papaparse";
 
 export default function Users() {
@@ -28,6 +29,11 @@ export default function Users() {
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
     const [totalCount, setTotalCount] = useState(0);
+
+    const breadcrumbs = [
+        { label: "Home", path: "/" },
+        { label: "Users", path: "" },
+    ];
 
     useEffect(() => {
         fetchData(selectedRole, selectedStatus, currentPage, pageSize);
@@ -238,12 +244,11 @@ export default function Users() {
     // };
 
     return (
-        <div style={{ padding: 20 }}>
-            <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+        <div>
+            <Box sx={{ display: "flex", alignItems: "center" }}>
                 <Typography variant="h4" gutterBottom sx={{ flexGrow: 1 }}>
                     Users
                 </Typography>
-                {/* <Button onClick={sendEmail}>Send</Button> */}
                 <Box sx={{ display: "flex", gap: 1 }}>
                     <IconButton
                         size="small"
@@ -289,10 +294,10 @@ export default function Users() {
                     </FormControl>
                 </Box>
             </Box>
+            <BreadcrumbsComponent breadcrumbs={breadcrumbs} />
             <Box
                 sx={{
-                    height: 631,
-                    width: "100%",
+                    height: "100%",
                     maxWidth: "calc(100vw - 280px)",
                     marginTop: 2,
                     overflowX: "auto", // Enable horizontal scrolling if content overflows
@@ -316,9 +321,10 @@ export default function Users() {
                     checkboxSelection
                     disableRowSelectionOnClick
                     sx={{
+                        height: "70vh",
                         borderRadius: "16px",
                         "& .MuiDataGrid-columnHeader": {
-                            backgroundColor: "#37474f",
+                            backgroundColor: "#000000",
                             color: "#fff",
                         },
                         "& .MuiDataGrid-columnHeader .MuiSvgIcon-root": {

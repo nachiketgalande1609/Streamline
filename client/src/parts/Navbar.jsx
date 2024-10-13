@@ -53,8 +53,8 @@ const Navbar = () => {
                 "& .MuiDrawer-paper": {
                     width: drawerWidth,
                     boxSizing: "border-box",
-                    backgroundColor: "#1d282d",
-                    color: "#99a6a5",
+                    backgroundColor: "#000000",
+                    color: "#ffffff",
                     display: "flex",
                     flexDirection: "column",
                 },
@@ -74,16 +74,16 @@ const Navbar = () => {
                             to="/login"
                             sx={{
                                 backgroundColor: isActive("/login")
-                                    ? "#37474f"
+                                    ? "#424242"
                                     : "transparent",
                             }}
                         >
-                            <ListItemIcon sx={{ color: "#99a6a5" }}>
+                            <ListItemIcon sx={{ color: "#ffffff" }}>
                                 <LoginIcon />
                             </ListItemIcon>
                             <ListItemText
                                 primary="Login"
-                                sx={{ color: "#99a6a5" }}
+                                sx={{ color: "#ffffff" }}
                             />
                         </ListItem>
                         <ListItem
@@ -92,16 +92,16 @@ const Navbar = () => {
                             to="/register"
                             sx={{
                                 backgroundColor: isActive("/register")
-                                    ? "#37474f"
+                                    ? "#424242"
                                     : "transparent",
                             }}
                         >
-                            <ListItemIcon sx={{ color: "#99a6a5" }}>
+                            <ListItemIcon sx={{ color: "#ffffff" }}>
                                 <RegisterIcon />
                             </ListItemIcon>
                             <ListItemText
                                 primary="Register"
-                                sx={{ color: "#99a6a5" }}
+                                sx={{ color: "#ffffff" }}
                             />
                         </ListItem>
                     </>
@@ -122,16 +122,16 @@ const Navbar = () => {
                                 to="/"
                                 sx={{
                                     backgroundColor: isActive("/")
-                                        ? "#37474f"
+                                        ? "#424242"
                                         : "transparent",
                                 }}
                             >
-                                <ListItemIcon sx={{ color: "#99a6a5" }}>
+                                <ListItemIcon sx={{ color: "#ffffff" }}>
                                     <DashboardIcon />
                                 </ListItemIcon>
                                 <ListItemText
                                     primary="Dashboard"
-                                    sx={{ color: "#99a6a5" }}
+                                    sx={{ color: "#ffffff" }}
                                 />
                             </ListItem>
                             <ListItem
@@ -140,16 +140,16 @@ const Navbar = () => {
                                 to="/profile"
                                 sx={{
                                     backgroundColor: isActive("/profile")
-                                        ? "#37474f"
+                                        ? "#424242"
                                         : "transparent",
                                 }}
                             >
-                                <ListItemIcon sx={{ color: "#99a6a5" }}>
+                                <ListItemIcon sx={{ color: "#ffffff" }}>
                                     <ProfileIcon />
                                 </ListItemIcon>
                                 <ListItemText
                                     primary="Profile"
-                                    sx={{ color: "#99a6a5" }}
+                                    sx={{ color: "#ffffff" }}
                                 />
                             </ListItem>
                             <ListItem
@@ -158,16 +158,16 @@ const Navbar = () => {
                                 to="/users"
                                 sx={{
                                     backgroundColor: isActive("/users")
-                                        ? "#37474f"
+                                        ? "#424242"
                                         : "transparent",
                                 }}
                             >
-                                <ListItemIcon sx={{ color: "#99a6a5" }}>
+                                <ListItemIcon sx={{ color: "#ffffff" }}>
                                     <UsersIcon />
                                 </ListItemIcon>
                                 <ListItemText
                                     primary="Users"
-                                    sx={{ color: "#99a6a5" }}
+                                    sx={{ color: "#ffffff" }}
                                 />
                             </ListItem>
                             <ListItem
@@ -176,16 +176,16 @@ const Navbar = () => {
                                 to="/inventory"
                                 sx={{
                                     backgroundColor: isActive("/inventory")
-                                        ? "#37474f"
+                                        ? "#424242"
                                         : "transparent",
                                 }}
                             >
-                                <ListItemIcon sx={{ color: "#99a6a5" }}>
+                                <ListItemIcon sx={{ color: "#ffffff" }}>
                                     <InventoryIcon />
                                 </ListItemIcon>
                                 <ListItemText
                                     primary="Inventory"
-                                    sx={{ color: "#99a6a5" }}
+                                    sx={{ color: "#ffffff" }}
                                 />
                             </ListItem>
                             <ListItem
@@ -194,16 +194,16 @@ const Navbar = () => {
                                 to="/orders"
                                 sx={{
                                     backgroundColor: isActive("/orders")
-                                        ? "#37474f"
+                                        ? "#424242"
                                         : "transparent",
                                 }}
                             >
-                                <ListItemIcon sx={{ color: "#99a6a5" }}>
+                                <ListItemIcon sx={{ color: "#ffffff" }}>
                                     <OrdersIcon />
                                 </ListItemIcon>
                                 <ListItemText
                                     primary="Orders"
-                                    sx={{ color: "#99a6a5" }}
+                                    sx={{ color: "#ffffff" }}
                                 />
                             </ListItem>
                             <ListItem
@@ -212,16 +212,16 @@ const Navbar = () => {
                                 to="/warehouses"
                                 sx={{
                                     backgroundColor: isActive("/warehouses")
-                                        ? "#37474f"
+                                        ? "#424242"
                                         : "transparent",
                                 }}
                             >
-                                <ListItemIcon sx={{ color: "#99a6a5" }}>
+                                <ListItemIcon sx={{ color: "#ffffff" }}>
                                     <WarehouseIcon />
                                 </ListItemIcon>
                                 <ListItemText
                                     primary="Warehouses"
-                                    sx={{ color: "#99a6a5" }}
+                                    sx={{ color: "#ffffff" }}
                                 />
                             </ListItem>
                             <ListItem
@@ -230,16 +230,16 @@ const Navbar = () => {
                                 to="/customers"
                                 sx={{
                                     backgroundColor: isActive("/customers")
-                                        ? "#37474f"
+                                        ? "#424242"
                                         : "transparent",
                                 }}
                             >
-                                <ListItemIcon sx={{ color: "#99a6a5" }}>
+                                <ListItemIcon sx={{ color: "#ffffff" }}>
                                     <ContactsIcon />
                                 </ListItemIcon>
                                 <ListItemText
                                     primary="Customers"
-                                    sx={{ color: "#99a6a5" }}
+                                    sx={{ color: "#ffffff" }}
                                 />
                             </ListItem>
                             <ListItem
@@ -248,16 +248,16 @@ const Navbar = () => {
                                 to="/sales"
                                 sx={{
                                     backgroundColor: isActive("/sales")
-                                        ? "#37474f"
+                                        ? "#424242"
                                         : "transparent",
                                 }}
                             >
-                                <ListItemIcon sx={{ color: "#99a6a5" }}>
+                                <ListItemIcon sx={{ color: "#ffffff" }}>
                                     <SalesIcon />
                                 </ListItemIcon>
                                 <ListItemText
                                     primary="Sales"
-                                    sx={{ color: "#99a6a5" }}
+                                    sx={{ color: "#ffffff" }}
                                 />
                             </ListItem>
 
@@ -267,17 +267,17 @@ const Navbar = () => {
                                 onClick={handleLogout}
                                 sx={{
                                     backgroundColor: isActive("/logout")
-                                        ? "#37474f"
+                                        ? "#424242"
                                         : "transparent",
                                 }}
                             >
-                                <ListItemIcon sx={{ color: "#99a6a5" }}>
+                                <ListItemIcon sx={{ color: "#ffffff" }}>
                                     <LogoutIcon />
                                 </ListItemIcon>
                                 <ListItemText
                                     primary="Logout"
                                     sx={{
-                                        color: "#99a6a5",
+                                        color: "#ffffff",
                                         typography: "body2",
                                     }}
                                 />
@@ -308,7 +308,7 @@ const Navbar = () => {
                             />
                             <ListItemText
                                 primary={user.email}
-                                sx={{ color: "#99a6a5" }}
+                                sx={{ color: "#ffffff" }}
                             />
                         </ListItem>
                     </Box>

@@ -21,7 +21,7 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Close } from "@mui/icons-material";
-
+import BreadcrumbsComponent from "../parts/BreadcrumbsComponent";
 import EditIcon from "@mui/icons-material/Edit";
 import * as Papa from "papaparse";
 
@@ -41,6 +41,11 @@ export default function Customers() {
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
     const [totalCount, setTotalCount] = useState(0);
+
+    const breadcrumbs = [
+        { label: "Home", path: "/" },
+        { label: "Customers", path: "" },
+    ];
 
     const style = {
         position: "absolute",
@@ -363,8 +368,8 @@ export default function Customers() {
     ];
 
     return (
-        <div style={{ padding: 20 }}>
-            <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+        <div>
+            <Box sx={{ display: "flex", alignItems: "center" }}>
                 <Typography variant="h4" gutterBottom sx={{ flexGrow: 1 }}>
                     Customers
                 </Typography>
@@ -386,6 +391,7 @@ export default function Customers() {
                     </IconButton>
                 </Box>
             </Box>
+            <BreadcrumbsComponent breadcrumbs={breadcrumbs} />
             <Modal open={open} onClose={handleClose}>
                 <Box sx={{ ...style, width: 900 }}>
                     <IconButton
@@ -564,9 +570,9 @@ export default function Customers() {
                                         sx={{
                                             width: "150px",
                                             borderRadius: "16px",
-                                            backgroundColor: "#778887",
+                                            backgroundColor: "#000000",
                                             "&:hover": {
-                                                backgroundColor: "#1d282d",
+                                                backgroundColor: "#424242",
                                             },
                                         }}
                                     >
@@ -627,7 +633,7 @@ export default function Customers() {
                     sx={{
                         borderRadius: "16px",
                         "& .MuiDataGrid-columnHeader": {
-                            backgroundColor: "#37474f",
+                            backgroundColor: "#000000",
                             color: "#fff",
                         },
                         "& .MuiDataGrid-columnHeader .MuiSvgIcon-root": {

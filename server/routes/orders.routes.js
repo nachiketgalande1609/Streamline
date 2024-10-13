@@ -242,4 +242,76 @@ orders.get("/customers-items", async (req, res) => {
     }
 });
 
+orders.get("/:orderId", async (req, res) => {
+    const { orderId } = req.params;
+
+    const numericOrderId = Number(orderId);
+
+    try {
+        const orderDetails = await Orders.aggregate([
+            { $match: { orderId: numericOrderId } },
+            {
+                $lookup: {
+                    from: "customer-data",
+                    localField: "customerId",
+                    foreignField: "_id",
+                    as: "customerInfo",
+                },
+            },
+            {
+                $unwind: {
+                    path: "$customerInfo",
+                    preserveNullAndEmptyArrays: true,
+                },
+            },
+            {
+                $project: {
+                    _id: 1,
+                    orderId: 1,
+                    orderDate: 1,
+                    shippingDate: 1,
+                    status: 1,
+                    totalAmount: 1,
+                    taxAmount: 1,
+                    discount: 1,
+                    netAmount: 1,
+                    paymentMethod: 1,
+                    paymentStatus: 1,
+                    paymentDate: 1,
+                    shippingAddress: 1,
+                    billingAddress: 1,
+                    items: 1,
+                    createdBy: 1,
+                    updatedBy: 1,
+                    notes: 1,
+                    "customerInfo.customer_name": 1,
+                    "customerInfo.contact_number": 1,
+                    "customerInfo.email": 1,
+                },
+            },
+        ]);
+
+        if (orderDetails.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "Order not found.",
+            });
+        }
+
+        res.json({
+            success: true,
+            data: orderDetails[0], // Return the first matched order
+            error: false,
+        });
+    } catch (error) {
+        console.error("Error fetching order details:", error); // Log error for debugging
+        res.status(500).json({
+            success: false,
+            data: null,
+            error: true,
+            message: "Error fetching order details.",
+        });
+    }
+});
+
 module.exports = orders;
