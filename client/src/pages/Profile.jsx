@@ -75,7 +75,7 @@ export default function Profile() {
 
     return (
         <div>
-            <Typography variant="h4" gutterBottom>
+            <Typography variant="h5" gutterBottom>
                 Profile
             </Typography>
             <BreadcrumbsComponent breadcrumbs={breadcrumbs} />

@@ -246,7 +246,7 @@ export default function Users() {
     return (
         <div>
             <Box sx={{ display: "flex", alignItems: "center" }}>
-                <Typography variant="h4" gutterBottom sx={{ flexGrow: 1 }}>
+                <Typography variant="h5" gutterBottom sx={{ flexGrow: 1 }}>
                     Users
                 </Typography>
                 <Box sx={{ display: "flex", gap: 1 }}>
@@ -266,9 +266,7 @@ export default function Users() {
                                 borderRadius: "16px",
                             }}
                         >
-                            <MenuItem value="">
-                                <em>All Status</em>
-                            </MenuItem>
+                            <MenuItem value="">All Status</MenuItem>
                             <MenuItem value="active">Active</MenuItem>
                             <MenuItem value="inactive">Inactive</MenuItem>
                         </Select>
@@ -282,9 +280,7 @@ export default function Users() {
                                 borderRadius: "16px",
                             }}
                         >
-                            <MenuItem value="">
-                                <em>All Roles</em>
-                            </MenuItem>
+                            <MenuItem value="">All Roles</MenuItem>
                             {roles.map((role) => (
                                 <MenuItem key={role} value={role}>
                                     {role}

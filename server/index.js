@@ -13,6 +13,7 @@ const dashboardRoutes = require("./routes/dashboard.routes");
 const customerRoutes = require("./routes/customers.routes");
 const salesRoutes = require("./routes/sales.routes");
 const utilRoutes = require("./routes/utils.routes");
+const ticketRoutes = require("./routes/tickets.routes");
 
 const app = express();
 
@@ -31,7 +32,8 @@ app.use("/api/warehouse", warehouseRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/customers", customerRoutes);
 app.use("/api/sales", salesRoutes);
-app.use("/api/utils", utilRoutes);
+app.use("/api/sales", salesRoutes);
+app.use("/api/tickets", ticketRoutes);
 
 app.listen(3001, () => {
     "Server Started";

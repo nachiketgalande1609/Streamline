@@ -55,7 +55,7 @@ export default function Customers() {
         bgcolor: "background.paper",
         boxShadow: 24,
         p: 4,
-        borderRadius: 2,
+        borderRadius: "16px",
     };
 
     useEffect(() => {
@@ -370,7 +370,7 @@ export default function Customers() {
     return (
         <div>
             <Box sx={{ display: "flex", alignItems: "center" }}>
-                <Typography variant="h4" gutterBottom sx={{ flexGrow: 1 }}>
+                <Typography variant="h5" gutterBottom sx={{ flexGrow: 1 }}>
                     Customers
                 </Typography>
                 <Box sx={{ display: "flex", gap: 1 }}>

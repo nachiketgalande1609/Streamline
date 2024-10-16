@@ -4,7 +4,6 @@ import { emphasize, styled } from "@mui/material/styles";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
 import Chip from "@mui/material/Chip";
 import HomeIcon from "@mui/icons-material/Home";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 const StyledBreadcrumb = styled(Chip)(({ theme, active }) => {
     const backgroundColor =
@@ -35,14 +34,23 @@ const StyledBreadcrumb = styled(Chip)(({ theme, active }) => {
 
 const BreadcrumbsComponent = ({ breadcrumbs }) => {
     return (
-        <Breadcrumbs aria-label="breadcrumb" sx={{ marginBottom: "10px" }}>
+        <Breadcrumbs
+            aria-label="breadcrumb"
+            separator="›"
+            sx={{ marginBottom: "10px" }}
+        >
             {breadcrumbs.map((crumb, index) => {
                 const isLast = index === breadcrumbs.length - 1;
                 return isLast ? (
                     <StyledBreadcrumb
                         key={crumb.label}
                         label={crumb.label}
-                        active={true} // Mark as active for styling
+                        active={true}
+                        icon={
+                            index === 0 && breadcrumbs.length === 1 ? (
+                                <HomeIcon fontSize="small" />
+                            ) : null
+                        }
                     />
                 ) : (
                     <StyledBreadcrumb
@@ -52,7 +60,7 @@ const BreadcrumbsComponent = ({ breadcrumbs }) => {
                         label={crumb.label}
                         icon={
                             index === 0 ? <HomeIcon fontSize="small" /> : null
-                        } // Add HomeIcon to the first breadcrumb
+                        }
                     />
                 );
             })}

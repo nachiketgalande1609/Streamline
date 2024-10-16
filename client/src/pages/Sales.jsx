@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { DataGrid } from "@mui/x-data-grid";
+import { useNavigate } from "react-router-dom";
+
 import axios from "axios";
 import {
     Box,
@@ -8,12 +10,14 @@ import {
     Snackbar,
     Alert,
     IconButton,
+    Chip,
 } from "@mui/material";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import BreadcrumbsComponent from "../parts/BreadcrumbsComponent";
 import * as Papa from "papaparse";
 
 export default function Sales() {
+    const navigate = useNavigate();
     const [rows, setRows] = useState([]);
     const [alertOpen, setAlertOpen] = useState(false);
     const [message, setMessage] = useState("");
@@ -35,9 +39,9 @@ export default function Sales() {
             });
             const flattenedData = response.data.data.map((sale) => ({
                 ...sale,
-                customerName: sale.customer?.name || "N/A",
-                customerEmail: sale.customer?.email || "N/A",
-                customerPhone: sale.customer?.phone || "N/A",
+                customerName: sale.customerInfo?.customer_name || "N/A",
+                customerEmail: sale.customerInfo?.email || "N/A",
+                customerPhone: sale.customerInfo?.contact_number || "N/A",
             }));
             setRows(flattenedData);
             setTotalCount(response.data.totalCount);
@@ -109,6 +113,22 @@ export default function Sales() {
             flex: 1,
             headerAlign: "center",
             align: "center",
+            renderCell: (params) => (
+                <a
+                    href="#"
+                    onClick={(e) => {
+                        e.preventDefault();
+                        navigate(`/order/${params.value}`);
+                    }}
+                    style={{
+                        textDecoration: "none",
+                        fontWeight: "bold",
+                        color: "#1976d2",
+                    }} // Adjust color to your theme
+                >
+                    {params.value}
+                </a>
+            ),
         },
         {
             field: "customerName",
@@ -145,6 +165,33 @@ export default function Sales() {
             flex: 1,
             headerAlign: "center",
             align: "center",
+            renderCell: (params) => {
+                let chipColor;
+                let chipVariant = "outlined";
+
+                switch (params.value) {
+                    case "pending":
+                        chipColor = "warning";
+                        break;
+                    case "paid":
+                        chipColor = "success";
+                        break;
+                    case "failed":
+                        chipColor = "error";
+                        break;
+                    default:
+                        chipColor = "default";
+                }
+
+                return (
+                    <Chip
+                        label={params.value}
+                        color={chipColor}
+                        variant={chipVariant}
+                        sx={{ width: 100 }}
+                    />
+                );
+            },
         },
         {
             field: "orderStatus",
@@ -152,6 +199,36 @@ export default function Sales() {
             flex: 1,
             headerAlign: "center",
             align: "center",
+            renderCell: (params) => {
+                let chipColor;
+                let chipVariant = "filled";
+
+                switch (params.value) {
+                    case "pending":
+                        chipColor = "warning";
+                        break;
+                    case "shipped":
+                        chipColor = "primary";
+                        break;
+                    case "delivered":
+                        chipColor = "success";
+                        break;
+                    case "cancelled":
+                        chipColor = "error";
+                        break;
+                    default:
+                        chipColor = "default";
+                }
+
+                return (
+                    <Chip
+                        label={params.value}
+                        color={chipColor}
+                        variant={chipVariant}
+                        sx={{ width: 100 }}
+                    />
+                );
+            },
         },
         {
             field: "createdAt",
@@ -166,7 +243,7 @@ export default function Sales() {
     return (
         <div>
             <Box sx={{ display: "flex", alignItems: "center" }}>
-                <Typography variant="h4" gutterBottom sx={{ flexGrow: 1 }}>
+                <Typography variant="h5" gutterBottom sx={{ flexGrow: 1 }}>
                     Sales
                 </Typography>
                 <Box sx={{ display: "flex", gap: 1 }}>

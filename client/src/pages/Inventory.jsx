@@ -33,7 +33,6 @@ const style = {
     bgcolor: "background.paper",
     boxShadow: 24,
     p: 4,
-    borderRadius: 2,
 };
 
 const dateFormatter = new Intl.DateTimeFormat("en-US");
@@ -69,6 +68,8 @@ export default function Inventory() {
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
     const [searchQuery, setSearchQuery] = useState("");
+    const [debouncedSearchQuery, setDebouncedSearchQuery] =
+        useState(searchQuery);
     const [statusFilter, setStatusFilter] = useState("");
     const [totalCount, setTotalCount] = useState(0);
 
@@ -109,8 +110,23 @@ export default function Inventory() {
     };
 
     useEffect(() => {
-        fetchInventoryData(currentPage, pageSize, searchQuery, statusFilter);
-    }, [currentPage, pageSize, searchQuery, statusFilter]);
+        const handler = setTimeout(() => {
+            setDebouncedSearchQuery(searchQuery);
+        }, 1000);
+
+        return () => {
+            clearTimeout(handler);
+        };
+    }, [searchQuery]);
+
+    useEffect(() => {
+        fetchInventoryData(
+            currentPage,
+            pageSize,
+            debouncedSearchQuery,
+            statusFilter
+        );
+    }, [currentPage, pageSize, debouncedSearchQuery, statusFilter]);
 
     const handleAlertClose = () => {
         setAlertOpen(false);
@@ -327,7 +343,7 @@ export default function Inventory() {
     return (
         <div>
             <Box sx={{ display: "flex", alignItems: "center" }}>
-                <Typography variant="h4" gutterBottom sx={{ flexGrow: 1 }}>
+                <Typography variant="h5" gutterBottom sx={{ flexGrow: 1 }}>
                     Inventory
                 </Typography>
                 <Box sx={{ display: "flex", gap: 1 }}>
@@ -358,15 +374,14 @@ export default function Inventory() {
                             },
                         }}
                     />
-                    <FormControl size="small">
-                        <InputLabel>Status</InputLabel>
+                    <FormControl size="small" sx={{ minWidth: 150 }}>
                         <Select
                             value={statusFilter}
                             onChange={(e) => setStatusFilter(e.target.value)}
-                            label="Status"
+                            displayEmpty
                             sx={{ width: 150, borderRadius: "16px" }}
                         >
-                            <MenuItem value="">All</MenuItem>
+                            <MenuItem value="">All Status</MenuItem>
                             <MenuItem value="in stock">In Stock</MenuItem>
                             <MenuItem value="out of stock">
                                 Out of Stock

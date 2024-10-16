@@ -150,7 +150,7 @@ export default function Dashboard() {
 
     return (
         <div>
-            <Typography variant="h4" sx={{ marginBottom: "12px" }}>
+            <Typography variant="h5" sx={{ marginBottom: "12px" }}>
                 Dashboard
             </Typography>
             <BreadcrumbsComponent breadcrumbs={breadcrumbs} />

@@ -22,8 +22,10 @@ import InventoryIcon from "@mui/icons-material/Inventory";
 import OrdersIcon from "@mui/icons-material/ShoppingCart";
 import SalesIcon from "@mui/icons-material/ShowChart";
 import LogoutIcon from "@mui/icons-material/Logout";
+import ContactSupportIcon from "@mui/icons-material/ContactSupport";
 import WarehouseIcon from "@mui/icons-material/Warehouse";
 import ContactsIcon from "@mui/icons-material/Contacts";
+import WarningIcon from "@mui/icons-material/Warning";
 
 import axios from "axios";
 
@@ -124,6 +126,9 @@ const Navbar = () => {
                                     backgroundColor: isActive("/")
                                         ? "#424242"
                                         : "transparent",
+                                    "&:hover": {
+                                        backgroundColor: "#2b2b2b",
+                                    },
                                 }}
                             >
                                 <ListItemIcon sx={{ color: "#ffffff" }}>
@@ -142,6 +147,9 @@ const Navbar = () => {
                                     backgroundColor: isActive("/profile")
                                         ? "#424242"
                                         : "transparent",
+                                    "&:hover": {
+                                        backgroundColor: "#2b2b2b",
+                                    },
                                 }}
                             >
                                 <ListItemIcon sx={{ color: "#ffffff" }}>
@@ -160,6 +168,9 @@ const Navbar = () => {
                                     backgroundColor: isActive("/users")
                                         ? "#424242"
                                         : "transparent",
+                                    "&:hover": {
+                                        backgroundColor: "#2b2b2b",
+                                    },
                                 }}
                             >
                                 <ListItemIcon sx={{ color: "#ffffff" }}>
@@ -178,6 +189,9 @@ const Navbar = () => {
                                     backgroundColor: isActive("/inventory")
                                         ? "#424242"
                                         : "transparent",
+                                    "&:hover": {
+                                        backgroundColor: "#2b2b2b",
+                                    },
                                 }}
                             >
                                 <ListItemIcon sx={{ color: "#ffffff" }}>
@@ -196,6 +210,9 @@ const Navbar = () => {
                                     backgroundColor: isActive("/orders")
                                         ? "#424242"
                                         : "transparent",
+                                    "&:hover": {
+                                        backgroundColor: "#2b2b2b",
+                                    },
                                 }}
                             >
                                 <ListItemIcon sx={{ color: "#ffffff" }}>
@@ -214,6 +231,9 @@ const Navbar = () => {
                                     backgroundColor: isActive("/warehouses")
                                         ? "#424242"
                                         : "transparent",
+                                    "&:hover": {
+                                        backgroundColor: "#2b2b2b",
+                                    },
                                 }}
                             >
                                 <ListItemIcon sx={{ color: "#ffffff" }}>
@@ -232,6 +252,9 @@ const Navbar = () => {
                                     backgroundColor: isActive("/customers")
                                         ? "#424242"
                                         : "transparent",
+                                    "&:hover": {
+                                        backgroundColor: "#2b2b2b",
+                                    },
                                 }}
                             >
                                 <ListItemIcon sx={{ color: "#ffffff" }}>
@@ -250,6 +273,9 @@ const Navbar = () => {
                                     backgroundColor: isActive("/sales")
                                         ? "#424242"
                                         : "transparent",
+                                    "&:hover": {
+                                        backgroundColor: "#2b2b2b",
+                                    },
                                 }}
                             >
                                 <ListItemIcon sx={{ color: "#ffffff" }}>
@@ -264,11 +290,58 @@ const Navbar = () => {
                             <ListItem
                                 button
                                 component={Link}
+                                to="/incidents"
+                                sx={{
+                                    backgroundColor: isActive("/incidents")
+                                        ? "#424242"
+                                        : "transparent",
+                                    "&:hover": {
+                                        backgroundColor: "#2b2b2b",
+                                    },
+                                }}
+                            >
+                                <ListItemIcon sx={{ color: "#ffffff" }}>
+                                    <WarningIcon />
+                                </ListItemIcon>
+                                <ListItemText
+                                    primary="Incidents"
+                                    sx={{ color: "#ffffff" }}
+                                />
+                            </ListItem>
+
+                            <ListItem
+                                button
+                                component={Link}
+                                to="/contact"
+                                sx={{
+                                    backgroundColor: isActive("/contact")
+                                        ? "#424242"
+                                        : "transparent",
+                                    "&:hover": {
+                                        backgroundColor: "#2b2b2b",
+                                    },
+                                }}
+                            >
+                                <ListItemIcon sx={{ color: "#ffffff" }}>
+                                    <ContactSupportIcon />
+                                </ListItemIcon>
+                                <ListItemText
+                                    primary="Contact"
+                                    sx={{ color: "#ffffff" }}
+                                />
+                            </ListItem>
+
+                            <ListItem
+                                button
+                                component={Link}
                                 onClick={handleLogout}
                                 sx={{
                                     backgroundColor: isActive("/logout")
                                         ? "#424242"
                                         : "transparent",
+                                    "&:hover": {
+                                        backgroundColor: "#2b2b2b",
+                                    },
                                 }}
                             >
                                 <ListItemIcon sx={{ color: "#ffffff" }}>
@@ -284,12 +357,12 @@ const Navbar = () => {
                             </ListItem>
                         </List>
 
-                        {/* Profile Section at the Bottom */}
                         <ListItem
                             sx={{
                                 padding: "16px",
                                 display: "flex",
                                 alignItems: "center",
+                                marginTop: "auto",
                             }}
                         >
                             <img
@@ -300,15 +373,19 @@ const Navbar = () => {
                                 }
                                 alt="Profile"
                                 style={{
-                                    width: 30,
-                                    height: 30,
+                                    width: 40,
+                                    height: 40,
                                     borderRadius: "50%",
-                                    marginRight: 8,
+                                    marginRight: 12,
+                                    border: "2px solid #fff",
                                 }}
                             />
                             <ListItemText
                                 primary={user.email}
-                                sx={{ color: "#ffffff" }}
+                                sx={{
+                                    color: "#ffffff",
+                                    typography: "subtitle2",
+                                }}
                             />
                         </ListItem>
                     </Box>

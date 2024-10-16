@@ -8,7 +8,10 @@ const WarehouseSchema = new mongoose.Schema(
         location: { type: String, required: true },
         capacity: { type: Number, required: true },
         current_stock: { type: Number, default: 0 },
-        manager_id: { type: String, required: true },
+        manager_id: {
+            type: mongoose.Schema.Types.ObjectId,
+            required: true,
+        },
         contact_number: { type: String },
         status: {
             type: String,

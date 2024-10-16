@@ -54,6 +54,7 @@ auth.post("/login", async (req, res) => {
     if (is_password_valid) {
         const token = jwt.sign(
             {
+                id: user._id,
                 email: user.email,
                 profile: user.profile_picture,
                 first_name: user.first_name,

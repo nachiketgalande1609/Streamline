@@ -86,7 +86,7 @@ export default function Login() {
                         alignItems: "center",
                         mt: 8,
                         p: 3,
-                        borderRadius: 2,
+                        borderRadius: "16px",
                         boxShadow: 3,
                         backgroundColor: "#ffffff",
                     }}
@@ -110,6 +110,11 @@ export default function Login() {
                             onChange={(e) => setEmail(e.target.value)}
                             autoComplete="email"
                             autoFocus
+                            InputProps={{
+                                style: {
+                                    borderRadius: "16px",
+                                },
+                            }}
                         />
                         <TextField
                             variant="outlined"
@@ -121,6 +126,11 @@ export default function Login() {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             autoComplete="current-password"
+                            InputProps={{
+                                style: {
+                                    borderRadius: "16px",
+                                },
+                            }}
                         />
                         <Button
                             type="submit"
@@ -129,10 +139,9 @@ export default function Login() {
                             sx={{
                                 mt: 3,
                                 mb: 2,
-                                backgroundColor: "#37474f",
-                                "&:hover": {
-                                    backgroundColor: "#000000",
-                                },
+                                borderRadius: "16px",
+                                backgroundColor: "#000000",
+                                "&:hover": { backgroundColor: "#424242" },
                             }}
                             disabled={loading}
                         >

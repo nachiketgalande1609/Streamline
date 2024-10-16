@@ -89,7 +89,7 @@ export default function Register() {
                         alignItems: "center",
                         mt: 8,
                         p: 3,
-                        borderRadius: 2,
+                        borderRadius: "16px",
                         boxShadow: 3,
                         backgroundColor: "#ffffff",
                     }}
@@ -117,6 +117,11 @@ export default function Register() {
                             onChange={(e) => setFirstName(e.target.value)}
                             autoComplete="firstName"
                             autoFocus
+                            InputProps={{
+                                style: {
+                                    borderRadius: "16px",
+                                },
+                            }}
                         />
                         <TextField
                             variant="outlined"
@@ -129,6 +134,11 @@ export default function Register() {
                             onChange={(e) => setLastName(e.target.value)}
                             autoComplete="lastName"
                             autoFocus
+                            InputProps={{
+                                style: {
+                                    borderRadius: "16px",
+                                },
+                            }}
                         />
                         <TextField
                             variant="outlined"
@@ -140,6 +150,11 @@ export default function Register() {
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             autoComplete="email"
+                            InputProps={{
+                                style: {
+                                    borderRadius: "16px",
+                                },
+                            }}
                         />
                         <TextField
                             variant="outlined"
@@ -151,6 +166,11 @@ export default function Register() {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             autoComplete="current-password"
+                            InputProps={{
+                                style: {
+                                    borderRadius: "16px",
+                                },
+                            }}
                         />
                         <Button
                             type="submit"
@@ -160,10 +180,9 @@ export default function Register() {
                             sx={{
                                 mt: 3,
                                 mb: 2,
-                                backgroundColor: "#37474f",
-                                "&:hover": {
-                                    backgroundColor: "#000000",
-                                },
+                                borderRadius: "16px",
+                                backgroundColor: "#000000",
+                                "&:hover": { backgroundColor: "#424242" },
                             }}
                             disabled={loading}
                         >

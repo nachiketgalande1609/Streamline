@@ -15,7 +15,7 @@ const itemSchema = new mongoose.Schema({
 // Define the schema for an order
 const orderSchema = new mongoose.Schema(
     {
-        orderId: { type: String, required: true, unique: true },
+        orderId: { type: Number, required: true, unique: true },
         customerId: {
             type: mongoose.Schema.Types.ObjectId,
             required: true,

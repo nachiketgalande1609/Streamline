@@ -16,6 +16,7 @@ import {
     Select,
     MenuItem,
     Tooltip,
+    Chip,
 } from "@mui/material";
 import * as Papa from "papaparse";
 import jsPDF from "jspdf";
@@ -790,8 +791,38 @@ export default function Orders() {
             field: "status",
             headerName: "Status",
             width: 150,
-            headerAlign: "left",
-            align: "left",
+            headerAlign: "center",
+            align: "center",
+            renderCell: (params) => {
+                let chipColor;
+                let chipVariant = "filled";
+
+                switch (params.value) {
+                    case "pending":
+                        chipColor = "warning";
+                        break;
+                    case "shipped":
+                        chipColor = "primary";
+                        break;
+                    case "delivered":
+                        chipColor = "success";
+                        break;
+                    case "cancelled":
+                        chipColor = "error";
+                        break;
+                    default:
+                        chipColor = "default";
+                }
+
+                return (
+                    <Chip
+                        label={params.value}
+                        color={chipColor}
+                        variant={chipVariant}
+                        sx={{ width: 100 }}
+                    />
+                );
+            },
         },
         {
             field: "totalAmount",
@@ -850,7 +881,7 @@ export default function Orders() {
     return (
         <div>
             <Box sx={{ display: "flex", alignItems: "center" }}>
-                <Typography variant="h4" gutterBottom sx={{ flexGrow: 1 }}>
+                <Typography variant="h5" gutterBottom sx={{ flexGrow: 1 }}>
                     Orders
                 </Typography>
                 <Box sx={{ display: "flex", gap: 1 }}>
@@ -881,9 +912,7 @@ export default function Orders() {
                                 borderRadius: "16px",
                             }}
                         >
-                            <MenuItem value="">
-                                <em>All Orders</em>
-                            </MenuItem>
+                            <MenuItem value="">All Orders</MenuItem>
                             {statuses.map((status) => (
                                 <MenuItem key={status} value={status}>
                                     {status}

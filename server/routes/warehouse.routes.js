@@ -10,17 +10,64 @@ warehouse.get("/", async (req, res) => {
     const query = status ? { status } : {};
 
     try {
-        const totalCount = await Warehouse.countDocuments(query);
+        const aggregateQuery = [
+            { $match: query },
+            {
+                $lookup: {
+                    from: "user-data",
+                    localField: "manager_id",
+                    foreignField: "_id",
+                    as: "managerInfo",
+                },
+            },
+            {
+                $unwind: {
+                    path: "$managerInfo",
+                    preserveNullAndEmptyArrays: true,
+                },
+            },
+            {
+                $project: {
+                    _id: 1,
+                    warehouse_id: 1,
+                    name: 1,
+                    location: 1,
+                    capacity: 1,
+                    current_stock: 1,
+                    contact_number: 1,
+                    status: 1,
+                    "managerInfo.first_name": 1,
+                    "managerInfo.last_name": 1,
+                    "managerInfo.email": 1,
+                    "managerInfo.phone_number": 1,
+                },
+            },
+            {
+                $facet: {
+                    data: [
+                        { $skip: (page - 1) * limit },
+                        { $limit: parseInt(limit) },
+                    ],
+                    totalCount: [{ $count: "count" }],
+                },
+            },
+            {
+                $unwind: "$totalCount",
+            },
+            {
+                $project: {
+                    data: "$data",
+                    totalCount: "$totalCount.count",
+                },
+            },
+        ];
 
-        const warehouses = await Warehouse.find(query)
-            .skip((page - 1) * limit)
-            .limit(parseInt(limit))
-            .exec();
+        const result = await Warehouse.aggregate(aggregateQuery);
 
         res.json({
             success: true,
-            data: warehouses,
-            totalCount,
+            data: result.length > 0 ? result[0].data : [], // Return empty array if no data
+            totalCount: result.length > 0 ? result[0].totalCount : 0, // Return the total count
             error: false,
         });
     } catch (error) {

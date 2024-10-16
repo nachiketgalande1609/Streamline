@@ -74,7 +74,16 @@ export default function Warehouses() {
             const response = await axios.get("/api/warehouse", {
                 params: { page, limit, status },
             });
-            setRows(response.data.data);
+            const warehouseDetails = response.data.data.map((warehouse) => ({
+                ...warehouse,
+                managerName:
+                    warehouse.managerInfo?.first_name +
+                        " " +
+                        warehouse.managerInfo?.last_name || "N/A",
+                managerNumber: warehouse.managerInfo?.phone_number || "N/A",
+                managerEmail: warehouse.managerInfo?.email || "N/A",
+            }));
+            setRows(warehouseDetails);
             setTotalCount(response.data.totalCount);
         } catch (error) {
             console.error("Error fetching warehouse data:", error);
@@ -197,8 +206,22 @@ export default function Warehouses() {
             align: "center",
         },
         {
-            field: "manager_id",
+            field: "managerName",
             headerName: "Manager",
+            flex: 1,
+            headerAlign: "left",
+            align: "left",
+        },
+        {
+            field: "managerNumber",
+            headerName: "Manager Contact",
+            flex: 1,
+            headerAlign: "left",
+            align: "left",
+        },
+        {
+            field: "managerEmail",
+            headerName: "Manager Email",
             flex: 1,
             headerAlign: "left",
             align: "left",
@@ -244,7 +267,7 @@ export default function Warehouses() {
     return (
         <div>
             <Box sx={{ display: "flex", alignItems: "center" }}>
-                <Typography variant="h4" gutterBottom sx={{ flexGrow: 1 }}>
+                <Typography variant="h5" gutterBottom sx={{ flexGrow: 1 }}>
                     Warehouses
                 </Typography>
                 <Box sx={{ display: "flex", gap: 1 }}>
@@ -272,9 +295,7 @@ export default function Warehouses() {
                                 borderRadius: "16px",
                             }}
                         >
-                            <MenuItem value="">
-                                <em>All Warehouses</em>
-                            </MenuItem>
+                            <MenuItem value="">All Warehouses</MenuItem>
                             {statuses.map((status) => (
                                 <MenuItem key={status} value={status}>
                                     {status}
@@ -479,5 +500,5 @@ const style = {
     bgcolor: "background.paper",
     boxShadow: 24,
     p: 4,
-    borderRadius: 2,
+    borderRadius: "16px",
 };
