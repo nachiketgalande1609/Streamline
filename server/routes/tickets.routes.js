@@ -7,18 +7,7 @@ const mongoose = require("mongoose");
 const upload = multer();
 
 tickets.post("/", upload.none(), async (req, res) => {
-    const {
-        userId,
-        name,
-        issueType,
-        department,
-        subject,
-        description,
-        email,
-        phone,
-        priority,
-        attachments,
-    } = req.body;
+    const { userId, name, issueType, department, subject, description, email, phone, priority, attachments } = req.body;
 
     try {
         const generateUniqueTicketId = async () => {
@@ -51,6 +40,7 @@ tickets.post("/", upload.none(), async (req, res) => {
             phone,
             priority,
             attachments,
+            assignedTo: null,
         });
 
         await newTicket.save();
@@ -115,38 +105,62 @@ tickets.get("/:ticketId", async (req, res) => {
 });
 
 tickets.put("/:id", async (req, res) => {
-    const id = req.body._id;
-
-    console.log(req.body);
-
-    console.log(id);
-
+    const user_id = req.headers.user_id;
+    const user_email = req.headers.user_email;
+    const user_name = req.headers.user_name;
+    const { id } = req.params;
     const updateData = req.body;
-
     const ticketObjectId = new mongoose.Types.ObjectId(id);
 
     try {
-        const updatedTicket = await TicketModel.findByIdAndUpdate(
-            ticketObjectId,
-            {
-                ...updateData,
-                updatedDate: new Date(),
-            },
-            { new: true, runValidators: true }
-        );
-
-        if (!updatedTicket) {
-            return res
-                .status(404)
-                .json({ success: false, message: "Ticket not found" });
+        // Fetch the existing ticket
+        const ticket = await TicketModel.findById(ticketObjectId);
+        if (!ticket) {
+            return res.status(404).json({ success: false, message: "Ticket not found" });
         }
 
-        return res.status(200).json({ success: true, data: updatedTicket });
+        // Function to generate structured update data
+        const generateUpdateChanges = (oldData, newData) => {
+            const changes = [];
+            for (const key in newData) {
+                if (newData[key] !== oldData[key]) {
+                    changes.push({
+                        field: key,
+                        oldValue: oldData[key] || null,
+                        newValue: newData[key],
+                    });
+                }
+            }
+            return changes.length ? changes : null;
+        };
+
+        // Generate the update changes
+        const changes = generateUpdateChanges(ticket.toObject(), updateData);
+
+        if (!changes) {
+            return res.status(400).json({ success: false, message: "No changes made." });
+        }
+
+        // Update the ticket and push to history
+        ticket.set({
+            ...updateData,
+            updatedDate: new Date(),
+        });
+        ticket.history.push({
+            action: "Updated ticket",
+            changes: changes, // Store structured changes
+            updatedByOid: user_id,
+            updatedByEmail: user_email,
+            updatedByName: user_name,
+            timestamp: new Date(),
+        });
+
+        await ticket.save();
+
+        return res.status(200).json({ success: true, data: ticket });
     } catch (error) {
         console.error("Error updating ticket:", error);
-        return res
-            .status(500)
-            .json({ success: false, message: "Internal Server Error" });
+        return res.status(500).json({ success: false, message: "Internal Server Error" });
     }
 });
 

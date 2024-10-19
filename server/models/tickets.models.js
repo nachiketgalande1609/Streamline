@@ -11,14 +11,7 @@ const ticketSchema = new mongoose.Schema(
         issueType: {
             type: String,
             required: true,
-            enum: [
-                "Bug",
-                "Billing",
-                "Feature Request",
-                "UI Issues",
-                "Performance",
-                "Other",
-            ],
+            enum: ["Bug", "Billing", "Feature Request", "UI Issues", "Performance", "Other"],
         },
         department: {
             type: String,
@@ -42,6 +35,26 @@ const ticketSchema = new mongoose.Schema(
         updatedDate: { type: Date },
         assignedTo: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
         attachments: [{ type: String }],
+        history: [
+            {
+                action: { type: String, required: true },
+                changes: [
+                    {
+                        field: { type: String, required: true },
+                        oldValue: { type: mongoose.Schema.Types.Mixed },
+                        newValue: { type: mongoose.Schema.Types.Mixed },
+                    },
+                ],
+                updatedByOid: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: "User",
+                    required: true,
+                },
+                updatedByEmail: { type: String, required: true },
+                updatedByName: { type: String, required: true },
+                timestamp: { type: Date, default: Date.now },
+            },
+        ],
     },
     { collection: "tickets" }
 );

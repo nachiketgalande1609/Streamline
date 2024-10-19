@@ -25,6 +25,13 @@ axios.defaults.baseURL = "http://localhost:3001";
 axios.defaults.headers.common["token"] = `Bearer ${localStorage.getItem(
     "token"
 )}`;
+axios.defaults.headers.common["user_id"] = `${localStorage.getItem("userId")}`;
+axios.defaults.headers.common["user_email"] = `${localStorage.getItem(
+    "userEmail"
+)}`;
+axios.defaults.headers.common["user_name"] = `${localStorage.getItem(
+    "userName"
+)}`;
 
 const drawerWidth = 240;
 

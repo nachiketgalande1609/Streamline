@@ -15,6 +15,15 @@ export const UserProvider = ({ children }) => {
             try {
                 const decodedUser = jwtDecode(token);
                 setUser(decodedUser);
+
+                console.log(decodedUser);
+
+                localStorage.setItem("userId", decodedUser.id);
+                localStorage.setItem("userEmail", decodedUser.email);
+                localStorage.setItem(
+                    "userName",
+                    decodedUser.first_name + " " + decodedUser.last_name
+                );
             } catch (error) {
                 console.error("Invalid token", error);
                 localStorage.removeItem("token");
