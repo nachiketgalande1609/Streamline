@@ -10,20 +10,7 @@ import Grid from "@mui/material/Grid";
 import BreadcrumbsComponent from "../parts/BreadcrumbsComponent";
 import * as Papa from "papaparse";
 
-import {
-    Modal,
-    Box,
-    Typography,
-    TextField,
-    Select,
-    MenuItem,
-    Button,
-    FormControl,
-    InputLabel,
-    Snackbar,
-    Alert,
-    IconButton,
-} from "@mui/material";
+import { Modal, Box, Typography, TextField, Select, MenuItem, Button, FormControl, InputLabel, Snackbar, Alert, IconButton } from "@mui/material";
 
 const style = {
     position: "absolute",
@@ -68,8 +55,7 @@ export default function Inventory() {
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
     const [searchQuery, setSearchQuery] = useState("");
-    const [debouncedSearchQuery, setDebouncedSearchQuery] =
-        useState(searchQuery);
+    const [debouncedSearchQuery, setDebouncedSearchQuery] = useState(searchQuery);
     const [statusFilter, setStatusFilter] = useState("");
     const [totalCount, setTotalCount] = useState(0);
 
@@ -78,12 +64,7 @@ export default function Inventory() {
         { label: "Inventory", path: "" },
     ];
 
-    const fetchInventoryData = async (
-        page = 1,
-        limit = 10,
-        search = "",
-        status = ""
-    ) => {
+    const fetchInventoryData = async (page = 1, limit = 10, search = "", status = "") => {
         try {
             const response = await axios.get("/api/inventory", {
                 params: {
@@ -120,12 +101,7 @@ export default function Inventory() {
     }, [searchQuery]);
 
     useEffect(() => {
-        fetchInventoryData(
-            currentPage,
-            pageSize,
-            debouncedSearchQuery,
-            statusFilter
-        );
+        fetchInventoryData(currentPage, pageSize, debouncedSearchQuery, statusFilter);
     }, [currentPage, pageSize, debouncedSearchQuery, statusFilter]);
 
     const handleAlertClose = () => {
@@ -238,13 +214,7 @@ export default function Inventory() {
                     chipColor = "default";
                 }
 
-                return (
-                    <Chip
-                        label={params.value}
-                        color={chipColor}
-                        sx={{ width: 100 }}
-                    />
-                );
+                return <Chip label={params.value} color={chipColor} sx={{ width: 100 }} />;
             },
         },
         {
@@ -347,19 +317,10 @@ export default function Inventory() {
                     Inventory
                 </Typography>
                 <Box sx={{ display: "flex", gap: 1 }}>
-                    <IconButton
-                        size="small"
-                        onClick={handleOpen}
-                        aria-label="Add Items"
-                        sx={{ mr: 1 }}
-                    >
+                    <IconButton size="small" onClick={handleOpen} aria-label="Add Items" sx={{ mr: 1 }}>
                         <AddIcon />
                     </IconButton>
-                    <IconButton
-                        size="small"
-                        onClick={handleExport}
-                        aria-label="Export to CSV"
-                    >
+                    <IconButton size="small" onClick={handleExport} aria-label="Export to CSV">
                         <FileDownloadIcon />
                     </IconButton>
                     <TextField
@@ -383,12 +344,8 @@ export default function Inventory() {
                         >
                             <MenuItem value="">All Status</MenuItem>
                             <MenuItem value="in stock">In Stock</MenuItem>
-                            <MenuItem value="out of stock">
-                                Out of Stock
-                            </MenuItem>
-                            <MenuItem value="discontinued">
-                                Discontinued
-                            </MenuItem>
+                            <MenuItem value="out of stock">Out of Stock</MenuItem>
+                            <MenuItem value="discontinued">Discontinued</MenuItem>
                         </Select>
                     </FormControl>
                 </Box>
@@ -423,6 +380,9 @@ export default function Inventory() {
                                     fullWidth
                                     margin="normal"
                                     required
+                                    InputProps={{
+                                        style: { borderRadius: "16px" },
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={4}>
@@ -435,6 +395,9 @@ export default function Inventory() {
                                     fullWidth
                                     margin="normal"
                                     required
+                                    InputProps={{
+                                        style: { borderRadius: "16px" },
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={4}>
@@ -447,6 +410,9 @@ export default function Inventory() {
                                     fullWidth
                                     margin="normal"
                                     required
+                                    InputProps={{
+                                        style: { borderRadius: "16px" },
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={4}>
@@ -460,6 +426,9 @@ export default function Inventory() {
                                     fullWidth
                                     margin="normal"
                                     required
+                                    InputProps={{
+                                        style: { borderRadius: "16px" },
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={4}>
@@ -473,6 +442,9 @@ export default function Inventory() {
                                     fullWidth
                                     margin="normal"
                                     required
+                                    InputProps={{
+                                        style: { borderRadius: "16px" },
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={4}>
@@ -486,6 +458,9 @@ export default function Inventory() {
                                     fullWidth
                                     margin="normal"
                                     required
+                                    InputProps={{
+                                        style: { borderRadius: "16px" },
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={4}>
@@ -499,6 +474,9 @@ export default function Inventory() {
                                     fullWidth
                                     margin="normal"
                                     required
+                                    InputProps={{
+                                        style: { borderRadius: "16px" },
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={4}>
@@ -512,6 +490,9 @@ export default function Inventory() {
                                     fullWidth
                                     margin="normal"
                                     required
+                                    InputProps={{
+                                        style: { borderRadius: "16px" },
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={4}>
@@ -524,26 +505,19 @@ export default function Inventory() {
                                     fullWidth
                                     margin="normal"
                                     required
+                                    InputProps={{
+                                        style: { borderRadius: "16px" },
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={4}>
                                 <FormControl fullWidth margin="normal">
-                                    <InputLabel id="role-label">
-                                        Role
-                                    </InputLabel>
-                                    <Select
-                                        labelId="role-label"
-                                        name="warehouse"
-                                        value={formData.warehouse}
-                                        onChange={handleSelectChange}
-                                        size="small"
-                                        label="Role"
-                                    >
+                                    <Select name="warehouse" value={formData.warehouse} onChange={handleSelectChange} size="small" label="Role">
+                                        <MenuItem value="" disabled>
+                                            Select Role
+                                        </MenuItem>
                                         {warehouses.map((warehouse) => (
-                                            <MenuItem
-                                                key={warehouse.warehouse_id}
-                                                value={warehouse.warehouse_id}
-                                            >
+                                            <MenuItem key={warehouse.warehouse_id} value={warehouse.warehouse_id}>
                                                 {warehouse.warehouse_id}
                                             </MenuItem>
                                         ))}
@@ -578,9 +552,7 @@ export default function Inventory() {
                                 />
                             </Grid>
                             <Grid item xs={4}>
-                                <InputLabel id="status-label">
-                                    Status
-                                </InputLabel>
+                                <InputLabel id="status-label">Status</InputLabel>
                                 <Select
                                     labelId="status-label"
                                     name="status"
@@ -591,15 +563,9 @@ export default function Inventory() {
                                     margin="normal"
                                     required
                                 >
-                                    <MenuItem value="in stock">
-                                        In Stock
-                                    </MenuItem>
-                                    <MenuItem value="out of stock">
-                                        Out of Stock
-                                    </MenuItem>
-                                    <MenuItem value="discontinued">
-                                        Discontinued
-                                    </MenuItem>
+                                    <MenuItem value="in stock">In Stock</MenuItem>
+                                    <MenuItem value="out of stock">Out of Stock</MenuItem>
+                                    <MenuItem value="discontinued">Discontinued</MenuItem>
                                 </Select>
                             </Grid>
                             <Grid item xs={12}>
@@ -640,6 +606,7 @@ export default function Inventory() {
                 }}
             >
                 <DataGrid
+                    className="custom-data-grid"
                     rows={rows}
                     columns={columns}
                     getRowId={(row) => row._id}
@@ -656,17 +623,6 @@ export default function Inventory() {
                     }}
                     disableRowSelectionOnClick
                     checkboxSelection
-                    sx={{
-                        height: "70vh",
-                        borderRadius: "16px",
-                        "& .MuiDataGrid-columnHeader": {
-                            backgroundColor: "#000000",
-                            color: "#fff",
-                        },
-                        "& .MuiDataGrid-columnHeader .MuiSvgIcon-root": {
-                            color: "#fff",
-                        },
-                    }}
                 />
             </Box>
             <Snackbar
@@ -680,11 +636,7 @@ export default function Inventory() {
                     </Button>
                 }
             >
-                <Alert
-                    onClose={handleAlertClose}
-                    severity={severity}
-                    sx={{ width: "100%" }}
-                >
+                <Alert onClose={handleAlertClose} severity={severity} sx={{ width: "100%" }}>
                     {message}
                 </Alert>
             </Snackbar>

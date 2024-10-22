@@ -129,6 +129,7 @@ export default function TicketTable() {
                 }}
             >
                 <DataGrid
+                    className="custom-data-grid"
                     rows={tickets}
                     columns={columns}
                     getRowId={(row) => row._id}
@@ -145,16 +146,6 @@ export default function TicketTable() {
                     }}
                     checkboxSelection
                     disableRowSelectionOnClick
-                    sx={{
-                        borderRadius: "16px",
-                        "& .MuiDataGrid-columnHeader": {
-                            backgroundColor: "#000000",
-                            color: "#fff",
-                        },
-                        "& .MuiDataGrid-columnHeader .MuiSvgIcon-root": {
-                            color: "#fff",
-                        },
-                    }}
                 />
             </Box>
             <Snackbar
@@ -168,11 +159,7 @@ export default function TicketTable() {
                     </Button>
                 }
             >
-                <Alert
-                    onClose={handleAlertClose}
-                    severity={severity}
-                    sx={{ width: "100%" }}
-                >
+                <Alert onClose={handleAlertClose} severity={severity} sx={{ width: "100%" }}>
                     {message}
                 </Alert>
             </Snackbar>

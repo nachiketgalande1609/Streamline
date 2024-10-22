@@ -3,21 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
-import {
-    Modal,
-    Button,
-    Box,
-    Typography,
-    TextField,
-    Snackbar,
-    Alert,
-    IconButton,
-    FormControl,
-    Select,
-    MenuItem,
-    Tooltip,
-    Chip,
-} from "@mui/material";
+import { Modal, Button, Box, Typography, TextField, Snackbar, Alert, IconButton, FormControl, Select, MenuItem, Tooltip, Chip } from "@mui/material";
 import * as Papa from "papaparse";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
@@ -84,15 +70,13 @@ export default function Orders() {
             const response = await axios.get("/api/orders", {
                 params: { page, limit, status },
             });
-            const ordersWithCustomerDetails = response.data.data.map(
-                (order) => ({
-                    ...order,
-                    customerName: order.customerInfo?.customer_name || "N/A",
-                    customerNumber: order.customerInfo?.contact_number || "N/A",
-                    customerEmail: order.customerInfo?.email || "N/A",
-                    lineCount: order.items.length,
-                })
-            );
+            const ordersWithCustomerDetails = response.data.data.map((order) => ({
+                ...order,
+                customerName: order.customerInfo?.customer_name || "N/A",
+                customerNumber: order.customerInfo?.contact_number || "N/A",
+                customerEmail: order.customerInfo?.email || "N/A",
+                lineCount: order.items.length,
+            }));
             setRows(ordersWithCustomerDetails);
             setTotalCount(response.data.totalCount);
         } catch (error) {
@@ -193,75 +177,51 @@ export default function Orders() {
                 <tbody>
                     <tr>
                         <td style="border: 1px solid #ddd; padding: 8px;">Order ID</td>
-                        <td style="border: 1px solid #ddd; padding: 8px;">${
-                            order.orderId
-                        }</td>
+                        <td style="border: 1px solid #ddd; padding: 8px;">${order.orderId}</td>
                     </tr>
                     <tr>
                         <td style="border: 1px solid #ddd; padding: 8px;">Customer ID</td>
-                        <td style="border: 1px solid #ddd; padding: 8px;">${
-                            order.customerId
-                        }</td>
+                        <td style="border: 1px solid #ddd; padding: 8px;">${order.customerId}</td>
                     </tr>
                     <tr>
                         <td style="border: 1px solid #ddd; padding: 8px;">Order Date</td>
-                        <td style="border: 1px solid #ddd; padding: 8px;">${formatDate(
-                            order.orderDate
-                        )}</td>
+                        <td style="border: 1px solid #ddd; padding: 8px;">${formatDate(order.orderDate)}</td>
                     </tr>
                     <tr>
                         <td style="border: 1px solid #ddd; padding: 8px;">Shipping Date</td>
-                        <td style="border: 1px solid #ddd; padding: 8px;">${formatDate(
-                            order.shippingDate
-                        )}</td>
+                        <td style="border: 1px solid #ddd; padding: 8px;">${formatDate(order.shippingDate)}</td>
                     </tr>
                     <tr>
                         <td style="border: 1px solid #ddd; padding: 8px;">Status</td>
-                        <td style="border: 1px solid #ddd; padding: 8px;">${
-                            order.status
-                        }</td>
+                        <td style="border: 1px solid #ddd; padding: 8px;">${order.status}</td>
                     </tr>
                     <tr>
                         <td style="border: 1px solid #ddd; padding: 8px;">Total Amount</td>
-                        <td style="border: 1px solid #ddd; padding: 8px;">${
-                            order.totalAmount
-                        }</td>
+                        <td style="border: 1px solid #ddd; padding: 8px;">${order.totalAmount}</td>
                     </tr>
                     <tr>
                         <td style="border: 1px solid #ddd; padding: 8px;">Tax Amount</td>
-                        <td style="border: 1px solid #ddd; padding: 8px;">${
-                            order.taxAmount
-                        }</td>
+                        <td style="border: 1px solid #ddd; padding: 8px;">${order.taxAmount}</td>
                     </tr>
                     <tr>
                         <td style="border: 1px solid #ddd; padding: 8px;">Net Amount</td>
-                        <td style="border: 1px solid #ddd; padding: 8px;">${
-                            order.netAmount
-                        }</td>
+                        <td style="border: 1px solid #ddd; padding: 8px;">${order.netAmount}</td>
                     </tr>
                     <tr>
                         <td style="border: 1px solid #ddd; padding: 8px;">Payment Method</td>
-                        <td style="border: 1px solid #ddd; padding: 8px;">${
-                            order.paymentMethod
-                        }</td>
+                        <td style="border: 1px solid #ddd; padding: 8px;">${order.paymentMethod}</td>
                     </tr>
                     <tr>
                         <td style="border: 1px solid #ddd; padding: 8px;">Payment Status</td>
-                        <td style="border: 1px solid #ddd; padding: 8px;">${
-                            order.paymentStatus
-                        }</td>
+                        <td style="border: 1px solid #ddd; padding: 8px;">${order.paymentStatus}</td>
                     </tr>
                     <tr>
                         <td style="border: 1px solid #ddd; padding: 8px;">Shipping Address</td>
-                        <td style="border: 1px solid #ddd; padding: 8px;">${
-                            order.shippingAddress
-                        }</td>
+                        <td style="border: 1px solid #ddd; padding: 8px;">${order.shippingAddress}</td>
                     </tr>
                     <tr>
                         <td style="border: 1px solid #ddd; padding: 8px;">Billing Address</td>
-                        <td style="border: 1px solid #ddd; padding: 8px;">${
-                            order.billingAddress
-                        }</td>
+                        <td style="border: 1px solid #ddd; padding: 8px;">${order.billingAddress}</td>
                     </tr>
                 </tbody>
             </table>
@@ -314,9 +274,7 @@ export default function Orders() {
     const handleCreateOrder = async () => {
         try {
             // Calculate totalAmount, taxAmount, and netAmount in one function
-            const { totalAmount, taxAmount, netAmount } = calculateAmounts(
-                newOrder.items
-            );
+            const { totalAmount, taxAmount, netAmount } = calculateAmounts(newOrder.items);
 
             const orderPayload = {
                 ...newOrder,
@@ -358,9 +316,7 @@ export default function Orders() {
         const updatedItems = newOrder.items.map((item, i) => {
             if (i === index) {
                 if (field === "itemName") {
-                    const selectedItem = items.find(
-                        (item) => item.name === value
-                    );
+                    const selectedItem = items.find((item) => item.name === value);
                     return {
                         ...item,
                         itemId: selectedItem._id,
@@ -424,35 +380,30 @@ export default function Orders() {
                             value={selectedCustomer}
                             onChange={(e) => {
                                 const selectedCustomerId = e.target.value;
-                                const selectedCust = customers.find(
-                                    (customer) =>
-                                        customer._id === selectedCustomerId
-                                );
+                                const selectedCust = customers.find((customer) => customer._id === selectedCustomerId);
                                 setSelectedCustomer(selectedCustomerId);
                                 setNewOrder((prev) => ({
                                     ...prev,
                                     customerId: selectedCustomerId,
-                                    customerName:
-                                        selectedCust?.customer_name || "",
-                                    customerNumber:
-                                        selectedCust?.contact_number || "",
+                                    customerName: selectedCust?.customer_name || "",
+                                    customerNumber: selectedCust?.contact_number || "",
                                     customerEmail: selectedCust?.email || "",
-                                    shippingAddress:
-                                        selectedCust?.address || "",
+                                    shippingAddress: selectedCust?.address || "",
                                     billingAddress: selectedCust?.address || "",
                                 }));
                             }}
                             displayEmpty
                             inputProps={{ "aria-label": "Without label" }}
+                            size="small"
+                            sx={{
+                                borderRadius: "16px", // Add border radius here
+                            }}
                         >
                             <MenuItem value="" disabled>
                                 Select Customer
                             </MenuItem>
                             {customers.map((customer) => (
-                                <MenuItem
-                                    key={customer._id}
-                                    value={customer._id}
-                                >
+                                <MenuItem key={customer._id} value={customer._id}>
                                     {customer.customer_name}
                                 </MenuItem>
                             ))}
@@ -469,8 +420,10 @@ export default function Orders() {
                         }
                         fullWidth
                         margin="normal"
+                        size="small"
                         InputProps={{
                             readOnly: true,
+                            style: { borderRadius: "16px" },
                         }}
                     />
                     <TextField
@@ -484,8 +437,10 @@ export default function Orders() {
                         }
                         fullWidth
                         margin="normal"
+                        size="small"
                         InputProps={{
                             readOnly: true,
+                            style: { borderRadius: "16px" },
                         }}
                     />
                     <TextField
@@ -503,6 +458,10 @@ export default function Orders() {
                         InputLabelProps={{
                             shrink: true,
                         }}
+                        size="small"
+                        InputProps={{
+                            style: { borderRadius: "16px" },
+                        }}
                     />
                     <TextField
                         label="Shipping Address"
@@ -515,6 +474,10 @@ export default function Orders() {
                         }
                         fullWidth
                         margin="normal"
+                        size="small"
+                        InputProps={{
+                            style: { borderRadius: "16px" },
+                        }}
                     />
                     <TextField
                         label="Billing Address"
@@ -527,6 +490,10 @@ export default function Orders() {
                         }
                         fullWidth
                         margin="normal"
+                        size="small"
+                        InputProps={{
+                            style: { borderRadius: "16px" },
+                        }}
                     />
                     <FormControl fullWidth margin="normal">
                         <Select
@@ -538,15 +505,17 @@ export default function Orders() {
                                 })
                             }
                             displayEmpty
+                            size="small"
+                            sx={{
+                                borderRadius: "16px", // Add border radius here
+                            }}
                         >
                             <MenuItem value="">
                                 <em>Select Payment Method</em>
                             </MenuItem>
                             <MenuItem value="credit card">Credit Card</MenuItem>
                             <MenuItem value="paypal">PayPal</MenuItem>
-                            <MenuItem value="cash on delivery">
-                                Cash on Delivery
-                            </MenuItem>
+                            <MenuItem value="cash on delivery">Cash on Delivery</MenuItem>
                         </Select>
                     </FormControl>
                     <FormControl fullWidth margin="normal">
@@ -559,6 +528,10 @@ export default function Orders() {
                                 })
                             }
                             displayEmpty
+                            size="small"
+                            sx={{
+                                borderRadius: "16px", // Add border radius here
+                            }}
                         >
                             <MenuItem value="">
                                 <em>Select Payment Status</em>
@@ -582,41 +555,29 @@ export default function Orders() {
                         <Typography variant="h6" component="h3">
                             Items
                         </Typography>
-                        <IconButton
-                            size="small"
-                            onClick={handleAddItem}
-                            aria-label="Add Items"
-                        >
+                        <IconButton size="small" onClick={handleAddItem} aria-label="Add Items">
                             <AddIcon />
                         </IconButton>
                     </Box>
 
                     {newOrder.items.map((item, index) => (
-                        <Box
-                            key={index}
-                            sx={{ display: "flex", alignItems: "center" }}
-                        >
+                        <Box key={index} sx={{ display: "flex", alignItems: "center" }}>
                             {/* Item Name as a Select dropdown */}
                             <FormControl fullWidth margin="normal">
                                 <Select
                                     value={item.itemName}
-                                    onChange={(e) =>
-                                        handleItemChange(
-                                            index,
-                                            "itemName",
-                                            e.target.value
-                                        )
-                                    }
+                                    onChange={(e) => handleItemChange(index, "itemName", e.target.value)}
                                     displayEmpty
+                                    size="small"
+                                    sx={{
+                                        borderRadius: "16px", // Add border radius here
+                                    }}
                                 >
                                     <MenuItem value="" disabled>
                                         Select Item
                                     </MenuItem>
                                     {items.map((item) => (
-                                        <MenuItem
-                                            key={item._id}
-                                            value={item.name}
-                                        >
+                                        <MenuItem key={item._id} value={item.name}>
                                             {item.name}
                                         </MenuItem>
                                     ))}
@@ -628,15 +589,13 @@ export default function Orders() {
                                 label="Quantity"
                                 type="number"
                                 value={item.quantity}
-                                onChange={(e) =>
-                                    handleItemChange(
-                                        index,
-                                        "quantity",
-                                        e.target.value
-                                    )
-                                }
+                                onChange={(e) => handleItemChange(index, "quantity", e.target.value)}
                                 fullWidth
                                 margin="normal"
+                                size="small"
+                                InputProps={{
+                                    style: { borderRadius: "16px" },
+                                }}
                                 sx={{ mx: 1 }}
                             />
 
@@ -645,17 +604,13 @@ export default function Orders() {
                                 label="Price"
                                 type="number"
                                 value={item.price}
-                                onChange={(e) =>
-                                    handleItemChange(
-                                        index,
-                                        "price",
-                                        e.target.value
-                                    )
-                                }
+                                onChange={(e) => handleItemChange(index, "price", e.target.value)}
                                 fullWidth
                                 margin="normal"
+                                size="small"
                                 InputProps={{
                                     readOnly: true,
+                                    style: { borderRadius: "16px" },
                                 }}
                             />
                             <IconButton onClick={() => handleRemoveItem(index)}>
@@ -814,14 +769,7 @@ export default function Orders() {
                         chipColor = "default";
                 }
 
-                return (
-                    <Chip
-                        label={params.value}
-                        color={chipColor}
-                        variant={chipVariant}
-                        sx={{ width: 100 }}
-                    />
-                );
+                return <Chip label={params.value} color={chipColor} variant={chipVariant} sx={{ width: 100 }} />;
             },
         },
         {
@@ -885,11 +833,7 @@ export default function Orders() {
                     Orders
                 </Typography>
                 <Box sx={{ display: "flex", gap: 1 }}>
-                    <IconButton
-                        size="small"
-                        onClick={handleExport}
-                        aria-label="Export to CSV"
-                    >
+                    <IconButton size="small" onClick={handleExport} aria-label="Export to CSV">
                         <FileDownloadIcon />
                     </IconButton>
                     <IconButton
@@ -933,6 +877,7 @@ export default function Orders() {
                 }}
             >
                 <DataGrid
+                    className="custom-data-grid"
                     rows={rows}
                     columns={columns}
                     getRowId={(row) => row.orderId}
@@ -949,16 +894,6 @@ export default function Orders() {
                     }}
                     checkboxSelection
                     disableRowSelectionOnClick
-                    sx={{
-                        borderRadius: "16px",
-                        "& .MuiDataGrid-columnHeader": {
-                            backgroundColor: "#000000",
-                            color: "#fff",
-                        },
-                        "& .MuiDataGrid-columnHeader .MuiSvgIcon-root": {
-                            color: "#fff",
-                        },
-                    }}
                 />
             </Box>
 
@@ -973,11 +908,7 @@ export default function Orders() {
                     </Button>
                 }
             >
-                <Alert
-                    onClose={handleAlertClose}
-                    severity={severity}
-                    sx={{ width: "100%" }}
-                >
+                <Alert onClose={handleAlertClose} severity={severity} sx={{ width: "100%" }}>
                     {message}
                 </Alert>
             </Snackbar>

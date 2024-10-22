@@ -3,15 +3,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import { useNavigate } from "react-router-dom";
 
 import axios from "axios";
-import {
-    Box,
-    Typography,
-    Button,
-    Snackbar,
-    Alert,
-    IconButton,
-    Chip,
-} from "@mui/material";
+import { Box, Typography, Button, Snackbar, Alert, IconButton, Chip } from "@mui/material";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import BreadcrumbsComponent from "../parts/BreadcrumbsComponent";
 import * as Papa from "papaparse";
@@ -183,14 +175,7 @@ export default function Sales() {
                         chipColor = "default";
                 }
 
-                return (
-                    <Chip
-                        label={params.value}
-                        color={chipColor}
-                        variant={chipVariant}
-                        sx={{ width: 100 }}
-                    />
-                );
+                return <Chip label={params.value} color={chipColor} variant={chipVariant} sx={{ width: 100 }} />;
             },
         },
         {
@@ -220,14 +205,7 @@ export default function Sales() {
                         chipColor = "default";
                 }
 
-                return (
-                    <Chip
-                        label={params.value}
-                        color={chipColor}
-                        variant={chipVariant}
-                        sx={{ width: 100 }}
-                    />
-                );
+                return <Chip label={params.value} color={chipColor} variant={chipVariant} sx={{ width: 100 }} />;
             },
         },
         {
@@ -247,11 +225,7 @@ export default function Sales() {
                     Sales
                 </Typography>
                 <Box sx={{ display: "flex", gap: 1 }}>
-                    <IconButton
-                        size="small"
-                        onClick={handleExport}
-                        aria-label="Export to CSV"
-                    >
+                    <IconButton size="small" onClick={handleExport} aria-label="Export to CSV">
                         <FileDownloadIcon />
                     </IconButton>
                 </Box>
@@ -267,6 +241,7 @@ export default function Sales() {
                 }}
             >
                 <DataGrid
+                    className="custom-data-grid"
                     rows={rows}
                     columns={columns}
                     getRowId={(row) => row._id}
@@ -283,16 +258,6 @@ export default function Sales() {
                     }}
                     checkboxSelection
                     disableRowSelectionOnClick
-                    sx={{
-                        borderRadius: "16px",
-                        "& .MuiDataGrid-columnHeader": {
-                            backgroundColor: "#000000",
-                            color: "#fff",
-                        },
-                        "& .MuiDataGrid-columnHeader .MuiSvgIcon-root": {
-                            color: "#fff",
-                        },
-                    }}
                 />
             </Box>
             <Snackbar
@@ -306,11 +271,7 @@ export default function Sales() {
                     </Button>
                 }
             >
-                <Alert
-                    onClose={handleAlertClose}
-                    severity={severity}
-                    sx={{ width: "100%" }}
-                >
+                <Alert onClose={handleAlertClose} severity={severity} sx={{ width: "100%" }}>
                     {message}
                 </Alert>
             </Snackbar>

@@ -1,16 +1,7 @@
 // Navbar.jsx
 import React, { useContext } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import {
-    Drawer,
-    List,
-    ListItem,
-    ListItemText,
-    Toolbar,
-    ListItemIcon,
-    Typography,
-    Box,
-} from "@mui/material";
+import { Drawer, List, ListItem, ListItemText, Toolbar, ListItemIcon, Typography, Box } from "@mui/material";
 import { UserContext } from "../context/UserContext";
 
 import LoginIcon from "@mui/icons-material/Login";
@@ -26,6 +17,7 @@ import ContactSupportIcon from "@mui/icons-material/ContactSupport";
 import WarehouseIcon from "@mui/icons-material/Warehouse";
 import ContactsIcon from "@mui/icons-material/Contacts";
 import WarningIcon from "@mui/icons-material/Warning";
+import CurrencyRupeeIcon from "@mui/icons-material/CurrencyRupee";
 
 import axios from "axios";
 
@@ -75,36 +67,26 @@ const Navbar = () => {
                             component={Link}
                             to="/login"
                             sx={{
-                                backgroundColor: isActive("/login")
-                                    ? "#424242"
-                                    : "transparent",
+                                backgroundColor: isActive("/login") ? "#424242" : "transparent",
                             }}
                         >
                             <ListItemIcon sx={{ color: "#ffffff" }}>
                                 <LoginIcon />
                             </ListItemIcon>
-                            <ListItemText
-                                primary="Login"
-                                sx={{ color: "#ffffff" }}
-                            />
+                            <ListItemText primary="Login" sx={{ color: "#ffffff" }} />
                         </ListItem>
                         <ListItem
                             button
                             component={Link}
                             to="/register"
                             sx={{
-                                backgroundColor: isActive("/register")
-                                    ? "#424242"
-                                    : "transparent",
+                                backgroundColor: isActive("/register") ? "#424242" : "transparent",
                             }}
                         >
                             <ListItemIcon sx={{ color: "#ffffff" }}>
                                 <RegisterIcon />
                             </ListItemIcon>
-                            <ListItemText
-                                primary="Register"
-                                sx={{ color: "#ffffff" }}
-                            />
+                            <ListItemText primary="Register" sx={{ color: "#ffffff" }} />
                         </ListItem>
                     </>
                 )}
@@ -123,9 +105,7 @@ const Navbar = () => {
                                 component={Link}
                                 to="/"
                                 sx={{
-                                    backgroundColor: isActive("/")
-                                        ? "#424242"
-                                        : "transparent",
+                                    backgroundColor: isActive("/") ? "#424242" : "transparent",
                                     "&:hover": {
                                         backgroundColor: "#2b2b2b",
                                     },
@@ -134,19 +114,14 @@ const Navbar = () => {
                                 <ListItemIcon sx={{ color: "#ffffff" }}>
                                     <DashboardIcon />
                                 </ListItemIcon>
-                                <ListItemText
-                                    primary="Dashboard"
-                                    sx={{ color: "#ffffff" }}
-                                />
+                                <ListItemText primary="Dashboard" sx={{ color: "#ffffff" }} />
                             </ListItem>
                             <ListItem
                                 button
                                 component={Link}
                                 to="/profile"
                                 sx={{
-                                    backgroundColor: isActive("/profile")
-                                        ? "#424242"
-                                        : "transparent",
+                                    backgroundColor: isActive("/profile") ? "#424242" : "transparent",
                                     "&:hover": {
                                         backgroundColor: "#2b2b2b",
                                     },
@@ -155,19 +130,14 @@ const Navbar = () => {
                                 <ListItemIcon sx={{ color: "#ffffff" }}>
                                     <ProfileIcon />
                                 </ListItemIcon>
-                                <ListItemText
-                                    primary="Profile"
-                                    sx={{ color: "#ffffff" }}
-                                />
+                                <ListItemText primary="Profile" sx={{ color: "#ffffff" }} />
                             </ListItem>
                             <ListItem
                                 button
                                 component={Link}
                                 to="/users"
                                 sx={{
-                                    backgroundColor: isActive("/users")
-                                        ? "#424242"
-                                        : "transparent",
+                                    backgroundColor: isActive("/users") ? "#424242" : "transparent",
                                     "&:hover": {
                                         backgroundColor: "#2b2b2b",
                                     },
@@ -176,19 +146,14 @@ const Navbar = () => {
                                 <ListItemIcon sx={{ color: "#ffffff" }}>
                                     <UsersIcon />
                                 </ListItemIcon>
-                                <ListItemText
-                                    primary="Users"
-                                    sx={{ color: "#ffffff" }}
-                                />
+                                <ListItemText primary="Users" sx={{ color: "#ffffff" }} />
                             </ListItem>
                             <ListItem
                                 button
                                 component={Link}
                                 to="/inventory"
                                 sx={{
-                                    backgroundColor: isActive("/inventory")
-                                        ? "#424242"
-                                        : "transparent",
+                                    backgroundColor: isActive("/inventory") ? "#424242" : "transparent",
                                     "&:hover": {
                                         backgroundColor: "#2b2b2b",
                                     },
@@ -197,19 +162,14 @@ const Navbar = () => {
                                 <ListItemIcon sx={{ color: "#ffffff" }}>
                                     <InventoryIcon />
                                 </ListItemIcon>
-                                <ListItemText
-                                    primary="Inventory"
-                                    sx={{ color: "#ffffff" }}
-                                />
+                                <ListItemText primary="Inventory" sx={{ color: "#ffffff" }} />
                             </ListItem>
                             <ListItem
                                 button
                                 component={Link}
                                 to="/orders"
                                 sx={{
-                                    backgroundColor: isActive("/orders")
-                                        ? "#424242"
-                                        : "transparent",
+                                    backgroundColor: isActive("/orders") ? "#424242" : "transparent",
                                     "&:hover": {
                                         backgroundColor: "#2b2b2b",
                                     },
@@ -218,19 +178,14 @@ const Navbar = () => {
                                 <ListItemIcon sx={{ color: "#ffffff" }}>
                                     <OrdersIcon />
                                 </ListItemIcon>
-                                <ListItemText
-                                    primary="Orders"
-                                    sx={{ color: "#ffffff" }}
-                                />
+                                <ListItemText primary="Orders" sx={{ color: "#ffffff" }} />
                             </ListItem>
                             <ListItem
                                 button
                                 component={Link}
                                 to="/warehouses"
                                 sx={{
-                                    backgroundColor: isActive("/warehouses")
-                                        ? "#424242"
-                                        : "transparent",
+                                    backgroundColor: isActive("/warehouses") ? "#424242" : "transparent",
                                     "&:hover": {
                                         backgroundColor: "#2b2b2b",
                                     },
@@ -239,19 +194,14 @@ const Navbar = () => {
                                 <ListItemIcon sx={{ color: "#ffffff" }}>
                                     <WarehouseIcon />
                                 </ListItemIcon>
-                                <ListItemText
-                                    primary="Warehouses"
-                                    sx={{ color: "#ffffff" }}
-                                />
+                                <ListItemText primary="Warehouses" sx={{ color: "#ffffff" }} />
                             </ListItem>
                             <ListItem
                                 button
                                 component={Link}
                                 to="/customers"
                                 sx={{
-                                    backgroundColor: isActive("/customers")
-                                        ? "#424242"
-                                        : "transparent",
+                                    backgroundColor: isActive("/customers") ? "#424242" : "transparent",
                                     "&:hover": {
                                         backgroundColor: "#2b2b2b",
                                     },
@@ -260,19 +210,14 @@ const Navbar = () => {
                                 <ListItemIcon sx={{ color: "#ffffff" }}>
                                     <ContactsIcon />
                                 </ListItemIcon>
-                                <ListItemText
-                                    primary="Customers"
-                                    sx={{ color: "#ffffff" }}
-                                />
+                                <ListItemText primary="Customers" sx={{ color: "#ffffff" }} />
                             </ListItem>
                             <ListItem
                                 button
                                 component={Link}
                                 to="/sales"
                                 sx={{
-                                    backgroundColor: isActive("/sales")
-                                        ? "#424242"
-                                        : "transparent",
+                                    backgroundColor: isActive("/sales") ? "#424242" : "transparent",
                                     "&:hover": {
                                         backgroundColor: "#2b2b2b",
                                     },
@@ -281,10 +226,7 @@ const Navbar = () => {
                                 <ListItemIcon sx={{ color: "#ffffff" }}>
                                     <SalesIcon />
                                 </ListItemIcon>
-                                <ListItemText
-                                    primary="Sales"
-                                    sx={{ color: "#ffffff" }}
-                                />
+                                <ListItemText primary="Sales" sx={{ color: "#ffffff" }} />
                             </ListItem>
 
                             <ListItem
@@ -292,9 +234,7 @@ const Navbar = () => {
                                 component={Link}
                                 to="/incidents"
                                 sx={{
-                                    backgroundColor: isActive("/incidents")
-                                        ? "#424242"
-                                        : "transparent",
+                                    backgroundColor: isActive("/incidents") ? "#424242" : "transparent",
                                     "&:hover": {
                                         backgroundColor: "#2b2b2b",
                                     },
@@ -303,20 +243,15 @@ const Navbar = () => {
                                 <ListItemIcon sx={{ color: "#ffffff" }}>
                                     <WarningIcon />
                                 </ListItemIcon>
-                                <ListItemText
-                                    primary="Incidents"
-                                    sx={{ color: "#ffffff" }}
-                                />
+                                <ListItemText primary="Incidents" sx={{ color: "#ffffff" }} />
                             </ListItem>
 
                             <ListItem
                                 button
                                 component={Link}
-                                to="/contact"
+                                to="/raise-ticket"
                                 sx={{
-                                    backgroundColor: isActive("/contact")
-                                        ? "#424242"
-                                        : "transparent",
+                                    backgroundColor: isActive("/raise-ticket") ? "#424242" : "transparent",
                                     "&:hover": {
                                         backgroundColor: "#2b2b2b",
                                     },
@@ -325,10 +260,24 @@ const Navbar = () => {
                                 <ListItemIcon sx={{ color: "#ffffff" }}>
                                     <ContactSupportIcon />
                                 </ListItemIcon>
-                                <ListItemText
-                                    primary="Contact"
-                                    sx={{ color: "#ffffff" }}
-                                />
+                                <ListItemText primary="Raise Ticket" sx={{ color: "#ffffff" }} />
+                            </ListItem>
+
+                            <ListItem
+                                button
+                                component={Link}
+                                to="/recon"
+                                sx={{
+                                    backgroundColor: isActive("/recon") ? "#424242" : "transparent",
+                                    "&:hover": {
+                                        backgroundColor: "#2b2b2b",
+                                    },
+                                }}
+                            >
+                                <ListItemIcon sx={{ color: "#ffffff" }}>
+                                    <CurrencyRupeeIcon />
+                                </ListItemIcon>
+                                <ListItemText primary="Reconciliation" sx={{ color: "#ffffff" }} />
                             </ListItem>
 
                             <ListItem
@@ -336,9 +285,7 @@ const Navbar = () => {
                                 component={Link}
                                 onClick={handleLogout}
                                 sx={{
-                                    backgroundColor: isActive("/logout")
-                                        ? "#424242"
-                                        : "transparent",
+                                    backgroundColor: isActive("/logout") ? "#424242" : "transparent",
                                     "&:hover": {
                                         backgroundColor: "#2b2b2b",
                                     },
@@ -364,6 +311,8 @@ const Navbar = () => {
                                 alignItems: "center",
                                 marginTop: "auto",
                             }}
+                            component={Link}
+                            to="/profile"
                         >
                             <img
                                 src={

@@ -14,6 +14,7 @@ const customerRoutes = require("./routes/customers.routes");
 const salesRoutes = require("./routes/sales.routes");
 const utilRoutes = require("./routes/utils.routes");
 const ticketRoutes = require("./routes/tickets.routes");
+const reconRoutes = require("./routes/recon.routes");
 
 const app = express();
 
@@ -25,6 +26,7 @@ app.use(express.json());
 mongoose.connect("mongodb://localhost:27017/Streamline");
 
 app.use("/api", authRoutes);
+app.use("/api/utils", utilRoutes);
 app.use("/api/inventory", invRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/orders", orderRoutes);
@@ -34,6 +36,7 @@ app.use("/api/customers", customerRoutes);
 app.use("/api/sales", salesRoutes);
 app.use("/api/sales", salesRoutes);
 app.use("/api/tickets", ticketRoutes);
+app.use("/api/recon", reconRoutes);
 
 app.listen(3001, () => {
     "Server Started";

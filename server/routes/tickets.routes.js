@@ -3,11 +3,12 @@ const multer = require("multer");
 const TicketModel = require("../models/tickets.models");
 const tickets = express.Router();
 const mongoose = require("mongoose");
+const UserModel = require("../models/user.model");
 
 const upload = multer();
 
 tickets.post("/", upload.none(), async (req, res) => {
-    const { userId, name, issueType, department, subject, description, email, phone, priority, attachments } = req.body;
+    const { userId, issueType, department, subject, description, priority } = req.body;
 
     try {
         const generateUniqueTicketId = async () => {
@@ -31,15 +32,11 @@ tickets.post("/", upload.none(), async (req, res) => {
         const newTicket = new TicketModel({
             userId,
             ticketId,
-            name,
             issueType,
             department,
             subject,
             description,
-            email,
-            phone,
             priority,
-            attachments,
             assignedTo: null,
         });
 
@@ -80,11 +77,31 @@ tickets.get("/", async (req, res) => {
     }
 });
 
+tickets.get("/assignees", async (req, res) => {
+    const { search } = req.query;
+
+    try {
+        const query = search ? { email: { $regex: search, $options: "i" } } : {};
+        const assignees = await UserModel.find(query).select("_id email");
+
+        res.json({
+            success: true,
+            assignees,
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Error fetching assignees.",
+            error: true,
+        });
+    }
+});
+
 // Endpoint to fetch a ticket by ID
 tickets.get("/:ticketId", async (req, res) => {
     const { ticketId } = req.params;
     try {
-        const ticket = await TicketModel.findOne({ ticketId });
+        const ticket = await TicketModel.findOne({ ticketId }).populate("assignedTo", "email");
         if (!ticket) {
             return res.status(404).json({
                 success: false,

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
-import { Box, Typography, CircularProgress } from "@mui/material";
+import { Box, Typography, CircularProgress, Stepper, Step, StepLabel, MenuItem, Select, Button, Snackbar, Alert } from "@mui/material";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import BreadcrumbsComponent from "../parts/BreadcrumbsComponent";
@@ -11,8 +11,14 @@ import { useNavigate } from "react-router-dom";
 export default function OrderDetails() {
     const navigate = useNavigate();
     const { orderId } = useParams();
+
+    const [alertOpen, setAlertOpen] = useState(false);
+    const [message, setMessage] = useState("");
+    const [severity, setSeverity] = useState("success");
+
     const [orderDetails, setOrderDetails] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [newStatus, setNewStatus] = useState(orderDetails?.status || "");
 
     const breadcrumbs = [
         { label: "Home", path: "/" },
@@ -24,6 +30,7 @@ export default function OrderDetails() {
         try {
             const response = await axios.get(`/api/orders/${orderId}`);
             setOrderDetails(response.data.data);
+            setNewStatus(response.data.data.status);
         } catch (error) {
             console.error("Error fetching order details:", error);
         } finally {
@@ -34,6 +41,26 @@ export default function OrderDetails() {
     useEffect(() => {
         fetchOrderDetails();
     }, []);
+
+    const handleAlertClose = () => {
+        setAlertOpen(false);
+    };
+
+    const handleStatusChange = (event) => {
+        setNewStatus(event.target.value);
+    };
+
+    const updateStatus = async () => {
+        try {
+            await axios.put(`/api/orders/${orderId}/status`, { status: newStatus });
+            fetchOrderDetails();
+            setMessage("Status updated successfully!");
+            setSeverity("success");
+            setAlertOpen(true);
+        } catch (error) {
+            console.error("Error updating status:", error);
+        }
+    };
 
     if (loading) {
         return <CircularProgress />;
@@ -81,19 +108,68 @@ export default function OrderDetails() {
         },
     ];
 
+    // Define the steps for the timeline based on order status
+    const steps =
+        orderDetails.status === "cancelled"
+            ? ["Pending", "Cancelled"] // Show only pending and cancelled
+            : ["Pending", "Shipped", "Delivered"]; // Show pending, shipped, and delivered
+
+    // Get the current status index based on orderDetails.status
+    const statusIndex = steps.findIndex((step) => step.toLowerCase() === orderDetails.status);
+
     return (
         <Box sx={{ display: "flex", flexDirection: "column" }}>
-            <Box sx={{ display: "flex", alignItems: "center" }}>
-                <IconButton onClick={() => navigate(`/orders`)} sx={{ mr: 1 }}>
-                    <ChevronLeftIcon />
-                </IconButton>
-                <Typography variant="h5" gutterBottom>
-                    Order Details for Order ID: {orderId}
-                </Typography>
+            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 2 }}>
+                <Box sx={{ display: "flex", alignItems: "center" }}>
+                    <IconButton onClick={() => navigate(`/orders`)} sx={{ mr: 1 }}>
+                        <ChevronLeftIcon />
+                    </IconButton>
+                    <Typography variant="h5" gutterBottom>
+                        Order Details for Order ID: {orderId}
+                    </Typography>
+                </Box>
+                <Box sx={{ display: "flex", gap: 1 }}>
+                    <Select value={newStatus} onChange={handleStatusChange} size="small" displayEmpty sx={{ width: 150, borderRadius: "16px" }}>
+                        <MenuItem value="" disabled>
+                            Select Status
+                        </MenuItem>
+                        {["pending", "shipped", "delivered", "cancelled"].map((step) => (
+                            <MenuItem key={step} value={step.toLowerCase()}>
+                                {step}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                    <Button
+                        variant="contained"
+                        onClick={updateStatus}
+                        size="small"
+                        sx={{
+                            width: "100px",
+                            borderRadius: "16px",
+                            backgroundColor: "#000000",
+                            "&:hover": {
+                                backgroundColor: "#424242",
+                            },
+                        }}
+                    >
+                        Update
+                    </Button>
+                </Box>
             </Box>
             <BreadcrumbsComponent breadcrumbs={breadcrumbs} />
-            <Box sx={{ height: 400, width: "100%", marginTop: "6px" }}>
+            <Box sx={{ marginTop: "16px" }}>
+                <Typography variant="h6">Order Status</Typography>
+                <Stepper activeStep={statusIndex} alternativeLabel>
+                    {steps.map((label) => (
+                        <Step key={label}>
+                            <StepLabel>{label}</StepLabel>
+                        </Step>
+                    ))}
+                </Stepper>
+            </Box>
+            <Box sx={{ height: 400, width: "100%", marginTop: "16px" }}>
                 <DataGrid
+                    className="custom-data-grid"
                     rows={orderDetails.items}
                     columns={columns}
                     getRowId={(row) => row.itemId}
@@ -101,18 +177,23 @@ export default function OrderDetails() {
                     rowsPerPageOptions={[5]}
                     checkboxSelection
                     disableRowSelectionOnClick
-                    sx={{
-                        borderRadius: "16px",
-                        "& .MuiDataGrid-columnHeader": {
-                            backgroundColor: "#000000",
-                            color: "#fff",
-                        },
-                        "& .MuiDataGrid-columnHeader .MuiSvgIcon-root": {
-                            color: "#fff",
-                        },
-                    }}
                 />
             </Box>
+            <Snackbar
+                open={alertOpen}
+                autoHideDuration={6000}
+                onClose={handleAlertClose}
+                anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                action={
+                    <Button color="inherit" onClick={handleAlertClose}>
+                        Close
+                    </Button>
+                }
+            >
+                <Alert onClose={handleAlertClose} severity={severity} sx={{ width: "100%" }}>
+                    {message}
+                </Alert>
+            </Snackbar>
         </Box>
     );
 }

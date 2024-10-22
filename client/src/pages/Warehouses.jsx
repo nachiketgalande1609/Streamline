@@ -1,21 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
-import {
-    Modal,
-    Box,
-    Typography,
-    Button,
-    Snackbar,
-    Alert,
-    IconButton,
-    FormControl,
-    Select,
-    MenuItem,
-    Grid,
-    TextField,
-    Chip,
-} from "@mui/material";
+import { Modal, Box, Typography, Button, Snackbar, Alert, IconButton, FormControl, Select, MenuItem, Grid, TextField, Chip } from "@mui/material";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import AddIcon from "@mui/icons-material/Add";
 import { Close } from "@mui/icons-material";
@@ -76,10 +62,7 @@ export default function Warehouses() {
             });
             const warehouseDetails = response.data.data.map((warehouse) => ({
                 ...warehouse,
-                managerName:
-                    warehouse.managerInfo?.first_name +
-                        " " +
-                        warehouse.managerInfo?.last_name || "N/A",
+                managerName: warehouse.managerInfo?.first_name + " " + warehouse.managerInfo?.last_name || "N/A",
                 managerNumber: warehouse.managerInfo?.phone_number || "N/A",
                 managerEmail: warehouse.managerInfo?.email || "N/A",
             }));
@@ -113,16 +96,7 @@ export default function Warehouses() {
 
             const csv = Papa.unparse(data, {
                 header: true,
-                columns: [
-                    "warehouse_id",
-                    "name",
-                    "location",
-                    "capacity",
-                    "current_stock",
-                    "contact_number",
-                    "status",
-                    "manager_name",
-                ],
+                columns: ["warehouse_id", "name", "location", "capacity", "current_stock", "contact_number", "status", "manager_name"],
             });
 
             // Create a downloadable link
@@ -159,13 +133,7 @@ export default function Warehouses() {
                     chipColor = "default";
                 }
 
-                return (
-                    <Chip
-                        label={params.value}
-                        color={chipColor}
-                        sx={{ width: 100 }}
-                    />
-                );
+                return <Chip label={params.value} color={chipColor} sx={{ width: 100 }} />;
             },
         },
         {
@@ -271,19 +239,10 @@ export default function Warehouses() {
                     Warehouses
                 </Typography>
                 <Box sx={{ display: "flex", gap: 1 }}>
-                    <IconButton
-                        size="small"
-                        onClick={handleOpen}
-                        aria-label="Add Items"
-                        sx={{ mr: 1 }}
-                    >
+                    <IconButton size="small" onClick={handleOpen} aria-label="Add Items" sx={{ mr: 1 }}>
                         <AddIcon />
                     </IconButton>
-                    <IconButton
-                        size="small"
-                        onClick={handleExport}
-                        aria-label="Export to CSV"
-                    >
+                    <IconButton size="small" onClick={handleExport} aria-label="Export to CSV">
                         <FileDownloadIcon />
                     </IconButton>
                     <FormControl size="small" sx={{ minWidth: 150 }}>
@@ -316,6 +275,7 @@ export default function Warehouses() {
                 }}
             >
                 <DataGrid
+                    className="custom-data-grid"
                     rows={rows}
                     columns={columns}
                     getRowId={(row) => row.warehouse_id}
@@ -332,16 +292,6 @@ export default function Warehouses() {
                     }}
                     checkboxSelection
                     disableRowSelectionOnClick
-                    sx={{
-                        borderRadius: "16px",
-                        "& .MuiDataGrid-columnHeader": {
-                            backgroundColor: "#000000",
-                            color: "#fff",
-                        },
-                        "& .MuiDataGrid-columnHeader .MuiSvgIcon-root": {
-                            color: "#fff",
-                        },
-                    }}
                 />
             </Box>
             <Snackbar
@@ -355,11 +305,7 @@ export default function Warehouses() {
                     </Button>
                 }
             >
-                <Alert
-                    onClose={handleAlertClose}
-                    severity={severity}
-                    sx={{ width: "100%" }}
-                >
+                <Alert onClose={handleAlertClose} severity={severity} sx={{ width: "100%" }}>
                     {message}
                 </Alert>
             </Snackbar>
@@ -392,6 +338,10 @@ export default function Warehouses() {
                                     fullWidth
                                     margin="normal"
                                     required
+                                    size="small"
+                                    InputProps={{
+                                        style: { borderRadius: "16px" },
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={4}>
@@ -403,6 +353,10 @@ export default function Warehouses() {
                                     fullWidth
                                     margin="normal"
                                     required
+                                    size="small"
+                                    InputProps={{
+                                        style: { borderRadius: "16px" },
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={4}>
@@ -414,6 +368,10 @@ export default function Warehouses() {
                                     fullWidth
                                     margin="normal"
                                     required
+                                    size="small"
+                                    InputProps={{
+                                        style: { borderRadius: "16px" },
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={4}>
@@ -426,6 +384,10 @@ export default function Warehouses() {
                                     fullWidth
                                     margin="normal"
                                     required
+                                    size="small"
+                                    InputProps={{
+                                        style: { borderRadius: "16px" },
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={4}>
@@ -438,6 +400,10 @@ export default function Warehouses() {
                                     fullWidth
                                     margin="normal"
                                     required
+                                    size="small"
+                                    InputProps={{
+                                        style: { borderRadius: "16px" },
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={4}>
@@ -449,6 +415,10 @@ export default function Warehouses() {
                                     fullWidth
                                     margin="normal"
                                     required
+                                    size="small"
+                                    InputProps={{
+                                        style: { borderRadius: "16px" },
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={4}>
@@ -460,6 +430,10 @@ export default function Warehouses() {
                                     fullWidth
                                     margin="normal"
                                     required
+                                    size="small"
+                                    InputProps={{
+                                        style: { borderRadius: "16px" },
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={4}>
@@ -471,6 +445,10 @@ export default function Warehouses() {
                                     fullWidth
                                     margin="normal"
                                     required
+                                    size="small"
+                                    InputProps={{
+                                        style: { borderRadius: "16px" },
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={4}>
@@ -482,6 +460,10 @@ export default function Warehouses() {
                                     fullWidth
                                     margin="normal"
                                     required
+                                    size="small"
+                                    InputProps={{
+                                        style: { borderRadius: "16px" },
+                                    }}
                                 />
                             </Grid>
                         </Grid>

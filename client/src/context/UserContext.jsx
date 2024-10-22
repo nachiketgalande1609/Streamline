@@ -16,14 +16,9 @@ export const UserProvider = ({ children }) => {
                 const decodedUser = jwtDecode(token);
                 setUser(decodedUser);
 
-                console.log(decodedUser);
-
                 localStorage.setItem("userId", decodedUser.id);
                 localStorage.setItem("userEmail", decodedUser.email);
-                localStorage.setItem(
-                    "userName",
-                    decodedUser.first_name + " " + decodedUser.last_name
-                );
+                localStorage.setItem("userName", decodedUser.first_name + " " + decodedUser.last_name);
             } catch (error) {
                 console.error("Invalid token", error);
                 localStorage.removeItem("token");
@@ -44,9 +39,5 @@ export const UserProvider = ({ children }) => {
         navigate("/login");
     };
 
-    return (
-        <UserContext.Provider value={{ user, updateUser, logout }}>
-            {children}
-        </UserContext.Provider>
-    );
+    return <UserContext.Provider value={{ user, updateUser, logout }}>{children}</UserContext.Provider>;
 };

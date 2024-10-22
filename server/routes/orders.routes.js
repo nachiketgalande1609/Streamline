@@ -223,10 +223,7 @@ orders.get("/customers-items", async (req, res) => {
                 address: 1,
             }
         );
-        const itemsList = await Inventory.find(
-            {},
-            { _id: 1, name: 1, price: 1 }
-        );
+        const itemsList = await Inventory.find({}, { _id: 1, name: 1, price: 1 });
         res.json({
             success: true,
             data: { customers: customerList, items: itemsList },
@@ -310,6 +307,51 @@ orders.get("/:orderId", async (req, res) => {
             data: null,
             error: true,
             message: "Error fetching order details.",
+        });
+    }
+});
+
+orders.put("/:orderId/status", async (req, res) => {
+    const { orderId } = req.params;
+    const { status } = req.body;
+
+    // Validate the status input
+    const validStatuses = ["pending", "shipped", "delivered", "cancelled"];
+    if (!status || !validStatuses.includes(status)) {
+        return res.status(400).json({
+            success: false,
+            error: true,
+            message: "Invalid status. Valid statuses are: " + validStatuses.join(", "),
+        });
+    }
+
+    try {
+        const updatedOrder = await Orders.findOneAndUpdate(
+            { orderId: Number(orderId) }, // Convert orderId to a number for the query
+            { status }, // Update only the status field
+            { new: true } // Return the updated document
+        );
+
+        if (!updatedOrder) {
+            return res.status(404).json({
+                success: false,
+                error: true,
+                message: "Order not found.",
+            });
+        }
+
+        res.json({
+            success: true,
+            data: updatedOrder,
+            error: false,
+            message: "Order status updated successfully.",
+        });
+    } catch (error) {
+        console.error("Error updating order status:", error); // Log error for debugging
+        res.status(500).json({
+            success: false,
+            error: true,
+            message: "Error updating order status.",
         });
     }
 });

@@ -1,18 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
-import {
-    Box,
-    Button,
-    Card,
-    Grid,
-    Avatar,
-    Typography,
-    TextField,
-    FormControl,
-    Select,
-    MenuItem,
-    InputLabel,
-} from "@mui/material";
+import { Box, Button, Card, Grid, Avatar, Typography, TextField, FormControl, Select, MenuItem, InputLabel } from "@mui/material";
 import { UserContext } from "../context/UserContext";
 import BreadcrumbsComponent from "../parts/BreadcrumbsComponent";
 export default function Profile() {
@@ -94,8 +82,7 @@ export default function Profile() {
                     >
                         <Avatar
                             src={
-                                userData?.profilePicture ||
-                                "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+                                userData?.profilePicture || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
                             }
                             alt="Profile"
                             sx={{
@@ -111,29 +98,12 @@ export default function Profile() {
                         <Typography variant="body2" color="textSecondary">
                             {userData?.role}
                         </Typography>
-                        {/* Metrics Section */}
-                        <Box mt={3}>
-                            <Typography>
-                                Opportunities applied:{" "}
-                                <span style={{ color: "orange" }}>32</span>
-                            </Typography>
-                            <Typography>
-                                Opportunities won:{" "}
-                                <span style={{ color: "green" }}>26</span>
-                            </Typography>
-                            <Typography>
-                                Current opportunities:{" "}
-                                <span style={{ color: "blue" }}>6</span>
-                            </Typography>
-                        </Box>
                     </Card>
                 </Grid>
 
                 {/* Right Profile Form */}
                 <Grid item xs={12} md={8}>
-                    <Card
-                        sx={{ boxShadow: 3, borderRadius: "16px", padding: 3 }}
-                    >
+                    <Card sx={{ boxShadow: 3, borderRadius: "16px", padding: 3 }}>
                         <Typography variant="h6" gutterBottom>
                             Account Settings
                         </Typography>
@@ -190,21 +160,10 @@ export default function Profile() {
                                 {/* City */}
                                 <Grid item xs={12} sm={6}>
                                     <FormControl fullWidth margin="normal">
-                                        <InputLabel id="status-label">
-                                            Status
-                                        </InputLabel>
-                                        <Select
-                                            labelId="status-label"
-                                            name="status"
-                                            value={formData?.status}
-                                            onChange={handleChange}
-                                            label="Status"
-                                        >
+                                        <InputLabel id="status-label">Status</InputLabel>
+                                        <Select labelId="status-label" name="status" value={formData?.status} onChange={handleChange} label="Status">
                                             {statuses.map((status) => (
-                                                <MenuItem
-                                                    key={status}
-                                                    value={status}
-                                                >
+                                                <MenuItem key={status} value={status}>
                                                     {status}
                                                 </MenuItem>
                                             ))}
@@ -215,21 +174,10 @@ export default function Profile() {
                                 {/* Role */}
                                 <Grid item xs={12} sm={6}>
                                     <FormControl fullWidth margin="normal">
-                                        <InputLabel id="role-label">
-                                            Role
-                                        </InputLabel>
-                                        <Select
-                                            labelId="role-label"
-                                            name="role"
-                                            value={formData?.role}
-                                            onChange={handleChange}
-                                            label="Role"
-                                        >
+                                        <InputLabel id="role-label">Role</InputLabel>
+                                        <Select labelId="role-label" name="role" value={formData?.role} onChange={handleChange} label="Role">
                                             {roles.map((role) => (
-                                                <MenuItem
-                                                    key={role}
-                                                    value={role}
-                                                >
+                                                <MenuItem key={role} value={role}>
                                                     {role}
                                                 </MenuItem>
                                             ))}
@@ -239,9 +187,7 @@ export default function Profile() {
                             </Grid>
 
                             {/* Update Button */}
-                            <Box
-                                sx={{ display: "flex", justifyContent: "end" }}
-                            >
+                            <Box sx={{ display: "flex", justifyContent: "end" }}>
                                 <Button
                                     type="submit"
                                     variant="contained"

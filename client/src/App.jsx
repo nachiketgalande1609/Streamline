@@ -17,28 +17,22 @@ import "@fontsource/roboto/400.css";
 import "./App.css";
 import { UserProvider } from "./context/UserContext";
 import OrderDetails from "./pages/OrderDetails";
-import Contact from "./pages/Contact";
+import RaiseTicket from "./pages/RaiseTicket";
 import Incidents from "./pages/Incidents";
 import IncidentDetails from "./pages/IncidentDetails";
+import FinancialReconciliation from "./pages/FinancialReconciliation";
 
 axios.defaults.baseURL = "http://localhost:3001";
-axios.defaults.headers.common["token"] = `Bearer ${localStorage.getItem(
-    "token"
-)}`;
+axios.defaults.headers.common["token"] = `Bearer ${localStorage.getItem("token")}`;
 axios.defaults.headers.common["user_id"] = `${localStorage.getItem("userId")}`;
-axios.defaults.headers.common["user_email"] = `${localStorage.getItem(
-    "userEmail"
-)}`;
-axios.defaults.headers.common["user_name"] = `${localStorage.getItem(
-    "userName"
-)}`;
+axios.defaults.headers.common["user_email"] = `${localStorage.getItem("userEmail")}`;
+axios.defaults.headers.common["user_name"] = `${localStorage.getItem("userName")}`;
 
 const drawerWidth = 240;
 
 function Layout() {
     const location = useLocation();
-    const hideNavbarAndFooter =
-        location.pathname === "/login" || location.pathname === "/register";
+    const hideNavbarAndFooter = location.pathname === "/login" || location.pathname === "/register";
     return (
         <div
             style={{
@@ -83,16 +77,11 @@ function Layout() {
                         <Route path="/sales" element={<Sales />} />
                         <Route path="/warehouses" element={<Warehouses />} />
                         <Route path="/customers" element={<Customers />} />
-                        <Route path="/contact" element={<Contact />} />
+                        <Route path="/raise-ticket" element={<RaiseTicket />} />
                         <Route path="/incidents" element={<Incidents />} />
-                        <Route
-                            path="/order/:orderId"
-                            element={<OrderDetails />}
-                        />
-                        <Route
-                            path="/incidents/:ticketId"
-                            element={<IncidentDetails />}
-                        />
+                        <Route path="/recon" element={<FinancialReconciliation />} />
+                        <Route path="/order/:orderId" element={<OrderDetails />} />
+                        <Route path="/incidents/:ticketId" element={<IncidentDetails />} />
                     </Routes>
                 </div>
                 {!hideNavbarAndFooter && (
@@ -104,12 +93,8 @@ function Layout() {
                             marginTop: "auto",
                         }}
                     >
-                        <Typography
-                            variant="body2"
-                            sx={{ color: (theme) => theme.palette.grey[500] }}
-                        >
-                            © {new Date().getFullYear()} Streamline. All rights
-                            reserved.
+                        <Typography variant="body2" sx={{ color: (theme) => theme.palette.grey[500] }}>
+                            © {new Date().getFullYear()} Streamline. All rights reserved.
                         </Typography>
                     </footer>
                 )}

@@ -19,6 +19,7 @@ import {
     Chip,
     IconButton,
     LinearProgress,
+    Autocomplete,
 } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -36,6 +37,9 @@ export default function IncidentDetails() {
     const [formState, setFormState] = useState({});
     const [historyLoading, setHistoryLoading] = useState(true);
     const [comment, setComment] = useState("");
+    const [assignees, setAssignees] = useState(null);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [debouncedSearchQuery, setDebouncedSearchQuery] = useState(searchQuery);
 
     const breadcrumbs = [
         { label: "Home", path: "/" },
@@ -56,6 +60,45 @@ export default function IncidentDetails() {
             setLoading(false);
             setHistoryLoading(false);
         }
+    };
+
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            setDebouncedSearchQuery(searchQuery);
+        }, 1000);
+
+        return () => {
+            clearTimeout(handler);
+        };
+    }, [searchQuery]);
+
+    const fetchAssignees = async () => {
+        try {
+            const response = await axios.get(`/api/tickets/assignees`, {
+                params: { search: debouncedSearchQuery },
+            });
+            const assigneeNames = response.data.assignees.map((assignee) => ({
+                name: assignee.email, // Map the label to `name` for consistency
+                _id: assignee._id, // Keep the ID for selection handling
+            }));
+
+            setAssignees(assigneeNames);
+        } catch (error) {
+            console.error("Error fetching assignees:", error);
+        }
+    };
+
+    useEffect(() => {
+        if (debouncedSearchQuery !== "") {
+            fetchAssignees();
+        }
+    }, [debouncedSearchQuery]);
+
+    const handleAssigneeChange = (event, value) => {
+        setFormState((prev) => ({
+            ...prev,
+            assignedTo: value ? value._id : null,
+        }));
     };
 
     useEffect(() => {
@@ -252,7 +295,7 @@ export default function IncidentDetails() {
                                     style: { borderRadius: "16px" },
                                 }}
                             >
-                                {["low", "medium", "high", "urgent"].map((option) => (
+                                {["low", "medium", "high", "critical"].map((option) => (
                                     <MenuItem key={option} value={option}>
                                         {option}
                                     </MenuItem>
@@ -283,14 +326,40 @@ export default function IncidentDetails() {
                             </TextField>
                         </Grid>
 
+                        <Grid item sm={2} container alignItems="center" justifyContent="flex-end">
+                            <Typography variant="body2">Assigned To</Typography>
+                        </Grid>
+                        <Grid item sm={4}>
+                            <Autocomplete
+                                options={assignees || []} // Corrected: No nested array
+                                getOptionLabel={(option) => option.name || ""} // Using `name` consistently
+                                value={assignees?.find((a) => a._id === formState.assignedTo) || null}
+                                onChange={handleAssigneeChange}
+                                onInputChange={(event, newInputValue) => setSearchQuery(newInputValue)} // Update searchQuery as user types
+                                isOptionEqualToValue={(option, value) => option._id === value._id} // Match options by unique _id
+                                renderInput={(params) => (
+                                    <TextField
+                                        {...params}
+                                        label="Search Assignee"
+                                        name="assignedTo"
+                                        sx={{ width: "300px" }}
+                                        InputProps={{
+                                            ...params.InputProps,
+                                            style: { borderRadius: "16px" },
+                                        }}
+                                    />
+                                )}
+                            />
+                        </Grid>
+
                         {/* Created Date */}
                         <Grid item sm={2} container alignItems="center" justifyContent="flex-end">
                             <Typography variant="body2">Created Date</Typography>
                         </Grid>
                         <Grid item sm={4}>
                             <TextField
-                                value={new Date(formState.createdDate).toLocaleString() || ""}
-                                name="createdDate"
+                                value={new Date(formState.createdAt).toLocaleString() || ""}
+                                name="createdAt"
                                 sx={{ width: "300px" }}
                                 InputProps={{
                                     style: { borderRadius: "16px" },
@@ -302,8 +371,8 @@ export default function IncidentDetails() {
                         </Grid>
                         <Grid item sm={4}>
                             <TextField
-                                value={new Date(formState?.updatedDate).toLocaleString() || ""}
-                                name="updatedDate"
+                                value={new Date(formState?.updatedAt).toLocaleString() || ""}
+                                name="updatedAt"
                                 sx={{ width: "300px" }}
                                 InputProps={{
                                     style: { borderRadius: "16px" },
@@ -465,17 +534,19 @@ export default function IncidentDetails() {
                                                                 changed from:
                                                             </Typography>
                                                             <Chip
-                                                                label={change.oldValue}
+                                                                label={change.oldValue || "Blank"}
                                                                 color="default"
                                                                 size="small"
                                                                 sx={{
                                                                     marginRight: 1,
+                                                                    padding: 1,
                                                                 }}
                                                             />
                                                             <Typography
                                                                 variant="body2"
                                                                 sx={{
                                                                     marginRight: 1,
+                                                                    padding: 1,
                                                                 }}
                                                             >
                                                                 ➔
@@ -495,7 +566,7 @@ export default function IncidentDetails() {
         );
     };
 
-    const SlaAccordion = ({ createdDate }) => {
+    const SlaAccordion = ({ createdAt }) => {
         const [progress, setProgress] = useState(0);
         const [elapsedTime, setElapsedTime] = useState(0); // To track elapsed time
         const [remainingTime, setRemainingTime] = useState(SLA_DURATION);
@@ -503,7 +574,7 @@ export default function IncidentDetails() {
         useEffect(() => {
             const interval = setInterval(() => {
                 const now = new Date();
-                const createdTime = new Date(createdDate);
+                const createdTime = new Date(createdAt);
                 const timeElapsed = now - createdTime; // Time passed in milliseconds
                 const timeRemaining = SLA_DURATION - timeElapsed; // Time remaining in milliseconds
 
@@ -516,7 +587,7 @@ export default function IncidentDetails() {
             }, 1000); // Update every second
 
             return () => clearInterval(interval); // Cleanup on component unmount
-        }, [createdDate]);
+        }, [createdAt]);
 
         // Helper function to format milliseconds into HH:MM:SS
         const formatTime = (ms) => {
@@ -550,7 +621,7 @@ export default function IncidentDetails() {
                 <AccordionDetails sx={{ padding: "20px", display: "flex", justifyContent: "center" }}>
                     <Box sx={{ width: "80%" }}>
                         <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
-                            <Typography variant="body1">Created: {new Date(createdDate).toLocaleString()}</Typography>
+                            <Typography variant="body1">Created: {new Date(createdAt).toLocaleString()}</Typography>
                         </Box>
 
                         <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
@@ -606,7 +677,7 @@ export default function IncidentDetails() {
 
             <IncidentDetailsAccordion />
             <TicketHistoryAccordion />
-            <SlaAccordion createdDate={ticket.createdDate} />
+            <SlaAccordion createdAt={ticket.createdAt} />
 
             <Snackbar
                 open={alertOpen}

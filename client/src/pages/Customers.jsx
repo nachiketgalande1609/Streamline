@@ -162,10 +162,7 @@ export default function Customers() {
         e.preventDefault();
         try {
             if (isEditMode) {
-                await axios.put(
-                    `/api/customers/${currentCustomerId}`,
-                    formData
-                );
+                await axios.put(`/api/customers/${currentCustomerId}`, formData);
             } else {
                 await axios.post("/api/customers", formData);
             }
@@ -374,19 +371,10 @@ export default function Customers() {
                     Customers
                 </Typography>
                 <Box sx={{ display: "flex", gap: 1 }}>
-                    <IconButton
-                        size="small"
-                        onClick={handleOpen}
-                        aria-label="Add Items"
-                        sx={{ mr: 1 }}
-                    >
+                    <IconButton size="small" onClick={handleOpen} aria-label="Add Items" sx={{ mr: 1 }}>
                         <AddIcon />
                     </IconButton>
-                    <IconButton
-                        size="small"
-                        onClick={handleExport}
-                        aria-label="Export to CSV"
-                    >
+                    <IconButton size="small" onClick={handleExport} aria-label="Export to CSV">
                         <FileDownloadIcon />
                     </IconButton>
                 </Box>
@@ -421,6 +409,9 @@ export default function Customers() {
                                     margin="normal"
                                     required
                                     size="small"
+                                    InputProps={{
+                                        style: { borderRadius: "16px" },
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={4}>
@@ -433,6 +424,9 @@ export default function Customers() {
                                     margin="normal"
                                     required
                                     size="small"
+                                    InputProps={{
+                                        style: { borderRadius: "16px" },
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={4}>
@@ -445,6 +439,9 @@ export default function Customers() {
                                     margin="normal"
                                     required
                                     size="small"
+                                    InputProps={{
+                                        style: { borderRadius: "16px" },
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={4}>
@@ -457,6 +454,9 @@ export default function Customers() {
                                     margin="normal"
                                     required
                                     size="small"
+                                    InputProps={{
+                                        style: { borderRadius: "16px" },
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={4}>
@@ -469,6 +469,9 @@ export default function Customers() {
                                     margin="normal"
                                     required
                                     size="small"
+                                    InputProps={{
+                                        style: { borderRadius: "16px" },
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={4}>
@@ -481,6 +484,9 @@ export default function Customers() {
                                     margin="normal"
                                     required
                                     size="small"
+                                    InputProps={{
+                                        style: { borderRadius: "16px" },
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={4}>
@@ -493,6 +499,9 @@ export default function Customers() {
                                     margin="normal"
                                     required
                                     size="small"
+                                    InputProps={{
+                                        style: { borderRadius: "16px" },
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={4}>
@@ -505,6 +514,9 @@ export default function Customers() {
                                     margin="normal"
                                     required
                                     size="small"
+                                    InputProps={{
+                                        style: { borderRadius: "16px" },
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={4}>
@@ -517,6 +529,9 @@ export default function Customers() {
                                     margin="normal"
                                     required
                                     size="small"
+                                    InputProps={{
+                                        style: { borderRadius: "16px" },
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={4}>
@@ -529,6 +544,9 @@ export default function Customers() {
                                     margin="normal"
                                     required
                                     size="small"
+                                    InputProps={{
+                                        style: { borderRadius: "16px" },
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={4}>
@@ -542,6 +560,9 @@ export default function Customers() {
                                     margin="normal"
                                     required
                                     size="small"
+                                    InputProps={{
+                                        style: { borderRadius: "16px" },
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={4}>
@@ -554,6 +575,9 @@ export default function Customers() {
                                     fullWidth
                                     margin="normal"
                                     size="small"
+                                    InputProps={{
+                                        style: { borderRadius: "16px" },
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={12}>
@@ -584,22 +608,16 @@ export default function Customers() {
                     </form>
                 </Box>
             </Modal>
-            <Dialog open={confirmOpen} onClose={() => setConfirmOpen(false)}>
+            <Dialog open={confirmOpen} onClose={() => setConfirmOpen(false)} sx={{ "& .MuiPaper-root": { borderRadius: "16px", padding: 1 } }}>
                 <DialogTitle>Confirm Delete</DialogTitle>
                 <DialogContent>
-                    <Typography>
-                        Are you sure you want to delete this customer?
-                    </Typography>
+                    <Typography>Are you sure you want to delete this customer?</Typography>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setConfirmOpen(false)}>
+                    <Button size="medium" sx={{ borderRadius: "16px" }} onClick={() => setConfirmOpen(false)}>
                         Cancel
                     </Button>
-                    <Button
-                        onClick={confirmDelete}
-                        variant="contained"
-                        color="error"
-                    >
+                    <Button size="medium" sx={{ borderRadius: "16px" }} onClick={confirmDelete} variant="contained" color="error">
                         Delete
                     </Button>
                 </DialogActions>
@@ -614,6 +632,7 @@ export default function Customers() {
                 }}
             >
                 <DataGrid
+                    className="custom-data-grid"
                     rows={rows}
                     columns={columns}
                     getRowId={(row) => row._id}
@@ -630,16 +649,6 @@ export default function Customers() {
                     }}
                     checkboxSelection
                     disableRowSelectionOnClick
-                    sx={{
-                        borderRadius: "16px",
-                        "& .MuiDataGrid-columnHeader": {
-                            backgroundColor: "#000000",
-                            color: "#fff",
-                        },
-                        "& .MuiDataGrid-columnHeader .MuiSvgIcon-root": {
-                            color: "#fff",
-                        },
-                    }}
                 />
             </Box>
             <Snackbar
@@ -653,11 +662,7 @@ export default function Customers() {
                     </Button>
                 }
             >
-                <Alert
-                    onClose={handleAlertClose}
-                    severity={severity}
-                    sx={{ width: "100%" }}
-                >
+                <Alert onClose={handleAlertClose} severity={severity} sx={{ width: "100%" }}>
                     {message}
                 </Alert>
             </Snackbar>

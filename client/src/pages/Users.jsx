@@ -1,18 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
-import {
-    Box,
-    Typography,
-    Button,
-    Snackbar,
-    Alert,
-    IconButton,
-    MenuItem,
-    FormControl,
-    Select,
-    Chip,
-} from "@mui/material";
+import { Box, Typography, Button, Snackbar, Alert, IconButton, MenuItem, FormControl, Select, Chip } from "@mui/material";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import BreadcrumbsComponent from "../parts/BreadcrumbsComponent";
 import * as Papa from "papaparse";
@@ -80,16 +69,7 @@ export default function Users() {
 
             const csv = Papa.unparse(data, {
                 header: true,
-                columns: [
-                    "first_name",
-                    "last_name",
-                    "email",
-                    "status",
-                    "created_at",
-                    "updated_at",
-                    "phone_number",
-                    "role",
-                ],
+                columns: ["first_name", "last_name", "email", "status", "created_at", "updated_at", "phone_number", "role"],
             });
 
             // Create a downloadable link
@@ -139,9 +119,7 @@ export default function Users() {
                 >
                     <img
                         src={
-                            params.value
-                                ? params.value
-                                : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" // Use a direct image URL here
+                            params.value ? params.value : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" // Use a direct image URL here
                         }
                         alt="Profile"
                         style={{ width: 40, height: 40, borderRadius: "50%" }}
@@ -200,13 +178,7 @@ export default function Users() {
                     chipColor = "default";
                 }
 
-                return (
-                    <Chip
-                        label={params.value}
-                        color={chipColor}
-                        sx={{ width: 100 }}
-                    />
-                );
+                return <Chip label={params.value} color={chipColor} sx={{ width: 100 }} />;
             },
         },
         {
@@ -250,11 +222,7 @@ export default function Users() {
                     Users
                 </Typography>
                 <Box sx={{ display: "flex", gap: 1 }}>
-                    <IconButton
-                        size="small"
-                        onClick={handleExport}
-                        aria-label="Export to CSV"
-                    >
+                    <IconButton size="small" onClick={handleExport} aria-label="Export to CSV">
                         <FileDownloadIcon />
                     </IconButton>
                     <FormControl size="small" sx={{ minWidth: 150 }}>
@@ -293,13 +261,14 @@ export default function Users() {
             <BreadcrumbsComponent breadcrumbs={breadcrumbs} />
             <Box
                 sx={{
-                    height: "100%",
+                    height: 631,
                     maxWidth: "calc(100vw - 280px)",
                     marginTop: 2,
                     overflowX: "auto", // Enable horizontal scrolling if content overflows
                 }}
             >
                 <DataGrid
+                    className="custom-data-grid"
                     rows={rows}
                     columns={columns}
                     getRowId={(row) => row._id}
@@ -316,17 +285,6 @@ export default function Users() {
                     }}
                     checkboxSelection
                     disableRowSelectionOnClick
-                    sx={{
-                        height: "70vh",
-                        borderRadius: "16px",
-                        "& .MuiDataGrid-columnHeader": {
-                            backgroundColor: "#000000",
-                            color: "#fff",
-                        },
-                        "& .MuiDataGrid-columnHeader .MuiSvgIcon-root": {
-                            color: "#fff",
-                        },
-                    }}
                 />
             </Box>
             <Snackbar
@@ -340,11 +298,7 @@ export default function Users() {
                     </Button>
                 }
             >
-                <Alert
-                    onClose={handleAlertClose}
-                    severity={severity}
-                    sx={{ width: "100%" }}
-                >
+                <Alert onClose={handleAlertClose} severity={severity} sx={{ width: "100%" }}>
                     {message}
                 </Alert>
             </Snackbar>

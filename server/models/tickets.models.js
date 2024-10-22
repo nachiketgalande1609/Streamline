@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const UserModel = require("../models/user.model");
 
 const ticketSchema = new mongoose.Schema(
     {
@@ -23,7 +24,7 @@ const ticketSchema = new mongoose.Schema(
         priority: {
             type: String,
             required: true,
-            enum: ["low", "medium", "high", "urgent"],
+            enum: ["low", "medium", "high", "critical"],
         },
         status: {
             type: String,
@@ -31,10 +32,7 @@ const ticketSchema = new mongoose.Schema(
             enum: ["open", "in progress", "resolved", "closed"],
             default: "open",
         },
-        createdDate: { type: Date, default: Date.now },
-        updatedDate: { type: Date },
-        assignedTo: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-        attachments: [{ type: String }],
+        assignedTo: { type: mongoose.Schema.Types.ObjectId, ref: UserModel },
         history: [
             {
                 action: { type: String, required: true },
@@ -56,7 +54,7 @@ const ticketSchema = new mongoose.Schema(
             },
         ],
     },
-    { collection: "tickets" }
+    { collection: "tickets", timestamps: true }
 );
 
 const TicketModel = mongoose.model("Ticket", ticketSchema);
