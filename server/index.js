@@ -12,9 +12,10 @@ const warehouseRoutes = require("./routes/warehouse.routes");
 const dashboardRoutes = require("./routes/dashboard.routes");
 const customerRoutes = require("./routes/customers.routes");
 const salesRoutes = require("./routes/sales.routes");
-const utilRoutes = require("./routes/utils.routes");
 const ticketRoutes = require("./routes/tickets.routes");
 const reconRoutes = require("./routes/recon.routes");
+
+require("dotenv").config();
 
 const app = express();
 
@@ -23,10 +24,9 @@ app.use(express.json());
 
 // mongoose.set("debug", true);
 
-mongoose.connect("mongodb://localhost:27017/Streamline");
+mongoose.connect(process.env.MONGO_CONN_STRING);
 
 app.use("/api", authRoutes);
-app.use("/api/utils", utilRoutes);
 app.use("/api/inventory", invRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/orders", orderRoutes);

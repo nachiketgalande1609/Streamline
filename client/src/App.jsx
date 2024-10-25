@@ -58,10 +58,10 @@ function Layout() {
                                   padding: "20px",
                                   backgroundColor: "#fff",
                                   minHeight: `calc(100vh - 120px)`,
-                                  borderRadius: "30px",
+                                  borderRadius: "30px 30px 30px 30px",
                                   marginTop: "40px",
                                   marginRight: "20px",
-                                  overflowY: "scroll",
+                                  overflowY: "hidden",
                               }
                             : {}),
                     }}

@@ -5,6 +5,8 @@ const Orders = require("../models/orders.models");
 const Customer = require("../models/customers.models");
 const Inventory = require("../models/inv.models");
 
+const { sendEmail } = require("../utils/utils");
+
 const orders = express.Router();
 
 orders.get("/", async (req, res) => {
@@ -339,6 +341,95 @@ orders.put("/:orderId/status", async (req, res) => {
                 message: "Order not found.",
             });
         }
+
+        // Generate the email body and HTML content
+        let emailHtml;
+        switch (status) {
+            case "pending":
+                emailHtml = `
+                    <html>
+                        <body style="font-family: Arial, sans-serif; margin: 0; padding: 0;">
+                            <div style="max-width: 600px; margin: auto; border: 1px solid #ddd; border-radius: 8px; overflow: hidden;">
+                                <div style="background-color: #f8f8f8; padding: 20px; text-align: center;">
+                                    <h1 style="color: #333;">Order Update</h1>
+                                    <p style="color: #555;">Hi,</p>
+                                    <p style="color: #555;">Your order <strong>${orderId}</strong> is currently pending.</p>
+                                    <p style="color: #555;">We will process it as soon as possible.</p>
+                                </div>
+                                <div style="padding: 20px; text-align: center;">
+                                    <a href="http://localhost:5173/order/${orderId}" style="text-decoration: none; color: white; background-color: #28a745; padding: 10px 20px; border-radius: 5px;">View Order</a>
+                                </div>
+                            </div>
+                        </body>
+                    </html>
+                `;
+                break;
+            case "shipped":
+                emailHtml = `
+                    <html>
+                        <body style="font-family: Arial, sans-serif; margin: 0; padding: 0;">
+                            <div style="max-width: 600px; margin: auto; border: 1px solid #ddd; border-radius: 8px; overflow: hidden;">
+                                <div style="background-color: #f8f8f8; padding: 20px; text-align: center;">
+                                    <h1 style="color: #333;">Order Shipped</h1>
+                                    <p style="color: #555;">Hi,</p>
+                                    <p style="color: #555;">Your order <strong>${orderId}</strong> has been shipped.</p>
+                                    <p style="color: #555;">You can track your package using the provided tracking information.</p>
+                                </div>
+                                <div style="padding: 20px; text-align: center;">
+                                    <a href="http://localhost:5173/order/${orderId}" style="text-decoration: none; color: white; background-color: #007bff; padding: 10px 20px; border-radius: 5px;">Track Order</a>
+                                </div>
+                            </div>
+                        </body>
+                    </html>
+                `;
+                break;
+            case "delivered":
+                emailHtml = `
+                    <html>
+                        <body style="font-family: Arial, sans-serif; margin: 0; padding: 0;">
+                            <div style="max-width: 600px; margin: auto; border: 1px solid #ddd; border-radius: 8px; overflow: hidden;">
+                                <div style="background-color: #f8f8f8; padding: 20px; text-align: center;">
+                                    <h1 style="color: #333;">Order Delivered</h1>
+                                    <p style="color: #555;">Congratulations!</p>
+                                    <p style="color: #555;">Your order <strong>${orderId}</strong> has been delivered successfully.</p>
+                                </div>
+                                <div style="padding: 20px; text-align: center;">
+                                    <a href="http://localhost:5173/order/${orderId}" style="text-decoration: none; color: white; background-color: #28a745; padding: 10px 20px; border-radius: 5px;">View Order</a>
+                                </div>
+                            </div>
+                        </body>
+                    </html>
+                `;
+                break;
+            case "cancelled":
+                emailHtml = `
+                    <html>
+                        <body style="font-family: Arial, sans-serif; margin: 0; padding: 0;">
+                            <div style="max-width: 600px; margin: auto; border: 1px solid #ddd; border-radius: 8px; overflow: hidden;">
+                                <div style="background-color: #f8f8f8; padding: 20px; text-align: center;">
+                                    <h1 style="color: #333;">Order Updated</h1>
+                                    <p style="color: #555;">Hi,</p>
+                                    <p style="color: #555;">Your order <strong>${orderId}</strong> has been updated to <strong>${status.toUpperCase()}</strong> successfully.</p>
+                                </div>
+                                <div style="padding: 20px; text-align: center;">
+                                    <a href="http://localhost:5173/order/${orderId}" style="text-decoration: none; color: white; background-color: #007bff; padding: 10px 20px; border-radius: 5px;">View Order</a>
+                                </div>
+                            </div>
+                        </body>
+                    </html>
+                `;
+                break;
+            default:
+                emailHtml = `
+                    <h1>Order Update</h1>
+                    <p>Hi,</p>
+                    <p>Your order <strong>${orderId}</strong> has been updated to <strong>${status.toUpperCase()}</strong> successfully.</p>
+                `;
+                break;
+        }
+
+        // Send the email with both text and HTML content
+        sendEmail("nachiketgalande1609@gmail.com", "Streamline - Order Update", null, emailHtml);
 
         res.json({
             success: true,

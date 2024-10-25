@@ -833,9 +833,6 @@ export default function Orders() {
                     Orders
                 </Typography>
                 <Box sx={{ display: "flex", gap: 1 }}>
-                    <IconButton size="small" onClick={handleExport} aria-label="Export to CSV">
-                        <FileDownloadIcon />
-                    </IconButton>
                     <IconButton
                         size="small"
                         onClick={() => {
@@ -846,6 +843,9 @@ export default function Orders() {
                         sx={{ mr: 1 }}
                     >
                         <AddIcon />
+                    </IconButton>
+                    <IconButton size="small" onClick={handleExport} aria-label="Export to CSV">
+                        <FileDownloadIcon />
                     </IconButton>
                     <FormControl size="small" sx={{ minWidth: 150 }}>
                         <Select
@@ -869,7 +869,7 @@ export default function Orders() {
             <BreadcrumbsComponent breadcrumbs={breadcrumbs} />
             <Box
                 sx={{
-                    height: 631,
+                    height: 636,
                     width: "100%",
                     maxWidth: "calc(100vw - 280px)",
                     marginTop: 2,
@@ -894,6 +894,7 @@ export default function Orders() {
                     }}
                     checkboxSelection
                     disableRowSelectionOnClick
+                    disableColumnMenu
                 />
             </Box>
 

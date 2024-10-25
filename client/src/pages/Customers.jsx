@@ -624,7 +624,7 @@ export default function Customers() {
             </Dialog>
             <Box
                 sx={{
-                    height: 631,
+                    height: 636,
                     width: "100%",
                     maxWidth: "calc(100vw - 280px)",
                     marginTop: 2,
@@ -649,6 +649,7 @@ export default function Customers() {
                     }}
                     checkboxSelection
                     disableRowSelectionOnClick
+                    disableColumnMenu
                 />
             </Box>
             <Snackbar

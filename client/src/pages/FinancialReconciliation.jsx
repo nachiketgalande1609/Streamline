@@ -91,7 +91,7 @@ const FinancialReconciliation = () => {
             </Box>
             <Box
                 sx={{
-                    height: 631,
+                    height: 636,
                     width: "100%",
                     maxWidth: "calc(100vw - 280px)",
                     marginTop: 2,
@@ -107,6 +107,7 @@ const FinancialReconciliation = () => {
                     checkboxSelection
                     disableRowSelectionOnClick
                     getRowId={(row) => row._id}
+                    disableColumnMenu
                 />
             </Box>
             <Snackbar open={alertOpen} autoHideDuration={6000} onClose={() => setAlertOpen(false)}>

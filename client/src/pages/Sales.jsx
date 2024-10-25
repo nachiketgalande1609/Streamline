@@ -233,7 +233,7 @@ export default function Sales() {
             <BreadcrumbsComponent breadcrumbs={breadcrumbs} />
             <Box
                 sx={{
-                    height: 631,
+                    height: 636,
                     width: "100%",
                     maxWidth: "calc(100vw - 280px)",
                     marginTop: 2,
@@ -258,6 +258,7 @@ export default function Sales() {
                     }}
                     checkboxSelection
                     disableRowSelectionOnClick
+                    disableColumnMenu
                 />
             </Box>
             <Snackbar

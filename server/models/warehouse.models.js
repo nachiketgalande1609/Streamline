@@ -9,7 +9,7 @@ const WarehouseSchema = new mongoose.Schema(
         capacity: { type: Number, required: true },
         current_stock: { type: Number, default: 0 },
         manager_id: {
-            type: mongoose.Schema.Types.ObjectId,
+            type: String,
             required: true,
         },
         contact_number: { type: String },

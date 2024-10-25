@@ -598,7 +598,7 @@ export default function Inventory() {
             </Modal>
             <Box
                 sx={{
-                    height: "100%",
+                    height: 636,
                     width: "100%",
                     maxWidth: "calc(100vw - 280px)",
                     marginTop: 2,
@@ -623,6 +623,7 @@ export default function Inventory() {
                     }}
                     disableRowSelectionOnClick
                     checkboxSelection
+                    disableColumnMenu
                 />
             </Box>
             <Snackbar

@@ -51,6 +51,12 @@ export default function OrderDetails() {
     };
 
     const updateStatus = async () => {
+        if (newStatus === orderDetails.status) {
+            setMessage("No changes made to the status.");
+            setSeverity("info");
+            setAlertOpen(true);
+            return;
+        }
         try {
             await axios.put(`/api/orders/${orderId}/status`, { status: newStatus });
             fetchOrderDetails();
@@ -151,6 +157,7 @@ export default function OrderDetails() {
                                 backgroundColor: "#424242",
                             },
                         }}
+                        disabled={newStatus === orderDetails.status}
                     >
                         Update
                     </Button>
@@ -177,6 +184,7 @@ export default function OrderDetails() {
                     rowsPerPageOptions={[5]}
                     checkboxSelection
                     disableRowSelectionOnClick
+                    disableColumnMenu
                 />
             </Box>
             <Snackbar

@@ -206,9 +206,12 @@ export default function Warehouses() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post("/api/inventory", formData);
-            fetchInventoryData();
+            await axios.post("/api/warehouse", formData);
+            fetchData();
             handleClose();
+            setMessage("Warehouse added successfully!");
+            setSeverity("success");
+            setAlertOpen(true);
             setFormData({
                 warehouse_id: "",
                 name: "",
@@ -267,7 +270,7 @@ export default function Warehouses() {
             <BreadcrumbsComponent breadcrumbs={breadcrumbs} />
             <Box
                 sx={{
-                    height: 631,
+                    height: 636,
                     width: "100%",
                     maxWidth: "calc(100vw - 280px)",
                     marginTop: 2,
@@ -292,6 +295,7 @@ export default function Warehouses() {
                     }}
                     checkboxSelection
                     disableRowSelectionOnClick
+                    disableColumnMenu
                 />
             </Box>
             <Snackbar
@@ -392,22 +396,6 @@ export default function Warehouses() {
                             </Grid>
                             <Grid item xs={4}>
                                 <TextField
-                                    label="Current Stock"
-                                    name="current_stock"
-                                    type="number"
-                                    value={formData.current_stock}
-                                    onChange={handleChange}
-                                    fullWidth
-                                    margin="normal"
-                                    required
-                                    size="small"
-                                    InputProps={{
-                                        style: { borderRadius: "16px" },
-                                    }}
-                                />
-                            </Grid>
-                            <Grid item xs={4}>
-                                <TextField
                                     label="Contact Number"
                                     name="contact_number"
                                     value={formData.contact_number}
@@ -422,19 +410,26 @@ export default function Warehouses() {
                                 />
                             </Grid>
                             <Grid item xs={4}>
-                                <TextField
-                                    label="Status"
-                                    name="status"
-                                    value={formData.status}
-                                    onChange={handleChange}
-                                    fullWidth
-                                    margin="normal"
-                                    required
-                                    size="small"
-                                    InputProps={{
-                                        style: { borderRadius: "16px" },
-                                    }}
-                                />
+                                <FormControl fullWidth size="small" margin="normal">
+                                    <Select
+                                        name="status"
+                                        value={formData.status}
+                                        onChange={handleChange}
+                                        displayEmpty
+                                        sx={{
+                                            borderRadius: "16px",
+                                        }}
+                                    >
+                                        <MenuItem value="" disabled>
+                                            Select Status
+                                        </MenuItem>
+                                        {statuses.map((status) => (
+                                            <MenuItem key={status} value={status}>
+                                                {status}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
                             </Grid>
                             <Grid item xs={4}>
                                 <TextField
@@ -467,6 +462,29 @@ export default function Warehouses() {
                                 />
                             </Grid>
                         </Grid>
+                        <Box
+                            sx={{
+                                display: "flex",
+                                justifyContent: "flex-end",
+                                mt: 2,
+                            }}
+                        >
+                            <Button
+                                type="submit"
+                                variant="contained"
+                                color="primary"
+                                sx={{
+                                    width: "150px",
+                                    borderRadius: "16px",
+                                    backgroundColor: "#000000",
+                                    "&:hover": {
+                                        backgroundColor: "#424242",
+                                    },
+                                }}
+                            >
+                                {"Add"}
+                            </Button>
+                        </Box>
                     </form>
                 </Box>
             </Modal>

@@ -199,22 +199,6 @@ export default function Users() {
         },
     ];
 
-    // const sendEmail = async () => {
-    //     const params = { subject: "Streamline", body: "Dont reply" };
-
-    //     try {
-    //         await axios.post("/api/utils/email", params);
-    //         setMessage("Email sent successfully!");
-    //         setSeverity("success");
-    //         setAlertOpen(true);
-    //     } catch (error) {
-    //         console.error("Error sending email:", error);
-    //         setMessage("Error sending email.");
-    //         setSeverity("error");
-    //         setAlertOpen(true);
-    //     }
-    // };
-
     return (
         <div>
             <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -261,7 +245,7 @@ export default function Users() {
             <BreadcrumbsComponent breadcrumbs={breadcrumbs} />
             <Box
                 sx={{
-                    height: 631,
+                    height: 636,
                     maxWidth: "calc(100vw - 280px)",
                     marginTop: 2,
                     overflowX: "auto", // Enable horizontal scrolling if content overflows
@@ -285,6 +269,7 @@ export default function Users() {
                     }}
                     checkboxSelection
                     disableRowSelectionOnClick
+                    disableColumnMenu
                 />
             </Box>
             <Snackbar

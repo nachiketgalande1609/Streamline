@@ -44,10 +44,7 @@ warehouse.get("/", async (req, res) => {
             },
             {
                 $facet: {
-                    data: [
-                        { $skip: (page - 1) * limit },
-                        { $limit: parseInt(limit) },
-                    ],
+                    data: [{ $skip: (page - 1) * limit }, { $limit: parseInt(limit) }],
                     totalCount: [{ $count: "count" }],
                 },
             },
@@ -106,6 +103,49 @@ warehouse.get("/lov", async (req, res) => {
         data: warehouses,
         error: false,
     });
+});
+
+warehouse.post("/", async (req, res) => {
+    const { warehouse_id, name, location, capacity, current_stock, contact_number, status, manager_id } = req.body;
+
+    try {
+        const existingWarehouse = await Warehouse.findOne({ warehouse_id });
+
+        if (existingWarehouse) {
+            return res.status(400).json({
+                success: false,
+                error: true,
+                message: "Warehouse ID already exists.",
+            });
+        }
+
+        const newWarehouse = new Warehouse({
+            warehouse_id,
+            name,
+            location,
+            capacity,
+            contact_number,
+            status,
+            manager_id,
+        });
+
+        await newWarehouse.save();
+
+        res.json({
+            success: true,
+            data: newWarehouse,
+            error: false,
+            message: "Warehouse created successfully.",
+        });
+    } catch (error) {
+        console.error("Error creating warehouse:", error);
+        res.status(500).json({
+            success: false,
+            data: [],
+            error: true,
+            message: "Error creating warehouse.",
+        });
+    }
 });
 
 module.exports = warehouse;

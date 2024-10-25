@@ -102,7 +102,7 @@ export default function TicketTable() {
             align: "center",
         },
         {
-            field: "createdDate",
+            field: "createdAt",
             headerName: "Created Date",
             width: 200,
             valueGetter: (params) => new Date(params).toLocaleString(),
@@ -121,7 +121,7 @@ export default function TicketTable() {
             <BreadcrumbsComponent breadcrumbs={breadcrumbs} />
             <Box
                 sx={{
-                    height: 631,
+                    height: 636,
                     width: "100%",
                     maxWidth: "calc(100vw - 280px)",
                     marginTop: 2,
@@ -146,6 +146,7 @@ export default function TicketTable() {
                     }}
                     checkboxSelection
                     disableRowSelectionOnClick
+                    disableColumnMenu
                 />
             </Box>
             <Snackbar
