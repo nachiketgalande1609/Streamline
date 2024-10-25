@@ -69,15 +69,15 @@ user.post("/profile", async (req, res) => {
     const user = await User.findOne({ email: email });
 
     const userData = {
-        firstName: user.first_name,
-        lastName: user.last_name,
-        email: user.email,
-        age: user.age,
-        createdAt: user.created_at,
-        phoneNumber: user.phone_number,
-        profilePicture: user.profile_picture,
-        role: user.role,
-        status: user.status,
+        firstName: user?.first_name,
+        lastName: user?.last_name,
+        email: user?.email,
+        age: user?.age,
+        createdAt: user?.created_at,
+        phoneNumber: user?.phone_number,
+        profilePicture: user?.profile_picture,
+        role: user?.role,
+        status: user?.status,
     };
 
     res.json({
@@ -88,16 +88,7 @@ user.post("/profile", async (req, res) => {
 });
 
 user.put("/update", async (req, res) => {
-    const {
-        email,
-        firstName,
-        lastName,
-        phoneNumber,
-        profilePicture,
-        role,
-        status,
-        lastLogin,
-    } = req.body;
+    const { email, firstName, lastName, phoneNumber, profilePicture, role, status, lastLogin } = req.body;
 
     try {
         const updatedUser = await User.findOneAndUpdate(

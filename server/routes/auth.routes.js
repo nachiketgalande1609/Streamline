@@ -43,10 +43,7 @@ auth.post("/login", async (req, res) => {
         });
     }
 
-    const is_password_valid = await bcrypt.compare(
-        req.body.password,
-        user.password
-    );
+    const is_password_valid = await bcrypt.compare(req.body.password, user?.password);
 
     user.last_login = new Date();
     await user.save();
