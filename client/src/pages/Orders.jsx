@@ -35,6 +35,7 @@ export default function Orders() {
     const [customers, setCustomers] = useState([]);
     const [items, setItems] = useState([]);
     const [selectedCustomer, setSelectedCustomer] = useState("");
+    const [loading, setLoading] = useState(true);
 
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
@@ -66,6 +67,7 @@ export default function Orders() {
     }, []);
 
     const fetchData = async (status = "", page = 1, limit = 10) => {
+        setLoading(true);
         try {
             const response = await axios.get("/api/orders", {
                 params: { page, limit, status },
@@ -81,6 +83,8 @@ export default function Orders() {
             setTotalCount(response.data.totalCount);
         } catch (error) {
             console.error("Error fetching order data:", error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -895,6 +899,7 @@ export default function Orders() {
                     checkboxSelection
                     disableRowSelectionOnClick
                     disableColumnMenu
+                    loading={loading}
                 />
             </Box>
 

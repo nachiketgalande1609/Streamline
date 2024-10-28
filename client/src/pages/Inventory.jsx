@@ -51,6 +51,7 @@ export default function Inventory() {
     const [alertOpen, setAlertOpen] = useState(false);
     const [message, setMessage] = useState("");
     const [severity, setSeverity] = useState("success");
+    const [loading, setLoading] = useState(true);
 
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
@@ -65,6 +66,7 @@ export default function Inventory() {
     ];
 
     const fetchInventoryData = async (page = 1, limit = 10, search = "", status = "") => {
+        setLoading(true);
         try {
             const response = await axios.get("/api/inventory", {
                 params: {
@@ -78,6 +80,8 @@ export default function Inventory() {
             setTotalCount(response.data.totalItems);
         } catch (error) {
             console.error("Error fetching inventory data:", error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -624,6 +628,7 @@ export default function Inventory() {
                     disableRowSelectionOnClick
                     checkboxSelection
                     disableColumnMenu
+                    loading={loading}
                 />
             </Box>
             <Snackbar

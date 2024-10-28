@@ -1,10 +1,30 @@
 import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
-import { Box, Button, Card, Grid, Avatar, Typography, TextField, FormControl, Select, MenuItem, InputLabel } from "@mui/material";
+import {
+    Box,
+    Button,
+    Card,
+    Grid,
+    Avatar,
+    Typography,
+    TextField,
+    FormControl,
+    Select,
+    MenuItem,
+    InputLabel,
+    Snackbar,
+    Alert,
+    Tooltip,
+} from "@mui/material";
+import { CameraAlt } from "@mui/icons-material";
 import { UserContext } from "../context/UserContext";
 import BreadcrumbsComponent from "../parts/BreadcrumbsComponent";
-export default function Profile() {
-    const { user } = useContext(UserContext);
+
+export default function Profile({ profileImage, setProfileImage }) {
+    const { user, updateUser } = useContext(UserContext);
+    const [alertOpen, setAlertOpen] = useState(false);
+    const [message, setMessage] = useState("");
+    const [severity, setSeverity] = useState("success");
     const [userData, setUserData] = useState(null);
     const [formData, setFormData] = useState({
         firstName: "",
@@ -26,7 +46,6 @@ export default function Profile() {
         { label: "Profile", path: "" },
     ];
 
-    // Move this function out to reuse it
     const fetchUserProfile = async () => {
         try {
             const response = await axios.post("api/users/profile", {
@@ -45,21 +64,54 @@ export default function Profile() {
         }
     }, [user]);
 
+    const handleAlertClose = () => {
+        setAlertOpen(false);
+    };
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
+    };
+
+    const handleProfilePictureChange = async (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const formData = new FormData();
+            formData.append("profilePicture", file);
+
+            try {
+                const response = await axios.post("api/users/uploadProfilePicture", formData, {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                });
+
+                const newProfilePicture = response?.data?.data?.profilePicture;
+
+                if (newProfilePicture) {
+                    localStorage.setItem("userProfile", newProfilePicture);
+                    setProfileImage(newProfilePicture);
+                    setMessage("Profile Picture uploaded successfully!");
+                    setSeverity("success");
+                    setAlertOpen(true);
+                }
+            } catch (error) {
+                console.error("Error uploading profile picture:", error);
+            }
+        }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
             await axios.put("api/users/update", formData);
-            // Refetch user data after successful update
             await fetchUserProfile();
         } catch (error) {
             console.error("Error updating profile:", error);
         }
     };
+
+    console.log(userData);
 
     return (
         <div>
@@ -78,20 +130,66 @@ export default function Profile() {
                             display: "flex",
                             flexDirection: "column",
                             alignItems: "center",
+                            height: "calc(411.5px - 48px)",
+                            justifyContent: "center",
                         }}
                     >
-                        <Avatar
-                            src={
-                                userData?.profilePicture || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
-                            }
-                            alt="Profile"
-                            sx={{
-                                width: 120,
-                                height: 120,
-                                borderRadius: "50%",
-                                marginBottom: 2,
-                            }}
+                        <input
+                            type="file"
+                            accept="image/*"
+                            id="upload-profile-picture"
+                            style={{ display: "none" }}
+                            onChange={handleProfilePictureChange}
                         />
+                        <label htmlFor="upload-profile-picture" style={{ position: "relative" }}>
+                            <Tooltip title="Upload Profile Image" placement="top" arrow>
+                                <Box
+                                    sx={{
+                                        position: "relative",
+                                        "&:hover .overlay": {
+                                            opacity: 1,
+                                            cursor: "pointer",
+                                        },
+                                    }}
+                                >
+                                    <Avatar
+                                        src={
+                                            profileImage
+                                                ? `http://localhost:3001${profileImage}`
+                                                : "https://static.vecteezy.com/system/resources/previews/005/544/718/non_2x/profile-icon-design-free-vector.jpg"
+                                        }
+                                        alt="Profile"
+                                        sx={{
+                                            width: 180,
+                                            height: 180,
+                                            borderRadius: "50%",
+                                            marginBottom: 2,
+                                            border: "4px solid #1E1E1E",
+                                            cursor: "pointer",
+                                        }}
+                                    />
+                                    <Box
+                                        className="overlay"
+                                        sx={{
+                                            position: "absolute",
+                                            top: 0,
+                                            left: 0,
+                                            width: "100%",
+                                            height: "100%",
+                                            borderRadius: "50%",
+                                            backgroundColor: "rgba(0, 0, 0, 0.3)",
+                                            opacity: 0,
+                                            display: "flex",
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                            transition: "opacity 0.3s ease",
+                                        }}
+                                    >
+                                        <CameraAlt sx={{ color: "#fff", fontSize: 30 }} />
+                                    </Box>
+                                </Box>
+                            </Tooltip>
+                        </label>
                         <Typography variant="h6" sx={{ fontWeight: "bold" }}>
                             {userData?.firstName} {userData?.lastName}
                         </Typography>
@@ -209,6 +307,21 @@ export default function Profile() {
                     </Card>
                 </Grid>
             </Grid>
+            <Snackbar
+                open={alertOpen}
+                autoHideDuration={6000}
+                onClose={handleAlertClose}
+                anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                action={
+                    <Button color="inherit" onClick={handleAlertClose}>
+                        Close
+                    </Button>
+                }
+            >
+                <Alert onClose={handleAlertClose} severity={severity} sx={{ width: "100%" }}>
+                    {message}
+                </Alert>
+            </Snackbar>
         </div>
     );
 }

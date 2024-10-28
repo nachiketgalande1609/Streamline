@@ -14,6 +14,7 @@ const customerRoutes = require("./routes/customers.routes");
 const salesRoutes = require("./routes/sales.routes");
 const ticketRoutes = require("./routes/tickets.routes");
 const reconRoutes = require("./routes/recon.routes");
+const path = require("path");
 
 require("dotenv").config();
 
@@ -24,7 +25,9 @@ app.use(express.json());
 
 // mongoose.set("debug", true);
 
-mongoose.connect(process.env.MONGO_CONN_STRING);
+mongoose.connect(process.env.MONGO_CONN_STRING_LOCAL);
+
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.use("/api", authRoutes);
 app.use("/api/inventory", invRoutes);

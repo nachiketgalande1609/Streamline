@@ -1,19 +1,11 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import {
-    Grid,
-    Card,
-    CardContent,
-    Typography,
-    Divider,
-    CircularProgress,
-    Box,
-} from "@mui/material";
+import { Grid, Card, CardContent, Typography, Divider, CircularProgress, Box } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import BreadcrumbsComponent from "../parts/BreadcrumbsComponent";
 
 const StyledCard = styled(Card)(({ theme, cardcolor }) => ({
-    backgroundColor: cardcolor || "#1E1E1E", // Dark card background
+    backgroundColor: "#1E1E1E", // Dark card background
     color: "#FFFFFF", // White text
     borderRadius: "16px",
     boxShadow: "0px 4px 10px rgba(0,0,0,0.2)",
@@ -50,9 +42,12 @@ export default function Dashboard() {
         warehouse_summary: [],
     });
 
+    const [loading, setLoading] = useState(true);
+
     const breadcrumbs = [{ label: "Home", path: "" }];
 
     const fetchData = () => {
+        setLoading(true);
         axios
             .get("/api/dashboard")
             .then((response) => {
@@ -61,17 +56,14 @@ export default function Dashboard() {
                 }
             })
             .catch((error) => {
-                console.error(
-                    "There was an error fetching the dashboard data!",
-                    error
-                );
+                console.error("There was an error fetching the dashboard data!", error);
+            })
+            .finally(() => {
+                setLoading(false);
             });
     };
 
     useEffect(() => fetchData(), []);
-
-    // Color mappings for the cards
-    const cardColors = ["#4CAF50", "#FF9800", "#2196F3", "#F44336"];
 
     const CountCards = () => {
         const cardDetails = [
@@ -85,7 +77,7 @@ export default function Dashboard() {
             <Grid container spacing={3}>
                 {cardDetails.map((card, index) => (
                     <Grid item xs={12} sm={6} md={3} key={index}>
-                        <StyledCard cardcolor={cardColors[index]}>
+                        <StyledCard>
                             <CardTitle>{card.title}</CardTitle>
                             <StyledDivider />
                             <CardValue>{card.value}</CardValue>
@@ -100,16 +92,10 @@ export default function Dashboard() {
         return (
             <Grid container spacing={3} marginTop={3}>
                 {dashboardData.warehouse_summary.map((warehouse, index) => {
-                    const stockPercentage =
-                        (warehouse.currentStock / warehouse.capacity) * 100;
+                    const stockPercentage = (warehouse.currentStock / warehouse.capacity) * 100;
 
                     // Dynamically set the gauge color based on stock levels
-                    const gaugeColor =
-                        stockPercentage > 70
-                            ? "#FF5252"
-                            : stockPercentage > 50
-                            ? "#FFC107"
-                            : "#4CAF50";
+                    const gaugeColor = stockPercentage > 70 ? "#FF5252" : stockPercentage > 50 ? "#FFC107" : "#4CAF50";
 
                     return (
                         <Grid item xs={12} sm={6} md={2.4} lg={2.4} key={index}>
@@ -137,9 +123,7 @@ export default function Dashboard() {
                                         }}
                                     />
                                 </Box>
-                                <Typography sx={{ marginTop: "30px" }}>
-                                    {`Stock: ${warehouse.currentStock}/${warehouse.capacity}`}
-                                </Typography>
+                                <Typography sx={{ marginTop: "30px" }}>{`Stock: ${warehouse.currentStock}/${warehouse.capacity}`}</Typography>
                             </StyledCard>
                         </Grid>
                     );
@@ -147,6 +131,14 @@ export default function Dashboard() {
             </Grid>
         );
     };
+
+    if (loading) {
+        return (
+            <Box display="flex" justifyContent="center" alignItems="center" height="calc(100vh - 120px)">
+                <CircularProgress />
+            </Box>
+        );
+    }
 
     return (
         <div>

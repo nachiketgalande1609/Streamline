@@ -17,6 +17,7 @@ export default function Warehouses() {
     const [statuses, setStatuses] = useState([]);
     const [selectedStatus, setSelectedStatus] = useState("");
     const [open, setOpen] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [formData, setFormData] = useState({
         warehouse_id: "",
         name: "",
@@ -56,6 +57,7 @@ export default function Warehouses() {
     };
 
     const fetchData = async (status = "", page = 1, limit = 10) => {
+        setLoading(true);
         try {
             const response = await axios.get("/api/warehouse", {
                 params: { page, limit, status },
@@ -70,6 +72,8 @@ export default function Warehouses() {
             setTotalCount(response.data.totalCount);
         } catch (error) {
             console.error("Error fetching warehouse data:", error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -296,6 +300,7 @@ export default function Warehouses() {
                     checkboxSelection
                     disableRowSelectionOnClick
                     disableColumnMenu
+                    loading={loading}
                 />
             </Box>
             <Snackbar

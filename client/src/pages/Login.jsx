@@ -1,17 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
-import {
-    Container,
-    TextField,
-    Button,
-    Typography,
-    Box,
-    CircularProgress,
-    Snackbar,
-    Alert,
-    Grid,
-} from "@mui/material";
+import { Container, TextField, Button, Typography, Box, CircularProgress, Snackbar, Alert, Grid } from "@mui/material";
 
 export default function Login() {
     const navigate = useNavigate();
@@ -40,8 +30,22 @@ export default function Login() {
                 }
             );
 
-            if (response.data.user) {
-                localStorage.setItem("token", response.data.user);
+            const loggedinUser = response.data.user;
+
+            console.log("xxx", loggedinUser);
+
+            if (response.data.token) {
+                console.log("Running", loggedinUser);
+                localStorage.setItem("token", response.data.token);
+                localStorage.setItem("userId", loggedinUser.user_id);
+                localStorage.setItem("userEmail", loggedinUser.user_email);
+                localStorage.setItem("userProfile", loggedinUser.user_profile);
+                localStorage.setItem("userName", loggedinUser.user_first_name + " " + loggedinUser.user_last_name);
+
+                axios.defaults.headers.common["Authorization"] = `Bearer ${response.data.token}`;
+                axios.defaults.headers.common["user_id"] = `${localStorage.getItem("userId")}`;
+                axios.defaults.headers.common["user_email"] = `${localStorage.getItem("userEmail")}`;
+                axios.defaults.headers.common["user_name"] = `${localStorage.getItem("userName")}`;
                 setMessage("Login Successful");
                 setSeverity("success");
                 setOpen(true);
@@ -91,11 +95,7 @@ export default function Login() {
                         backgroundColor: "#ffffff",
                     }}
                 >
-                    <Typography
-                        component="h1"
-                        variant="h5"
-                        sx={{ color: "#37474f" }}
-                    >
+                    <Typography component="h1" variant="h5" sx={{ color: "#37474f" }}>
                         Login
                     </Typography>
                     <Box component="form" onSubmit={loginUser} sx={{ mt: 1 }}>
@@ -145,18 +145,11 @@ export default function Login() {
                             }}
                             disabled={loading}
                         >
-                            {loading ? (
-                                <CircularProgress size={24} color="inherit" />
-                            ) : (
-                                "Login"
-                            )}
+                            {loading ? <CircularProgress size={24} color="inherit" /> : "Login"}
                         </Button>
                         <Grid container>
                             <Grid item>
-                                <Link
-                                    to="/register"
-                                    style={{ textDecoration: "none" }}
-                                >
+                                <Link to="/register" style={{ textDecoration: "none" }}>
                                     <Button
                                         variant="text"
                                         sx={{
@@ -184,19 +177,14 @@ export default function Login() {
                         </Button>
                     }
                 >
-                    <Alert
-                        onClose={handleClose}
-                        severity={severity}
-                        sx={{ width: "100%" }}
-                    >
+                    <Alert onClose={handleClose} severity={severity} sx={{ width: "100%" }}>
                         {message}
                     </Alert>
                 </Snackbar>
             </Container>
             <Box sx={{ mt: 5, textAlign: "center" }}>
                 <Typography variant="body2" color="textSecondary">
-                    © {new Date().getFullYear()} Streamline. All rights
-                    reserved.
+                    © {new Date().getFullYear()} Streamline. All rights reserved.
                 </Typography>
             </Box>
         </div>

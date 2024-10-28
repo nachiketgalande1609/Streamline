@@ -14,6 +14,8 @@ auth.post("/register", async (req, res) => {
             email: req.body.email,
             password: hashed_pwd,
             created_at: new Date(),
+            role: "user",
+            status: "active",
         });
         res.json({
             success: true,
@@ -53,24 +55,34 @@ auth.post("/login", async (req, res) => {
             {
                 id: user._id,
                 email: user.email,
-                profile: user.profile_picture,
                 first_name: user.first_name,
                 last_name: user.last_name,
             },
             "secret123"
         );
+
+        console.log(user);
+
         res.json({
             success: true,
             data: "Logged In Successfully",
             error: false,
-            user: token,
+            user: {
+                user_id: user._id,
+                user_email: user.email,
+                user_first_name: user.first_name,
+                user_last_name: user.last_name,
+                user_profile: user.profile_picture,
+            },
+            token: token,
         });
     } else {
         res.json({
             success: false,
             data: "Login Failed",
             error: true,
-            user: false,
+            user: None,
+            token: false,
         });
     }
 });
@@ -82,6 +94,20 @@ auth.post("/logout", (req, res) => {
         error: false,
         user: false,
     });
+});
+
+auth.get("/verify-token", async (req, res) => {
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) {
+        return res.status(401).json({ success: false, data: "Token not provided", error: true });
+    }
+
+    try {
+        const decoded = jwt.verify(token, "secret123");
+        res.json({ success: true, data: decoded, error: false });
+    } catch (error) {
+        res.status(401).json({ success: false, data: "Invalid token", error: true });
+    }
 });
 
 module.exports = auth;

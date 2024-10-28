@@ -12,6 +12,7 @@ const FinancialReconciliation = () => {
     const [alertOpen, setAlertOpen] = useState(false);
     const [message, setMessage] = useState("");
     const [severity, setSeverity] = useState("success");
+    const [loading, setLoading] = useState(true);
 
     const breadcrumbs = [
         { label: "Home", path: "/" },
@@ -19,6 +20,7 @@ const FinancialReconciliation = () => {
     ];
 
     const fetchReconciliations = async () => {
+        setLoading(true);
         try {
             const response = await axios.get(`/api/recon?recon_month=${reconMonth}&recon_year=${reconYear}`);
             setReconciliations(response.data.data); // Adjust based on response structure
@@ -27,6 +29,8 @@ const FinancialReconciliation = () => {
             setMessage("Failed to fetch reconciliations.");
             setSeverity("error");
             setAlertOpen(true);
+        } finally {
+            setLoading(false);
         }
     };
 

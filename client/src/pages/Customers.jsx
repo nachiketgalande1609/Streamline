@@ -31,6 +31,7 @@ export default function Customers() {
     const [alertOpen, setAlertOpen] = useState(false);
     const [message, setMessage] = useState("");
     const [severity, setSeverity] = useState("success");
+    const [loading, setLoading] = useState(true);
 
     const [formData, setFormData] = useState({});
     const [isEditMode, setIsEditMode] = useState(false);
@@ -63,6 +64,7 @@ export default function Customers() {
     }, [currentPage, pageSize]);
 
     const fetchCustomers = async (page = 1, limit = 10) => {
+        setLoading(true);
         try {
             const response = await axios.get("/api/customers", {
                 params: { page, limit },
@@ -71,6 +73,8 @@ export default function Customers() {
             setTotalCount(response.data.totalCount);
         } catch (error) {
             console.error("Error fetching customer data:", error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -650,6 +654,7 @@ export default function Customers() {
                     checkboxSelection
                     disableRowSelectionOnClick
                     disableColumnMenu
+                    loading={loading}
                 />
             </Box>
             <Snackbar

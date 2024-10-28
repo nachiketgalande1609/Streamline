@@ -1,41 +1,54 @@
-// UserContext.js
+// UserContext.jsx
 import React, { createContext, useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode"; // import dependency
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate, useLocation } from "react-router-dom";
+import axios from "axios";
 
 export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
     const [user, setUser] = useState(null);
+
     const navigate = useNavigate();
+    const location = useLocation();
+    const token = localStorage.getItem("token");
 
-    useEffect(() => {
-        const token = localStorage.getItem("token");
-        if (token) {
-            try {
-                const decodedUser = jwtDecode(token);
-                setUser(decodedUser);
+    const verifyToken = async () => {
+        if (location.pathname !== "/login" && location.pathname !== "/register") {
+            if (token) {
+                try {
+                    const response = await axios.get("/api/verify-token", {
+                        headers: { Authorization: `Bearer ${token}` },
+                    });
 
-                localStorage.setItem("userId", decodedUser.id);
-                localStorage.setItem("userEmail", decodedUser.email);
-                localStorage.setItem("userName", decodedUser.first_name + " " + decodedUser.last_name);
-            } catch (error) {
-                console.error("Invalid token", error);
-                localStorage.removeItem("token");
-                navigate("/login");
+                    if (response.data.success) {
+                        const decodedUser = jwtDecode(token);
+                        setUser(decodedUser);
+                    } else {
+                        logout();
+                    }
+                } catch (error) {
+                    console.error("Token verification failed", error);
+                    logout();
+                }
+            } else {
+                logout();
             }
         }
-    }, [navigate]);
+    };
+
+    useEffect(() => {
+        verifyToken();
+    }, [token, location.pathname]);
 
     const updateUser = (newUser) => {
-        const token = jwtEncode(newUser);
         setUser(newUser);
-        localStorage.setItem("token", token);
     };
 
     const logout = () => {
         setUser(null);
-        localStorage.removeItem("token");
+        localStorage.clear();
+        axios.defaults.headers.common = {};
         navigate("/login");
     };
 

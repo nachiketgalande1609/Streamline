@@ -14,6 +14,7 @@ export default function Users() {
     const [roles, setRoles] = useState([]);
     const [selectedRole, setSelectedRole] = useState("");
     const [selectedStatus, setSelectedStatus] = useState("");
+    const [loading, setLoading] = useState(true);
 
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
@@ -42,6 +43,7 @@ export default function Users() {
     };
 
     const fetchData = async (role = "", status = "", page = 1, limit = 10) => {
+        setLoading(true);
         try {
             const response = await axios.get("/api/users", {
                 params: { role, status, page, limit },
@@ -50,12 +52,14 @@ export default function Users() {
             setTotalCount(response.data.totalCount);
         } catch (error) {
             console.error("Error fetching user data:", error);
+        } finally {
+            setLoading(false);
         }
     };
 
     const formatDateTime = (dateString) => {
         const date = new Date(dateString);
-        return date.toLocaleString();
+        return date.toLocaleDateString();
     };
 
     const handleAlertClose = () => {
@@ -119,10 +123,17 @@ export default function Users() {
                 >
                     <img
                         src={
-                            params.value ? params.value : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" // Use a direct image URL here
+                            params.value
+                                ? `http://localhost:3001${params.value}`
+                                : "https://static.vecteezy.com/system/resources/previews/005/544/718/non_2x/profile-icon-design-free-vector.jpg" // Use a direct image URL here
                         }
                         alt="Profile"
-                        style={{ width: 40, height: 40, borderRadius: "50%" }}
+                        style={{
+                            width: 40,
+                            height: 40,
+                            borderRadius: "50%",
+                            objectFit: "cover",
+                        }}
                     />
                 </div>
             ),
@@ -270,6 +281,7 @@ export default function Users() {
                     checkboxSelection
                     disableRowSelectionOnClick
                     disableColumnMenu
+                    loading={loading}
                 />
             </Box>
             <Snackbar

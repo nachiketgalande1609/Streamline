@@ -11,6 +11,7 @@ export default function TicketTable() {
     const [alertOpen, setAlertOpen] = useState(false);
     const [message, setMessage] = useState("");
     const [severity, setSeverity] = useState("success");
+    const [loading, setLoading] = useState(true);
 
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
@@ -24,6 +25,7 @@ export default function TicketTable() {
     useEffect(() => {
         // Fetch data from the API
         const fetchTickets = async () => {
+            setLoading(true);
             try {
                 const response = await axios.get("/api/tickets");
                 if (response.data.success) {
@@ -32,6 +34,8 @@ export default function TicketTable() {
                 }
             } catch (error) {
                 console.error("Error fetching tickets", error);
+            } finally {
+                setLoading(false);
             }
         };
 
@@ -105,7 +109,7 @@ export default function TicketTable() {
             field: "createdAt",
             headerName: "Created Date",
             width: 200,
-            valueGetter: (params) => new Date(params).toLocaleString(),
+            valueGetter: (params) => new Date(params).toLocaleDateString(),
             headerAlign: "center",
             align: "center",
         },
@@ -147,6 +151,7 @@ export default function TicketTable() {
                     checkboxSelection
                     disableRowSelectionOnClick
                     disableColumnMenu
+                    loading={loading}
                 />
             </Box>
             <Snackbar

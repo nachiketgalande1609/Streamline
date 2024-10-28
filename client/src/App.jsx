@@ -1,4 +1,4 @@
-import React from "react";
+import { React, useEffect, useState } from "react";
 import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import { Typography } from "@mui/material";
 import Navbar from "./parts/Navbar";
@@ -23,15 +23,25 @@ import IncidentDetails from "./pages/IncidentDetails";
 import FinancialReconciliation from "./pages/FinancialReconciliation";
 
 axios.defaults.baseURL = "http://localhost:3001";
-axios.defaults.headers.common["token"] = `Bearer ${localStorage.getItem("token")}`;
-axios.defaults.headers.common["user_id"] = `${localStorage.getItem("userId")}`;
-axios.defaults.headers.common["user_email"] = `${localStorage.getItem("userEmail")}`;
-axios.defaults.headers.common["user_name"] = `${localStorage.getItem("userName")}`;
-
-const drawerWidth = 240;
 
 function Layout() {
     const location = useLocation();
+    const [profileImage, setProfileImage] = useState(localStorage.getItem("userProfile"));
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        const userId = localStorage.getItem("userId");
+        const userEmail = localStorage.getItem("userEmail");
+        const userName = localStorage.getItem("userName");
+
+        if (token) {
+            axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+            axios.defaults.headers.common["user_id"] = userId;
+            axios.defaults.headers.common["user_email"] = userEmail;
+            axios.defaults.headers.common["user_name"] = userName;
+        }
+    }, []);
+
     const hideNavbarAndFooter = location.pathname === "/login" || location.pathname === "/register";
     return (
         <div
@@ -41,7 +51,7 @@ function Layout() {
                 backgroundColor: "#000000",
             }}
         >
-            {!hideNavbarAndFooter && <Navbar />}
+            {!hideNavbarAndFooter && <Navbar profileImage={profileImage} />}
             <main
                 style={{
                     flexGrow: 1,
@@ -61,7 +71,7 @@ function Layout() {
                                   borderRadius: "30px 30px 30px 30px",
                                   marginTop: "40px",
                                   marginRight: "20px",
-                                  overflowY: "hidden",
+                                  overflowY: "auto",
                               }
                             : {}),
                     }}
@@ -70,7 +80,7 @@ function Layout() {
                         <Route path="/" element={<Dashboard />} />
                         <Route path="/register" element={<Register />} />
                         <Route path="/login" element={<Login />} />
-                        <Route path="/profile" element={<Profile />} />
+                        <Route path="/profile" element={<Profile profileImage={profileImage} setProfileImage={setProfileImage} />} />
                         <Route path="/users" element={<Users />} />
                         <Route path="/inventory" element={<Inventory />} />
                         <Route path="/orders" element={<Orders />} />

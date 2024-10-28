@@ -14,6 +14,7 @@ export default function Sales() {
     const [alertOpen, setAlertOpen] = useState(false);
     const [message, setMessage] = useState("");
     const [severity, setSeverity] = useState("success");
+    const [loading, setLoading] = useState(true);
 
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
@@ -25,6 +26,7 @@ export default function Sales() {
     ];
 
     const fetchData = async (page = 1, limit = 10) => {
+        setLoading(true);
         try {
             const response = await axios.get("/api/sales", {
                 params: { page, limit },
@@ -39,6 +41,8 @@ export default function Sales() {
             setTotalCount(response.data.totalCount);
         } catch (error) {
             console.error("Error fetching sales data:", error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -259,6 +263,7 @@ export default function Sales() {
                     checkboxSelection
                     disableRowSelectionOnClick
                     disableColumnMenu
+                    loading={loading}
                 />
             </Box>
             <Snackbar

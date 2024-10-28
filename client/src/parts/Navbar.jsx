@@ -23,15 +23,15 @@ import axios from "axios";
 
 const drawerWidth = 240;
 
-const Navbar = () => {
-    const navigate = useNavigate();
+const Navbar = ({ profileImage }) => {
     const location = useLocation();
     const { user, logout } = useContext(UserContext);
+    const token = localStorage.getItem("token");
 
     const handleLogout = async () => {
         try {
             await axios.post("/api/logout");
-            logout(); // Clear user context and localStorage, then navigate to login
+            logout();
         } catch (error) {
             console.error("Logout failed:", error);
         }
@@ -60,7 +60,7 @@ const Navbar = () => {
                 <Typography variant="h6">Streamline</Typography>
             </Toolbar>
             <List sx={{ flexGrow: 1 }}>
-                {!user && (
+                {!token && (
                     <>
                         <ListItem
                             button
@@ -91,7 +91,7 @@ const Navbar = () => {
                     </>
                 )}
 
-                {user && (
+                {token && (
                     <Box
                         sx={{
                             display: "flex",
@@ -316,9 +316,9 @@ const Navbar = () => {
                         >
                             <img
                                 src={
-                                    user?.profile
-                                        ? user?.profile
-                                        : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+                                    profileImage
+                                        ? `http://localhost:3001${profileImage}`
+                                        : "https://static.vecteezy.com/system/resources/previews/005/544/718/non_2x/profile-icon-design-free-vector.jpg"
                                 }
                                 alt="Profile"
                                 style={{
@@ -327,10 +327,11 @@ const Navbar = () => {
                                     borderRadius: "50%",
                                     marginRight: 12,
                                     border: "2px solid #fff",
+                                    objectFit: "cover",
                                 }}
                             />
                             <ListItemText
-                                primary={user.email}
+                                primary={user?.email}
                                 sx={{
                                     color: "#ffffff",
                                     typography: "subtitle2",
