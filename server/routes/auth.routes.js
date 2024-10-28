@@ -81,7 +81,7 @@ auth.post("/login", async (req, res) => {
             success: false,
             data: "Login Failed",
             error: true,
-            user: None,
+            user: null,
             token: false,
         });
     }

@@ -1,7 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
-import { Modal, Box, Typography, Button, Snackbar, Alert, IconButton, FormControl, Select, MenuItem, Grid, TextField, Chip } from "@mui/material";
+import {
+    Modal,
+    Box,
+    Typography,
+    Button,
+    Snackbar,
+    Alert,
+    IconButton,
+    FormControl,
+    Select,
+    MenuItem,
+    Grid,
+    TextField,
+    Chip,
+    Tooltip,
+} from "@mui/material";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import AddIcon from "@mui/icons-material/Add";
 import { Close } from "@mui/icons-material";
@@ -246,12 +261,16 @@ export default function Warehouses() {
                     Warehouses
                 </Typography>
                 <Box sx={{ display: "flex", gap: 1 }}>
-                    <IconButton size="small" onClick={handleOpen} aria-label="Add Items" sx={{ mr: 1 }}>
-                        <AddIcon />
-                    </IconButton>
-                    <IconButton size="small" onClick={handleExport} aria-label="Export to CSV">
-                        <FileDownloadIcon />
-                    </IconButton>
+                    <Tooltip title="Add Warehouse" arrow>
+                        <IconButton size="small" onClick={handleOpen} aria-label="Add Items" sx={{ mr: 1 }}>
+                            <AddIcon />
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Export Data" arrow>
+                        <IconButton size="small" onClick={handleExport} aria-label="Export to CSV">
+                            <FileDownloadIcon />
+                        </IconButton>
+                    </Tooltip>
                     <FormControl size="small" sx={{ minWidth: 150 }}>
                         <Select
                             value={selectedStatus}
@@ -297,7 +316,6 @@ export default function Warehouses() {
                         setCurrentPage(model.page + 1);
                         setPageSize(model.pageSize);
                     }}
-                    checkboxSelection
                     disableRowSelectionOnClick
                     disableColumnMenu
                     loading={loading}

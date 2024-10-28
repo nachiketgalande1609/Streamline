@@ -108,7 +108,6 @@ const FinancialReconciliation = () => {
                     columns={reconciliationColumns}
                     pageSize={5}
                     rowsPerPageOptions={[5]}
-                    checkboxSelection
                     disableRowSelectionOnClick
                     getRowId={(row) => row._id}
                     disableColumnMenu

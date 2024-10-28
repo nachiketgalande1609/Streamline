@@ -51,7 +51,7 @@ function Layout() {
                 backgroundColor: "#000000",
             }}
         >
-            {!hideNavbarAndFooter && <Navbar profileImage={profileImage} />}
+            {!hideNavbarAndFooter && <Navbar profileImage={profileImage} setProfileImage={setProfileImage} />}
             <main
                 style={{
                     flexGrow: 1,

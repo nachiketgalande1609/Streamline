@@ -375,12 +375,16 @@ export default function Customers() {
                     Customers
                 </Typography>
                 <Box sx={{ display: "flex", gap: 1 }}>
-                    <IconButton size="small" onClick={handleOpen} aria-label="Add Items" sx={{ mr: 1 }}>
-                        <AddIcon />
-                    </IconButton>
-                    <IconButton size="small" onClick={handleExport} aria-label="Export to CSV">
-                        <FileDownloadIcon />
-                    </IconButton>
+                    <Tooltip title="Add Customer" arrow>
+                        <IconButton size="small" onClick={handleOpen} aria-label="Add Items" sx={{ mr: 1 }}>
+                            <AddIcon />
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Export Data" arrow>
+                        <IconButton size="small" onClick={handleExport} aria-label="Export to CSV">
+                            <FileDownloadIcon />
+                        </IconButton>
+                    </Tooltip>
                 </Box>
             </Box>
             <BreadcrumbsComponent breadcrumbs={breadcrumbs} />
@@ -651,7 +655,6 @@ export default function Customers() {
                         setCurrentPage(model.page + 1);
                         setPageSize(model.pageSize);
                     }}
-                    checkboxSelection
                     disableRowSelectionOnClick
                     disableColumnMenu
                     loading={loading}

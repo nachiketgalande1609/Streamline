@@ -5,27 +5,30 @@ import { styled } from "@mui/material/styles";
 import BreadcrumbsComponent from "../parts/BreadcrumbsComponent";
 
 const StyledCard = styled(Card)(({ theme, cardcolor }) => ({
-    backgroundColor: "#1E1E1E", // Dark card background
+    backgroundColor: "transparent", // Transparent card background
     color: "#FFFFFF", // White text
     borderRadius: "16px",
-    boxShadow: "0px 4px 10px rgba(0,0,0,0.2)",
+    boxShadow: "0px 4px 8px rgba(0,0,0,0.15)", // Softer shadow
     padding: "20px",
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
+    border: "1px solid #333", // Border for a cleaner look
 }));
 
 const CardTitle = styled(Typography)({
-    fontSize: "1.2rem",
+    fontSize: "1rem",
     fontWeight: "bold",
-    color: "#FFFFFF",
+    color: "#000", // Lighter color for the title
     marginBottom: "8px",
+    textAlign: "center",
 });
 
 const CardValue = styled(Typography)({
-    fontSize: "2rem",
-    fontWeight: "600",
+    fontSize: "1.5rem",
+    fontWeight: "500",
+    color: "#000",
 });
 
 const StyledDivider = styled(Divider)({
@@ -74,9 +77,9 @@ export default function Dashboard() {
         ];
 
         return (
-            <Grid container spacing={3}>
+            <Grid container spacing={3} style={{ marginTop: "16px" }}>
                 {cardDetails.map((card, index) => (
-                    <Grid item xs={12} sm={6} md={3} key={index}>
+                    <Grid item xs={12} sm={6} md={3} key={index} style={{ padding: "0 20px" }}>
                         <StyledCard>
                             <CardTitle>{card.title}</CardTitle>
                             <StyledDivider />
@@ -123,7 +126,9 @@ export default function Dashboard() {
                                         }}
                                     />
                                 </Box>
-                                <Typography sx={{ marginTop: "30px" }}>{`Stock: ${warehouse.currentStock}/${warehouse.capacity}`}</Typography>
+                                <Typography
+                                    sx={{ marginTop: "10px", color: "#000" }}
+                                >{`Stock: ${warehouse.currentStock}/${warehouse.capacity}`}</Typography>
                             </StyledCard>
                         </Grid>
                     );

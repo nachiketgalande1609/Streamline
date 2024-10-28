@@ -3,7 +3,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import { useNavigate } from "react-router-dom";
 
 import axios from "axios";
-import { Box, Typography, Button, Snackbar, Alert, IconButton, Chip } from "@mui/material";
+import { Box, Typography, Button, Snackbar, Alert, IconButton, Chip, Tooltip } from "@mui/material";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import BreadcrumbsComponent from "../parts/BreadcrumbsComponent";
 import * as Papa from "papaparse";
@@ -229,9 +229,11 @@ export default function Sales() {
                     Sales
                 </Typography>
                 <Box sx={{ display: "flex", gap: 1 }}>
-                    <IconButton size="small" onClick={handleExport} aria-label="Export to CSV">
-                        <FileDownloadIcon />
-                    </IconButton>
+                    <Tooltip title="Export Data" arrow>
+                        <IconButton size="small" onClick={handleExport} aria-label="Export to CSV">
+                            <FileDownloadIcon />
+                        </IconButton>
+                    </Tooltip>
                 </Box>
             </Box>
             <BreadcrumbsComponent breadcrumbs={breadcrumbs} />
@@ -260,7 +262,6 @@ export default function Sales() {
                         setCurrentPage(model.page + 1);
                         setPageSize(model.pageSize);
                     }}
-                    checkboxSelection
                     disableRowSelectionOnClick
                     disableColumnMenu
                     loading={loading}

@@ -10,7 +10,21 @@ import Grid from "@mui/material/Grid";
 import BreadcrumbsComponent from "../parts/BreadcrumbsComponent";
 import * as Papa from "papaparse";
 
-import { Modal, Box, Typography, TextField, Select, MenuItem, Button, FormControl, InputLabel, Snackbar, Alert, IconButton } from "@mui/material";
+import {
+    Modal,
+    Box,
+    Typography,
+    TextField,
+    Select,
+    MenuItem,
+    Button,
+    FormControl,
+    InputLabel,
+    Snackbar,
+    Alert,
+    IconButton,
+    Tooltip,
+} from "@mui/material";
 
 const style = {
     position: "absolute",
@@ -321,12 +335,16 @@ export default function Inventory() {
                     Inventory
                 </Typography>
                 <Box sx={{ display: "flex", gap: 1 }}>
-                    <IconButton size="small" onClick={handleOpen} aria-label="Add Items" sx={{ mr: 1 }}>
-                        <AddIcon />
-                    </IconButton>
-                    <IconButton size="small" onClick={handleExport} aria-label="Export to CSV">
-                        <FileDownloadIcon />
-                    </IconButton>
+                    <Tooltip title="Add Items" arrow>
+                        <IconButton size="small" onClick={handleOpen} aria-label="Add Items" sx={{ mr: 1 }}>
+                            <AddIcon />
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Export Data" arrow>
+                        <IconButton size="small" onClick={handleExport} aria-label="Export to CSV">
+                            <FileDownloadIcon />
+                        </IconButton>
+                    </Tooltip>
                     <TextField
                         label="Search"
                         value={searchQuery}
@@ -626,7 +644,6 @@ export default function Inventory() {
                         setPageSize(model.pageSize);
                     }}
                     disableRowSelectionOnClick
-                    checkboxSelection
                     disableColumnMenu
                     loading={loading}
                 />

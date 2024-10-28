@@ -23,7 +23,7 @@ import axios from "axios";
 
 const drawerWidth = 240;
 
-const Navbar = ({ profileImage }) => {
+const Navbar = ({ profileImage, setProfileImage }) => {
     const location = useLocation();
     const { user, logout } = useContext(UserContext);
     const token = localStorage.getItem("token");

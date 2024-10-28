@@ -656,6 +656,7 @@ export default function Orders() {
                         display: "flex",
                         justifyContent: "center",
                         gap: "8px",
+                        height: "100%",
                     }}
                 >
                     <Tooltip title="Download Invoice" arrow>
@@ -665,6 +666,7 @@ export default function Orders() {
                             aria-label="Download Invoice"
                             sx={{
                                 color: "primary.main",
+                                width: "51.33px",
                                 "&:hover": {
                                     backgroundColor: "action.hover",
                                 },
@@ -686,20 +688,22 @@ export default function Orders() {
             headerAlign: "center",
             align: "center",
             renderCell: (params) => (
-                <a
-                    href="#"
-                    onClick={(e) => {
-                        e.preventDefault();
-                        handleViewOrder(params.id, selectedOrderItems);
-                    }}
-                    style={{
-                        textDecoration: "none",
-                        fontWeight: "bold",
-                        color: "#1976d2",
-                    }} // Adjust color to your theme
-                >
-                    {params.value}
-                </a>
+                <Tooltip title="View Order" arrow>
+                    <a
+                        href="#"
+                        onClick={(e) => {
+                            e.preventDefault();
+                            handleViewOrder(params.id, selectedOrderItems);
+                        }}
+                        style={{
+                            textDecoration: "none",
+                            fontWeight: "bold",
+                            color: "#1976d2",
+                        }} // Adjust color to your theme
+                    >
+                        {params.value}
+                    </a>
+                </Tooltip>
             ),
         },
         {
@@ -837,20 +841,24 @@ export default function Orders() {
                     Orders
                 </Typography>
                 <Box sx={{ display: "flex", gap: 1 }}>
-                    <IconButton
-                        size="small"
-                        onClick={() => {
-                            fetchCustomersAndItems(); // Fetch customers when modal opens
-                            setOpenCreateModal(true);
-                        }}
-                        aria-label="Add Items"
-                        sx={{ mr: 1 }}
-                    >
-                        <AddIcon />
-                    </IconButton>
-                    <IconButton size="small" onClick={handleExport} aria-label="Export to CSV">
-                        <FileDownloadIcon />
-                    </IconButton>
+                    <Tooltip title="Create Order" arrow>
+                        <IconButton
+                            size="small"
+                            onClick={() => {
+                                fetchCustomersAndItems();
+                                setOpenCreateModal(true);
+                            }}
+                            aria-label="Add Items"
+                            sx={{ mr: 1 }}
+                        >
+                            <AddIcon />
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Export Data" arrow>
+                        <IconButton size="small" onClick={handleExport} aria-label="Export to CSV">
+                            <FileDownloadIcon />
+                        </IconButton>
+                    </Tooltip>
                     <FormControl size="small" sx={{ minWidth: 150 }}>
                         <Select
                             value={selectedStatus}
@@ -896,7 +904,6 @@ export default function Orders() {
                         setCurrentPage(model.page + 1);
                         setPageSize(model.pageSize);
                     }}
-                    checkboxSelection
                     disableRowSelectionOnClick
                     disableColumnMenu
                     loading={loading}

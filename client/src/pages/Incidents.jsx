@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
-import { Box, Typography, Snackbar, Button, Alert } from "@mui/material";
+import { Box, Typography, Snackbar, Button, Alert, Tooltip } from "@mui/material";
 import BreadcrumbsComponent from "../parts/BreadcrumbsComponent";
 import { useNavigate } from "react-router-dom";
 
@@ -54,20 +54,22 @@ export default function TicketTable() {
             headerAlign: "center",
             align: "center",
             renderCell: (params) => (
-                <a
-                    href="#"
-                    onClick={(e) => {
-                        e.preventDefault();
-                        navigate(`/incidents/${params.value}`);
-                    }}
-                    style={{
-                        textDecoration: "none",
-                        fontWeight: "bold",
-                        color: "#1976d2",
-                    }} // Adjust color to your theme
-                >
-                    {params.value}
-                </a>
+                <Tooltip title="View Ticket" arrow>
+                    <a
+                        href="#"
+                        onClick={(e) => {
+                            e.preventDefault();
+                            navigate(`/incidents/${params.value}`);
+                        }}
+                        style={{
+                            textDecoration: "none",
+                            fontWeight: "bold",
+                            color: "#1976d2",
+                        }} // Adjust color to your theme
+                    >
+                        {params.value}
+                    </a>
+                </Tooltip>
             ),
         },
         {
@@ -148,7 +150,6 @@ export default function TicketTable() {
                         setCurrentPage(model.page + 1);
                         setPageSize(model.pageSize);
                     }}
-                    checkboxSelection
                     disableRowSelectionOnClick
                     disableColumnMenu
                     loading={loading}

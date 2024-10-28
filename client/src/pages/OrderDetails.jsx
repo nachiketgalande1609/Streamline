@@ -182,7 +182,6 @@ export default function OrderDetails() {
                     getRowId={(row) => row.itemId}
                     pageSize={5}
                     rowsPerPageOptions={[5]}
-                    checkboxSelection
                     disableRowSelectionOnClick
                     disableColumnMenu
                 />

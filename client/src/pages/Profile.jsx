@@ -111,16 +111,14 @@ export default function Profile({ profileImage, setProfileImage }) {
         }
     };
 
-    console.log(userData);
-
     return (
         <div>
             <Typography variant="h5" gutterBottom>
                 Profile
             </Typography>
             <BreadcrumbsComponent breadcrumbs={breadcrumbs} />
-            <Grid container spacing={4}>
-                <Grid item xs={12} md={4}>
+            <Grid container spacing={4} style={{ padding: 0, margin: "0" }}>
+                <Grid item xs={12} md={4} style={{ padding: "6px 0" }}>
                     <Card
                         sx={{
                             boxShadow: 3,
