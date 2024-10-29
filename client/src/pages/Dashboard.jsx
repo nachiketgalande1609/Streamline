@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Grid, Card, Typography, Divider, CircularProgress, Box } from "@mui/material";
+import { Card, Typography, Divider, CircularProgress, Box } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import BreadcrumbsComponent from "../parts/BreadcrumbsComponent";
 import { Gauge } from "@mui/x-charts/Gauge";
 
-const StyledCard = styled(Card)(({ theme, cardcolor }) => ({
+const StyledCard = styled(Card)(({ theme }) => ({
     backgroundColor: "transparent", // Transparent card background
     color: "#FFFFFF", // White text
     borderRadius: "16px",
@@ -79,17 +79,22 @@ export default function Dashboard() {
         ];
 
         return (
-            <Grid container spacing={3} style={{ marginTop: "16px" }}>
+            <Box display="flex" flexWrap="wrap" justifyContent="space-between" sx={{ marginTop: "16px", gap: "16px" }}>
                 {cardDetails.map((card, index) => (
-                    <Grid item xs={12} sm={6} md={2.4} key={index} style={{ padding: "0 20px" }}>
+                    <Box
+                        key={index}
+                        sx={{
+                            flex: "1 1 calc(20% - 20px)", // Adjusting width
+                        }}
+                    >
                         <StyledCard>
                             <CardTitle>{card.title}</CardTitle>
                             <StyledDivider />
                             <CardValue>{card.value}</CardValue>
                         </StyledCard>
-                    </Grid>
+                    </Box>
                 ))}
-            </Grid>
+            </Box>
         );
     };
 
@@ -104,6 +109,7 @@ export default function Dashboard() {
                     borderRadius: "16px",
                     boxShadow: "0px 4px 8px rgba(0,0,0,0.15)",
                     marginTop: "20px",
+                    gap: "16px",
                 }}
             >
                 {dashboardData.warehouse_summary.map((warehouse, index) => {
@@ -111,7 +117,7 @@ export default function Dashboard() {
                     const gaugeColor = stockPercentage > 70 ? "#FF5252" : stockPercentage > 50 ? "#FFC107" : "#4CAF50";
 
                     return (
-                        <StyledCard key={index} sx={{ minWidth: "200px", marginRight: "16px" }}>
+                        <StyledCard key={index} sx={{ minWidth: "200px" }}>
                             <CardTitle>{`Warehouse ${warehouse.warehouse_id}`}</CardTitle>
                             <StyledDivider />
                             <Box position="relative" display="inline-flex">

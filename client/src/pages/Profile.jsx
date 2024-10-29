@@ -104,10 +104,22 @@ export default function Profile({ profileImage, setProfileImage }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.put("api/users/update", formData);
-            await fetchUserProfile();
+            const response = await axios.put("api/users/update", formData);
+            if (response.data.success) {
+                setMessage("Profile updated successfully!");
+                setSeverity("success");
+                setAlertOpen(true);
+                await fetchUserProfile();
+            } else {
+                setMessage(response.data.data);
+                setSeverity("error");
+                setAlertOpen(true);
+            }
         } catch (error) {
             console.error("Error updating profile:", error);
+            setMessage(error);
+            setSeverity("error");
+            setAlertOpen(true);
         }
     };
 
@@ -197,7 +209,6 @@ export default function Profile({ profileImage, setProfileImage }) {
                     </Typography>
                 </Box>
 
-                {/* Right Card: Account Settings */}
                 <Box
                     sx={{
                         flex: 2,
@@ -209,7 +220,7 @@ export default function Profile({ profileImage, setProfileImage }) {
                     }}
                 >
                     <Typography variant="h6" gutterBottom>
-                        Account Settings
+                        Profile Information
                     </Typography>
                     <form onSubmit={handleSubmit}>
                         <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>

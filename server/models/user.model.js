@@ -8,6 +8,11 @@ const User = new mongoose.Schema(
         password: { type: String, required: true },
         phone_number: { type: String },
         profile_picture: { type: String },
+        tenant: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "tenants",
+            required: true,
+        },
         age: { type: Number },
         role: {
             type: String,

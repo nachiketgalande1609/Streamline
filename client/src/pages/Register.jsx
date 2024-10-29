@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import {
@@ -11,6 +11,10 @@ import {
     Snackbar,
     Alert,
     Grid,
+    FormControl,
+    InputLabel,
+    Select,
+    MenuItem,
 } from "@mui/material";
 
 export default function Register() {
@@ -24,6 +28,23 @@ export default function Register() {
     const [message, setMessage] = useState("");
     const [severity, setSeverity] = useState("success");
 
+    const [tenant, setTenant] = useState("");
+    const [tenantList, setTenantList] = useState([]);
+
+    useEffect(() => {
+        const fetchTenants = async () => {
+            try {
+                const response = await axios.get("/api/tenants");
+                setTenantList(response?.data?.data);
+            } catch (error) {
+                console.error("Error fetching tenants:", error);
+                setTenantList([]);
+            }
+        };
+
+        fetchTenants();
+    }, []);
+
     async function registerUser(event) {
         event.preventDefault();
         setLoading(true);
@@ -36,6 +57,7 @@ export default function Register() {
                     lastName,
                     email,
                     password,
+                    tenant,
                 },
                 {
                     headers: {
@@ -94,18 +116,26 @@ export default function Register() {
                         backgroundColor: "#ffffff",
                     }}
                 >
-                    <Typography
-                        component="h1"
-                        variant="h5"
-                        sx={{ color: "#37474f" }}
-                    >
+                    <Typography component="h1" variant="h5" sx={{ color: "#37474f" }}>
                         Register
                     </Typography>
-                    <Box
-                        component="form"
-                        onSubmit={registerUser}
-                        sx={{ mt: 1 }}
-                    >
+                    <Box component="form" onSubmit={registerUser} sx={{ mt: 1 }}>
+                        <FormControl fullWidth margin="normal" required>
+                            <InputLabel id="tenant-select-label">Select Tenant</InputLabel>
+                            <Select
+                                labelId="tenant-select-label"
+                                value={tenant}
+                                onChange={(e) => setTenant(e?.target?.value)}
+                                variant="outlined"
+                                sx={{ borderRadius: "16px" }}
+                            >
+                                {tenantList?.map((tenant) => (
+                                    <MenuItem key={tenant?._id} value={tenant?._id}>
+                                        {tenant?.name}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
                         <TextField
                             variant="outlined"
                             margin="normal"
@@ -186,18 +216,11 @@ export default function Register() {
                             }}
                             disabled={loading}
                         >
-                            {loading ? (
-                                <CircularProgress size={24} color="inherit" />
-                            ) : (
-                                "Register"
-                            )}
+                            {loading ? <CircularProgress size={24} color="inherit" /> : "Register"}
                         </Button>
                         <Grid container>
                             <Grid item>
-                                <Link
-                                    to="/login"
-                                    style={{ textDecoration: "none" }}
-                                >
+                                <Link to="/login" style={{ textDecoration: "none" }}>
                                     <Button
                                         variant="text"
                                         sx={{
@@ -225,19 +248,14 @@ export default function Register() {
                         </Button>
                     }
                 >
-                    <Alert
-                        onClose={handleClose}
-                        severity={severity}
-                        sx={{ width: "100%" }}
-                    >
+                    <Alert onClose={handleClose} severity={severity} sx={{ width: "100%" }}>
                         {message}
                     </Alert>
                 </Snackbar>
             </Container>
             <Box sx={{ mt: 5, textAlign: "center" }}>
                 <Typography variant="body2" color="textSecondary">
-                    © {new Date().getFullYear()} Streamline. All rights
-                    reserved.
+                    © {new Date().getFullYear()} Streamline. All rights reserved.
                 </Typography>
             </Box>
         </div>

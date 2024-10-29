@@ -1,7 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
-import { Container, TextField, Button, Typography, Box, CircularProgress, Snackbar, Alert, Grid } from "@mui/material";
+import {
+    Container,
+    TextField,
+    Button,
+    Typography,
+    Box,
+    CircularProgress,
+    Snackbar,
+    Alert,
+    Grid,
+    FormControl,
+    InputLabel,
+    Select,
+    MenuItem,
+} from "@mui/material";
 
 export default function Login() {
     const navigate = useNavigate();
@@ -11,6 +25,23 @@ export default function Login() {
     const [open, setOpen] = useState(false);
     const [message, setMessage] = useState("");
     const [severity, setSeverity] = useState("success");
+
+    const [tenant, setTenant] = useState("");
+    const [tenantList, setTenantList] = useState([]);
+
+    useEffect(() => {
+        const fetchTenants = async () => {
+            try {
+                const response = await axios.get("/api/tenants");
+                setTenantList(response?.data?.data);
+            } catch (error) {
+                console.error("Error fetching tenants:", error);
+                setTenantList([]);
+            }
+        };
+
+        fetchTenants();
+    }, []);
 
     async function loginUser(event) {
         event.preventDefault();
@@ -22,6 +53,7 @@ export default function Login() {
                 {
                     email,
                     password,
+                    tenant,
                 },
                 {
                     headers: {
@@ -30,28 +62,29 @@ export default function Login() {
                 }
             );
 
-            const loggedinUser = response.data.user;
+            const loggedinUser = response?.data?.user;
 
-            console.log("xxx", loggedinUser);
+            console.log(loggedinUser);
 
-            if (response.data.token) {
-                console.log("Running", loggedinUser);
-                localStorage.setItem("token", response.data.token);
-                localStorage.setItem("userId", loggedinUser.user_id);
-                localStorage.setItem("userEmail", loggedinUser.user_email);
-                localStorage.setItem("userProfile", loggedinUser.user_profile);
-                localStorage.setItem("userName", loggedinUser.user_first_name + " " + loggedinUser.user_last_name);
+            if (response?.data?.token) {
+                localStorage.setItem("token", response?.data?.token);
+                localStorage.setItem("userId", loggedinUser?.user_id);
+                localStorage.setItem("userEmail", loggedinUser?.user_email);
+                localStorage.setItem("userProfile", loggedinUser?.user_profile);
+                localStorage.setItem("userTenant", loggedinUser?.user_tenant);
+                localStorage.setItem("userName", loggedinUser?.user_first_name + " " + loggedinUser?.user_last_name);
 
-                axios.defaults.headers.common["Authorization"] = `Bearer ${response.data.token}`;
-                axios.defaults.headers.common["user_id"] = `${localStorage.getItem("userId")}`;
-                axios.defaults.headers.common["user_email"] = `${localStorage.getItem("userEmail")}`;
-                axios.defaults.headers.common["user_name"] = `${localStorage.getItem("userName")}`;
+                axios.defaults.headers.common["Authorization"] = `Bearer ${response?.data?.token}`;
+                axios.defaults.headers.common["user_id"] = `${localStorage?.getItem("userId")}`;
+                axios.defaults.headers.common["user_email"] = `${localStorage?.getItem("userEmail")}`;
+                axios.defaults.headers.common["user_name"] = `${localStorage?.getItem("userName")}`;
+                axios.defaults.headers.common["user_tenant"] = `${localStorage?.getItem("userTenant")}`;
                 setMessage("Login Successful");
                 setSeverity("success");
                 setOpen(true);
                 navigate("/");
             } else {
-                setMessage("Please check your username/password");
+                setMessage(response?.data?.data);
                 setSeverity("error");
                 setOpen(true);
             }
@@ -99,6 +132,22 @@ export default function Login() {
                         Login
                     </Typography>
                     <Box component="form" onSubmit={loginUser} sx={{ mt: 1 }}>
+                        <FormControl fullWidth margin="normal" required>
+                            <InputLabel id="tenant-select-label">Select Tenant</InputLabel>
+                            <Select
+                                labelId="tenant-select-label"
+                                value={tenant}
+                                onChange={(e) => setTenant(e?.target?.value)}
+                                variant="outlined"
+                                sx={{ borderRadius: "16px" }}
+                            >
+                                {tenantList?.map((tenant) => (
+                                    <MenuItem key={tenant?._id} value={tenant?._id}>
+                                        {tenant?.name}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
                         <TextField
                             variant="outlined"
                             margin="normal"
@@ -107,7 +156,7 @@ export default function Login() {
                             label="Email"
                             type="email"
                             value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            onChange={(e) => setEmail(e?.target?.value)}
                             autoComplete="email"
                             autoFocus
                             InputProps={{
@@ -124,7 +173,7 @@ export default function Login() {
                             label="Password"
                             type="password"
                             value={password}
-                            onChange={(e) => setPassword(e.target.value)}
+                            onChange={(e) => setPassword(e?.target?.value)}
                             autoComplete="current-password"
                             InputProps={{
                                 style: {

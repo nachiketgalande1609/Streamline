@@ -24,6 +24,8 @@ import {
     Alert,
     IconButton,
     Tooltip,
+    InputAdornment,
+    CircularProgress,
 } from "@mui/material";
 
 const style = {
@@ -66,6 +68,7 @@ export default function Inventory() {
     const [message, setMessage] = useState("");
     const [severity, setSeverity] = useState("success");
     const [loading, setLoading] = useState(true);
+    const [searching, setSearching] = useState(false);
 
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
@@ -96,6 +99,7 @@ export default function Inventory() {
             console.error("Error fetching inventory data:", error);
         } finally {
             setLoading(false);
+            setSearching(false);
         }
     };
 
@@ -348,13 +352,18 @@ export default function Inventory() {
                     <TextField
                         label="Search"
                         value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
+                        onChange={(e) => {
+                            setSearching(true);
+                            setSearchQuery(e.target.value);
+                        }}
                         variant="outlined"
                         size="small"
+                        sx={{ width: "250px" }}
                         InputProps={{
                             style: {
                                 borderRadius: "16px",
                             },
+                            endAdornment: <InputAdornment position="end">{searching ? <CircularProgress size={20} /> : null}</InputAdornment>,
                         }}
                     />
                     <FormControl size="small" sx={{ minWidth: 150 }}>
