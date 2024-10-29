@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Grid, Card, CardContent, Typography, Divider, CircularProgress, Box } from "@mui/material";
+import { Grid, Card, Typography, Divider, CircularProgress, Box } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import BreadcrumbsComponent from "../parts/BreadcrumbsComponent";
+import { Gauge } from "@mui/x-charts/Gauge";
 
 const StyledCard = styled(Card)(({ theme, cardcolor }) => ({
     backgroundColor: "transparent", // Transparent card background
@@ -74,12 +75,13 @@ export default function Dashboard() {
             { title: "Total Warehouses", value: dashboardData.warehouseCount },
             { title: "Total Orders", value: dashboardData.orderCount },
             { title: "Total Customers", value: dashboardData.customerCount },
+            { title: "Total Tickets", value: dashboardData.ticketCount },
         ];
 
         return (
             <Grid container spacing={3} style={{ marginTop: "16px" }}>
                 {cardDetails.map((card, index) => (
-                    <Grid item xs={12} sm={6} md={3} key={index} style={{ padding: "0 20px" }}>
+                    <Grid item xs={12} sm={6} md={2.4} key={index} style={{ padding: "0 20px" }}>
                         <StyledCard>
                             <CardTitle>{card.title}</CardTitle>
                             <StyledDivider />
@@ -93,47 +95,70 @@ export default function Dashboard() {
 
     const WarehouseGauge = () => {
         return (
-            <Grid container spacing={3} marginTop={3}>
+            <Box
+                sx={{
+                    display: "flex",
+                    overflowX: "auto",
+                    padding: "20px",
+                    border: "1px solid #333",
+                    borderRadius: "16px",
+                    boxShadow: "0px 4px 8px rgba(0,0,0,0.15)",
+                    marginTop: "20px",
+                }}
+            >
                 {dashboardData.warehouse_summary.map((warehouse, index) => {
-                    const stockPercentage = (warehouse.currentStock / warehouse.capacity) * 100;
-
-                    // Dynamically set the gauge color based on stock levels
+                    const stockPercentage = Math.round((warehouse.currentStock / warehouse.capacity) * 100);
                     const gaugeColor = stockPercentage > 70 ? "#FF5252" : stockPercentage > 50 ? "#FFC107" : "#4CAF50";
 
                     return (
-                        <Grid item xs={12} sm={6} md={2.4} lg={2.4} key={index}>
-                            <StyledCard>
-                                <CardTitle>{`Warehouse ${warehouse.warehouse_id}`}</CardTitle>
-                                <StyledDivider />
-                                <Box position="relative" display="inline-flex">
-                                    <CircularProgress
-                                        variant="determinate"
-                                        value={100} // To create the full background track
-                                        size={80}
-                                        thickness={6}
-                                        sx={{
-                                            color: "#dbdbdb", // Color of the track
-                                            position: "absolute",
-                                        }}
-                                    />
-                                    <CircularProgress
-                                        variant="determinate"
-                                        value={stockPercentage}
-                                        size={80}
-                                        thickness={6}
-                                        sx={{
-                                            color: gaugeColor,
-                                        }}
-                                    />
+                        <StyledCard key={index} sx={{ minWidth: "200px", marginRight: "16px" }}>
+                            <CardTitle>{`Warehouse ${warehouse.warehouse_id}`}</CardTitle>
+                            <StyledDivider />
+                            <Box position="relative" display="inline-flex">
+                                <CircularProgress
+                                    variant="determinate"
+                                    value={100}
+                                    size={80}
+                                    thickness={6}
+                                    sx={{
+                                        color: "#dbdbdb",
+                                        position: "absolute",
+                                    }}
+                                />
+                                <CircularProgress
+                                    variant="determinate"
+                                    value={stockPercentage}
+                                    size={80}
+                                    thickness={6}
+                                    sx={{
+                                        color: gaugeColor,
+                                    }}
+                                />
+                                {/* Display Percentage at the Center */}
+                                <Box
+                                    sx={{
+                                        top: 0,
+                                        left: 0,
+                                        bottom: 0,
+                                        right: 0,
+                                        position: "absolute",
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                    }}
+                                >
+                                    <Typography variant="caption" component="div" color="textSecondary">
+                                        {`${stockPercentage}%`}
+                                    </Typography>
                                 </Box>
-                                <Typography
-                                    sx={{ marginTop: "10px", color: "#000" }}
-                                >{`Stock: ${warehouse.currentStock}/${warehouse.capacity}`}</Typography>
-                            </StyledCard>
-                        </Grid>
+                            </Box>
+                            <Typography sx={{ marginTop: "10px", color: "#000" }}>
+                                {`Stock: ${warehouse.currentStock}/${warehouse.capacity}`}
+                            </Typography>
+                        </StyledCard>
                     );
                 })}
-            </Grid>
+            </Box>
         );
     };
 

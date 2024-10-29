@@ -5,6 +5,7 @@ const User = require("../models/user.model");
 const Warehouse = require("../models/warehouse.models");
 const Order = require("../models/orders.models");
 const Customer = require("../models/customers.models");
+const Ticket = require("../models/tickets.models");
 
 const dashboard = express.Router();
 
@@ -13,10 +14,8 @@ dashboard.get("/", async (req, res) => {
     const warehouseCount = await Warehouse.countDocuments();
     const orderCount = await Order.countDocuments();
     const customerCount = await Customer.countDocuments();
-    const warehouses = await Warehouse.find(
-        {},
-        "warehouse_id current_stock capacity status"
-    );
+    const warehouses = await Warehouse.find({}, "warehouse_id current_stock capacity status");
+    const ticketCount = await Ticket.countDocuments();
 
     res.json({
         success: true,
@@ -25,6 +24,7 @@ dashboard.get("/", async (req, res) => {
             warehouseCount,
             orderCount,
             customerCount,
+            ticketCount,
             warehouse_summary: warehouses.map((warehouse) => ({
                 warehouse_id: warehouse.warehouse_id,
                 currentStock: warehouse.current_stock,

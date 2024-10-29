@@ -400,7 +400,7 @@ export default function Orders() {
                             inputProps={{ "aria-label": "Without label" }}
                             size="small"
                             sx={{
-                                borderRadius: "16px", // Add border radius here
+                                borderRadius: "16px",
                             }}
                         >
                             <MenuItem value="" disabled>
