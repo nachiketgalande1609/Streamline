@@ -103,8 +103,6 @@ export default function Inventory() {
         }
     };
 
-    console.log("Nachiket", statusLOV, suppliersLOV);
-
     const fetchInventoryData = async (page = 1, limit = 10, search = "", status = "") => {
         setLoading(true);
         try {
