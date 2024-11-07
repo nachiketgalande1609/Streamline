@@ -4,15 +4,17 @@ const Inventory = new mongoose.Schema(
     {
         name: { type: String, required: true },
         description: { type: String, required: true },
+        make: { type: String, required: true },
         category: { type: String, required: true },
-        quantity: { type: Number, required: true },
+        on_hand_quantity: { type: Number, required: true },
         cost: { type: Number, required: true },
         price: { type: Number, required: true },
-        min_stock_level: { type: Number, required: true },
-        reorder_point: { type: Number, required: true },
         supplier: { type: String, required: true },
-        warehouse: { type: String, required: true },
-        dateAdded: { type: Date, required: true },
+        warehouse: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "warehouses",
+            required: true,
+        },
         expiryDate: { type: Date },
         status: {
             type: String,
@@ -20,7 +22,7 @@ const Inventory = new mongoose.Schema(
             required: true,
         },
     },
-    { collection: "inventory" }
+    { collection: "inventory", timestamps: true }
 );
 
 const model = mongoose.model("InventoryData", Inventory);

@@ -160,8 +160,6 @@ user.post("/uploadProfilePicture", upload.single("profilePicture"), async (req, 
 
     const userObjectId = new mongoose.Types.ObjectId(user_id);
 
-    console.log(req.headers);
-
     if (!userObjectId || !req.file) {
         return res.status(400).json({
             success: false,

@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Card, Typography, Divider, CircularProgress, Box } from "@mui/material";
+import { Card, Typography, Divider, CircularProgress, Box, Tooltip } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import BreadcrumbsComponent from "../parts/BreadcrumbsComponent";
-import { Gauge } from "@mui/x-charts/Gauge";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
 const StyledCard = styled(Card)(({ theme }) => ({
-    backgroundColor: "transparent", // Transparent card background
+    backgroundColor: "#ffffff", // Transparent card background
     color: "#FFFFFF", // White text
     borderRadius: "16px",
     boxShadow: "0px 4px 8px rgba(0,0,0,0.15)", // Softer shadow
@@ -79,7 +79,7 @@ export default function Dashboard() {
         ];
 
         return (
-            <Box display="flex" flexWrap="wrap" justifyContent="space-between" sx={{ marginTop: "16px", gap: "16px" }}>
+            <Box display="flex" flexWrap="wrap" justifyContent="space-between" sx={{ marginTop: "12px", gap: "16px" }}>
                 {cardDetails.map((card, index) => (
                     <Box
                         key={index}
@@ -103,67 +103,82 @@ export default function Dashboard() {
             <Box
                 sx={{
                     display: "flex",
-                    overflowX: "auto",
+                    flexDirection: "column",
                     padding: "20px",
-                    border: "1px solid #333",
                     borderRadius: "16px",
-                    boxShadow: "0px 4px 8px rgba(0,0,0,0.15)",
+                    boxShadow: "0px 4px 8px rgba(0,0,0,0.40)",
                     marginTop: "20px",
                     gap: "16px",
                 }}
             >
-                {dashboardData.warehouse_summary.map((warehouse, index) => {
-                    const stockPercentage = Math.round((warehouse.currentStock / warehouse.capacity) * 100);
-                    const gaugeColor = stockPercentage > 70 ? "#FF5252" : stockPercentage > 50 ? "#FFC107" : "#4CAF50";
+                <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+                    <Typography variant="h6">Warehouses</Typography>
+                    <Tooltip title="This section provides a quick view of each warehouse's total and available capacity" placement="right">
+                        <InfoOutlinedIcon sx={{ width: "20px", ml: 1, color: "#aaa" }} />
+                    </Tooltip>
+                </Box>
+                <Box
+                    sx={{
+                        display: "flex",
+                        flexDirection: "row",
+                        gap: "16px",
+                        overflowX: "auto",
+                        paddingBottom: "20px",
+                    }}
+                >
+                    {dashboardData.warehouse_summary.map((warehouse, index) => {
+                        const stockPercentage = Math.round((warehouse.currentStock / warehouse.capacity) * 100);
+                        const gaugeColor = stockPercentage > 70 ? "#FF5252" : stockPercentage > 50 ? "#FFC107" : "#4CAF50";
 
-                    return (
-                        <StyledCard key={index} sx={{ minWidth: "200px" }}>
-                            <CardTitle>{`Warehouse ${warehouse.warehouse_id}`}</CardTitle>
-                            <StyledDivider />
-                            <Box position="relative" display="inline-flex">
-                                <CircularProgress
-                                    variant="determinate"
-                                    value={100}
-                                    size={80}
-                                    thickness={6}
-                                    sx={{
-                                        color: "#dbdbdb",
-                                        position: "absolute",
-                                    }}
-                                />
-                                <CircularProgress
-                                    variant="determinate"
-                                    value={stockPercentage}
-                                    size={80}
-                                    thickness={6}
-                                    sx={{
-                                        color: gaugeColor,
-                                    }}
-                                />
-                                {/* Display Percentage at the Center */}
-                                <Box
-                                    sx={{
-                                        top: 0,
-                                        left: 0,
-                                        bottom: 0,
-                                        right: 0,
-                                        position: "absolute",
-                                        display: "flex",
-                                        alignItems: "center",
-                                        justifyContent: "center",
-                                    }}
-                                >
-                                    <Typography variant="caption" component="div" color="textSecondary">
-                                        {`${stockPercentage}%`}
-                                    </Typography>
+                        return (
+                            <StyledCard key={index} sx={{ minWidth: "200px" }}>
+                                <CardTitle>{`Warehouse ${warehouse.warehouse_id}`}</CardTitle>
+                                <StyledDivider />
+                                <Box position="relative" display="inline-flex">
+                                    <CircularProgress
+                                        variant="determinate"
+                                        value={100}
+                                        size={80}
+                                        thickness={6}
+                                        sx={{
+                                            color: "#dbdbdb",
+                                            position: "absolute",
+                                        }}
+                                    />
+                                    <CircularProgress
+                                        variant="determinate"
+                                        value={stockPercentage}
+                                        size={80}
+                                        thickness={6}
+                                        sx={{
+                                            color: gaugeColor,
+                                        }}
+                                    />
+                                    {/* Display Percentage at the Center */}
+                                    <Box
+                                        sx={{
+                                            top: 0,
+                                            left: 0,
+                                            bottom: 0,
+                                            right: 0,
+                                            position: "absolute",
+                                            display: "flex",
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                        }}
+                                    >
+                                        <Typography variant="caption" component="div" color="textSecondary">
+                                            {`${stockPercentage}%`}
+                                        </Typography>
+                                    </Box>
                                 </Box>
-                            </Box>
-                            <Typography sx={{ marginTop: "10px", color: "#000" }}>
-                                {`Stock: ${warehouse.currentStock}/${warehouse.capacity}`}
-                            </Typography>
-                        </StyledCard>
-                    );
-                })}
+                                <Typography sx={{ marginTop: "10px", color: "#000" }}>
+                                    {`Stock: ${warehouse.currentStock}/${warehouse.capacity}`}
+                                </Typography>
+                            </StyledCard>
+                        );
+                    })}
+                </Box>
             </Box>
         );
     };

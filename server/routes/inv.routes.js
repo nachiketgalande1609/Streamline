@@ -2,6 +2,7 @@ const express = require("express");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const Inventory = require("../models/inv.models");
+const Suppliers = require("../models/suppliers.models");
 
 const inv = express.Router();
 
@@ -58,6 +59,79 @@ inv.post("/", async (req, res) => {
         data: savedItem,
         error: false,
     });
+});
+
+inv.get("/options", async (req, res) => {
+    try {
+        const statuses = ["in stock", "out of stock", "discontinued"];
+        const suppliers = await Suppliers.find().select("name");
+        const categories = await Inventory.distinct("category");
+        res.json({
+            success: true,
+            data: { statuses: statuses, suppliers: suppliers, categories: categories },
+            error: false,
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            data: [],
+            error: true,
+            message: "Error fetching options.",
+        });
+    }
+});
+
+inv.patch("/bulk-edit", async (req, res) => {
+    try {
+        const { ids, ...updateData } = req.body;
+
+        if (!Array.isArray(ids) || ids.length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid request: 'ids' must be a non-empty array.",
+                error: true,
+            });
+        }
+
+        // Filter out fields that are null, undefined, or empty strings
+        const filteredUpdateData = Object.fromEntries(
+            Object.entries(updateData).filter(([, value]) => value !== null && value !== undefined && value !== "")
+        );
+
+        if (Object.keys(filteredUpdateData).length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: "No valid fields to update.",
+                error: true,
+            });
+        }
+
+        // Update only the valid fields in the inventory items
+        const result = await Inventory.updateMany({ _id: { $in: ids } }, { $set: filteredUpdateData });
+
+        if (result.modifiedCount === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "No inventory items were updated.",
+                error: true,
+            });
+        }
+
+        res.json({
+            success: true,
+            data: {
+                modifiedCount: result.modifiedCount,
+                message: "Inventory items updated successfully.",
+            },
+            error: false,
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Error updating inventory data",
+            error: true,
+        });
+    }
 });
 
 module.exports = inv;

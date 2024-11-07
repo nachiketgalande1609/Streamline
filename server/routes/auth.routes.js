@@ -47,8 +47,6 @@ auth.post("/login", async (req, res) => {
         });
     }
 
-    console.log(req.body.tenant, user.tenant.toString());
-
     if (req.body.tenant !== user.tenant.toString()) {
         res.json({
             success: false,

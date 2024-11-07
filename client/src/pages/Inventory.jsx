@@ -5,7 +5,7 @@ import AddIcon from "@mui/icons-material/Add";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import Chip from "@mui/material/Chip";
 import { Close } from "@mui/icons-material";
-
+import EditIcon from "@mui/icons-material/Edit";
 import Grid from "@mui/material/Grid";
 import BreadcrumbsComponent from "../parts/BreadcrumbsComponent";
 import * as Papa from "papaparse";
@@ -52,17 +52,16 @@ export default function Inventory() {
         name: "",
         description: "",
         category: "",
-        quantity: "",
+        on_hand_quantity: "",
         price: "",
         cost: "",
-        min_stock_level: "",
-        reorder_point: "",
         supplier: "",
         warehouse: "",
         dateAdded: "",
         expiryDate: "",
         status: "in stock",
     });
+
     const [warehouses, setWarehouses] = useState([]);
     const [alertOpen, setAlertOpen] = useState(false);
     const [message, setMessage] = useState("");
@@ -71,16 +70,40 @@ export default function Inventory() {
     const [searching, setSearching] = useState(false);
 
     const [currentPage, setCurrentPage] = useState(1);
-    const [pageSize, setPageSize] = useState(10);
+    const [pageSize, setPageSize] = useState(25);
     const [searchQuery, setSearchQuery] = useState("");
     const [debouncedSearchQuery, setDebouncedSearchQuery] = useState(searchQuery);
     const [statusFilter, setStatusFilter] = useState("");
     const [totalCount, setTotalCount] = useState(0);
 
+    const [selectedIds, setSelectedIds] = useState([]);
+    const [bulkEditOpen, setBulkEditOpen] = useState(false);
+    const [bulkEditData, setBulkEditData] = useState({
+        status: "",
+        supplier: "",
+        category: "",
+        price: "",
+        cost: "",
+    });
+    const [statusLOV, setStatusLOV] = useState([]);
+    const [suppliersLOV, setSuppliersLOV] = useState([]);
+    const [categoriesLOV, setCategoriesLOV] = useState([]);
+
     const breadcrumbs = [
         { label: "Home", path: "/" },
         { label: "Inventory", path: "" },
     ];
+
+    const getEditLOVOptions = async () => {
+        const response = await axios.get("/api/inventory/options");
+        if (response?.data?.success) {
+            setStatusLOV(response?.data?.data?.statuses);
+            setSuppliersLOV(response?.data?.data?.suppliers);
+            setCategoriesLOV(response?.data?.data?.categories);
+        }
+    };
+
+    console.log("Nachiket", statusLOV, suppliersLOV);
 
     const fetchInventoryData = async (page = 1, limit = 10, search = "", status = "") => {
         setLoading(true);
@@ -126,6 +149,12 @@ export default function Inventory() {
         fetchInventoryData(currentPage, pageSize, debouncedSearchQuery, statusFilter);
     }, [currentPage, pageSize, debouncedSearchQuery, statusFilter]);
 
+    useEffect(() => {
+        if (bulkEditOpen) {
+            getEditLOVOptions();
+        }
+    }, [bulkEditOpen]);
+
     const handleAlertClose = () => {
         setAlertOpen(false);
     };
@@ -142,11 +171,9 @@ export default function Inventory() {
                     "name",
                     "description",
                     "category",
-                    "quantity",
+                    "on_hand_quantity",
                     "price",
                     "cost",
-                    "min_stock_level",
-                    "reorder_point",
                     "supplier",
                     "warehouse",
                     "dateAdded",
@@ -177,7 +204,10 @@ export default function Inventory() {
         setOpen(true);
     };
 
-    const handleClose = () => setOpen(false);
+    const handleClose = () => {
+        setOpen(false);
+        setBulkEditOpen();
+    };
 
     const handleChange = (e) => {
         setFormData({
@@ -193,195 +223,37 @@ export default function Inventory() {
         });
     };
 
-    const handleSubmit = async (e) => {
+    const handleBulkEditOpen = () => {
+        setBulkEditOpen(true);
+    };
+
+    const handleBulkEditClose = () => {
+        setBulkEditOpen(false);
+    };
+
+    const handleBulkEditChange = (e) => {
+        setBulkEditData({
+            ...bulkEditData,
+            [e.target.name]: e.target.value,
+        });
+    };
+
+    const handleBulkEditSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post("/api/inventory", formData);
-            fetchInventoryData();
-            handleClose();
-            setFormData({
-                name: "",
-                description: "",
-                category: "",
-                quantity: "",
-                price: "",
-                cost: "",
-                min_stock_level: "",
-                reorder_point: "",
-                supplier: "",
-                warehouse: "",
-                dateAdded: "",
-                expiryDate: "",
-                status: "in stock",
+            await axios.patch("/api/inventory/bulk-edit", {
+                ids: selectedIds,
+                ...bulkEditData,
             });
+            fetchInventoryData(currentPage, pageSize, debouncedSearchQuery, statusFilter);
+            handleBulkEditClose();
         } catch (error) {
-            console.error("Error adding item to inventory:", error);
+            console.error("Error updating items:", error);
         }
     };
 
-    const columns = [
-        {
-            field: "status",
-            headerName: "Status",
-            width: 150, // Constant width
-            headerAlign: "center",
-            align: "center",
-            renderCell: (params) => {
-                let chipColor;
-                if (params.value === "in stock") {
-                    chipColor = "success";
-                } else if (params.value === "out of stock") {
-                    chipColor = "error";
-                } else {
-                    chipColor = "default";
-                }
-
-                return <Chip label={params.value} color={chipColor} sx={{ width: 100 }} />;
-            },
-        },
-        {
-            field: "name",
-            headerName: "Item Name",
-            width: 150,
-            headerAlign: "left",
-            align: "left",
-        },
-        {
-            field: "description",
-            headerName: "Description",
-            width: 200,
-            headerAlign: "left",
-            align: "left",
-        },
-        {
-            field: "category",
-            headerName: "Category",
-            width: 150,
-            headerAlign: "center",
-            align: "center",
-        },
-        {
-            field: "quantity",
-            headerName: "Quantity",
-            type: "number",
-            width: 150,
-            headerAlign: "center",
-            align: "center",
-        },
-        {
-            field: "price",
-            headerName: "Price",
-            type: "number",
-            width: 150,
-            headerAlign: "center",
-            align: "center",
-        },
-        {
-            field: "cost",
-            headerName: "Cost",
-            type: "number",
-            width: 150,
-            headerAlign: "center",
-            align: "center",
-        },
-        {
-            field: "min_stock_level",
-            headerName: "Min Stock Level",
-            type: "number",
-            width: 150,
-            headerAlign: "center",
-            align: "center",
-        },
-        {
-            field: "reorder_point",
-            headerName: "Reorder Point",
-            type: "number",
-            width: 150,
-            headerAlign: "center",
-            align: "center",
-        },
-        {
-            field: "supplier",
-            headerName: "Supplier",
-            width: 150,
-            headerAlign: "center",
-            align: "center",
-        },
-        {
-            field: "warehouse",
-            headerName: "Warehouse",
-            width: 150,
-            headerAlign: "center",
-            align: "center",
-        },
-        {
-            field: "dateAdded",
-            headerName: "Date Added",
-            valueFormatter: (params) => formatDate(params),
-            width: 150,
-            headerAlign: "center",
-            align: "center",
-        },
-        {
-            field: "expiryDate",
-            headerName: "Expiry Date",
-            valueFormatter: (params) => formatDate(params),
-            width: 150,
-            headerAlign: "center",
-            align: "center",
-        },
-    ];
-
-    return (
-        <div>
-            <Box sx={{ display: "flex", alignItems: "center" }}>
-                <Typography variant="h5" gutterBottom sx={{ flexGrow: 1 }}>
-                    Inventory
-                </Typography>
-                <Box sx={{ display: "flex", gap: 1 }}>
-                    <Tooltip title="Add Items" arrow>
-                        <IconButton size="small" onClick={handleOpen} aria-label="Add Items" sx={{ mr: 1 }}>
-                            <AddIcon />
-                        </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Export Data" arrow>
-                        <IconButton size="small" onClick={handleExport} aria-label="Export to CSV">
-                            <FileDownloadIcon />
-                        </IconButton>
-                    </Tooltip>
-                    <TextField
-                        label="Search"
-                        value={searchQuery}
-                        onChange={(e) => {
-                            setSearching(true);
-                            setSearchQuery(e.target.value);
-                        }}
-                        variant="outlined"
-                        size="small"
-                        sx={{ width: "250px" }}
-                        InputProps={{
-                            style: {
-                                borderRadius: "16px",
-                            },
-                            endAdornment: <InputAdornment position="end">{searching ? <CircularProgress size={20} /> : null}</InputAdornment>,
-                        }}
-                    />
-                    <FormControl size="small" sx={{ minWidth: 150 }}>
-                        <Select
-                            value={statusFilter}
-                            onChange={(e) => setStatusFilter(e.target.value)}
-                            displayEmpty
-                            sx={{ width: 150, borderRadius: "16px" }}
-                        >
-                            <MenuItem value="">All Status</MenuItem>
-                            <MenuItem value="in stock">In Stock</MenuItem>
-                            <MenuItem value="out of stock">Out of Stock</MenuItem>
-                            <MenuItem value="discontinued">Discontinued</MenuItem>
-                        </Select>
-                    </FormControl>
-                </Box>
-            </Box>
-            <BreadcrumbsComponent breadcrumbs={breadcrumbs} />
+    const AddItemModal = () => {
+        return (
             <Modal open={open} onClose={handleClose}>
                 <Box sx={{ ...style, width: 900, borderRadius: "16px" }}>
                     <IconButton
@@ -448,10 +320,10 @@ export default function Inventory() {
                             </Grid>
                             <Grid item xs={4}>
                                 <TextField
-                                    label="Quantity"
-                                    name="quantity"
+                                    label="On-Hand Quantity"
+                                    name="on_hand_quantity"
                                     type="number"
-                                    value={formData.quantity}
+                                    value={formData.on_hand_quantity}
                                     onChange={handleChange}
                                     size="small"
                                     fullWidth
@@ -496,38 +368,6 @@ export default function Inventory() {
                             </Grid>
                             <Grid item xs={4}>
                                 <TextField
-                                    label="Min Stock Level"
-                                    name="min_stock_level"
-                                    type="number"
-                                    value={formData.min_stock_level}
-                                    onChange={handleChange}
-                                    size="small"
-                                    fullWidth
-                                    margin="normal"
-                                    required
-                                    InputProps={{
-                                        style: { borderRadius: "16px" },
-                                    }}
-                                />
-                            </Grid>
-                            <Grid item xs={4}>
-                                <TextField
-                                    label="Reorder Point"
-                                    name="reorder_point"
-                                    type="number"
-                                    value={formData.reorder_point}
-                                    onChange={handleChange}
-                                    size="small"
-                                    fullWidth
-                                    margin="normal"
-                                    required
-                                    InputProps={{
-                                        style: { borderRadius: "16px" },
-                                    }}
-                                />
-                            </Grid>
-                            <Grid item xs={4}>
-                                <TextField
                                     label="Supplier"
                                     name="supplier"
                                     value={formData.supplier}
@@ -543,7 +383,14 @@ export default function Inventory() {
                             </Grid>
                             <Grid item xs={4}>
                                 <FormControl fullWidth margin="normal">
-                                    <Select name="warehouse" value={formData.warehouse} onChange={handleSelectChange} size="small" label="Role">
+                                    <Select
+                                        name="warehouse"
+                                        displayEmpty
+                                        value={formData.warehouse}
+                                        onChange={handleSelectChange}
+                                        size="small"
+                                        label="Role"
+                                    >
                                         <MenuItem value="" disabled>
                                             Select Role
                                         </MenuItem>
@@ -627,9 +474,309 @@ export default function Inventory() {
                     </form>
                 </Box>
             </Modal>
+        );
+    };
+
+    const EditModal = () => {
+        return (
+            <Modal open={bulkEditOpen} onClose={handleBulkEditClose}>
+                <Box sx={{ ...style, width: 900, borderRadius: "16px" }}>
+                    <IconButton
+                        aria-label="close"
+                        onClick={handleClose}
+                        sx={{
+                            position: "absolute",
+                            right: 8,
+                            top: 8,
+                            color: (theme) => theme.palette.grey[500],
+                        }}
+                    >
+                        <Close />
+                    </IconButton>
+                    <Typography variant="h6" component="h2">
+                        Bulk Edit Selected Items
+                    </Typography>
+                    <form onSubmit={handleBulkEditSubmit}>
+                        {/* Common fields for bulk edit */}
+                        <FormControl fullWidth margin="normal">
+                            <Select
+                                label="Status"
+                                name="status"
+                                value={bulkEditData.status}
+                                onChange={handleBulkEditChange}
+                                size="small"
+                                fullWidth
+                                margin="normal"
+                                displayEmpty
+                            >
+                                <MenuItem value="" disabled>
+                                    Select Status
+                                </MenuItem>
+                                {statusLOV.map((status) => (
+                                    <MenuItem key={status} value={status}>
+                                        {status}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                        <FormControl fullWidth margin="normal">
+                            <Select
+                                label="Supplier"
+                                name="supplier"
+                                value={bulkEditData.supplier}
+                                onChange={handleBulkEditChange}
+                                size="small"
+                                fullWidth
+                                margin="normal"
+                                displayEmpty
+                            >
+                                <MenuItem value="" disabled>
+                                    Select Supplier
+                                </MenuItem>
+                                {suppliersLOV.map((supplier) => (
+                                    <MenuItem key={supplier._id} value={supplier._id}>
+                                        {supplier.name}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                        <FormControl fullWidth margin="normal">
+                            <Select
+                                label="Category"
+                                name="category"
+                                value={bulkEditData.category}
+                                onChange={handleBulkEditChange}
+                                size="small"
+                                fullWidth
+                                margin="normal"
+                                displayEmpty
+                            >
+                                <MenuItem value="" disabled>
+                                    Select Category
+                                </MenuItem>
+                                {categoriesLOV.map((category) => (
+                                    <MenuItem key={category} value={category}>
+                                        {category}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+
+                        <TextField
+                            label="Price"
+                            name="price"
+                            type="number"
+                            value={bulkEditData.price}
+                            onChange={handleBulkEditChange}
+                            size="small"
+                            fullWidth
+                            margin="normal"
+                        />
+                        <TextField
+                            label="Cost"
+                            name="cost"
+                            type="number"
+                            value={bulkEditData.cost}
+                            onChange={handleBulkEditChange}
+                            size="small"
+                            fullWidth
+                            margin="normal"
+                        />
+                        {/* Add other fields as needed */}
+                        <Button type="submit" variant="contained" color="primary">
+                            Update
+                        </Button>
+                    </form>
+                </Box>
+            </Modal>
+        );
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            await axios.post("/api/inventory", formData);
+            fetchInventoryData();
+            handleClose();
+            setFormData({
+                name: "",
+                description: "",
+                category: "",
+                on_hand_quantity: "",
+                price: "",
+                cost: "",
+                supplier: "",
+                warehouse: "",
+                dateAdded: "",
+                expiryDate: "",
+                status: "",
+            });
+        } catch (error) {
+            console.error("Error adding item to inventory:", error);
+        }
+    };
+
+    const columns = [
+        {
+            field: "status",
+            headerName: "Status",
+            width: 150, // Constant width
+            headerAlign: "center",
+            align: "center",
+            renderCell: (params) => {
+                let chipColor;
+                if (params.value === "in stock") {
+                    chipColor = "success";
+                } else if (params.value === "out of stock") {
+                    chipColor = "error";
+                } else {
+                    chipColor = "default";
+                }
+
+                return <Chip label={params.value} color={chipColor} sx={{ width: 100 }} />;
+            },
+        },
+        {
+            field: "name",
+            headerName: "Item Name",
+            width: 250,
+            headerAlign: "left",
+            align: "left",
+        },
+        {
+            field: "description",
+            headerName: "Description",
+            width: 300,
+            headerAlign: "left",
+            align: "left",
+        },
+        {
+            field: "category",
+            headerName: "Category",
+            width: 150,
+            headerAlign: "center",
+            align: "center",
+        },
+        {
+            field: "on_hand_quantity",
+            headerName: "On-hand Quantity",
+            type: "number",
+            width: 150,
+            headerAlign: "center",
+            align: "center",
+        },
+        {
+            field: "price",
+            headerName: "Price",
+            type: "number",
+            width: 150,
+            headerAlign: "center",
+            align: "center",
+        },
+        {
+            field: "cost",
+            headerName: "Cost",
+            type: "number",
+            width: 150,
+            headerAlign: "center",
+            align: "center",
+        },
+        {
+            field: "supplier",
+            headerName: "Supplier",
+            width: 150,
+            headerAlign: "center",
+            align: "center",
+        },
+        {
+            field: "warehouse",
+            headerName: "Warehouse",
+            width: 150,
+            headerAlign: "center",
+            align: "center",
+        },
+        {
+            field: "dateAdded",
+            headerName: "Date Added",
+            valueFormatter: (params) => formatDate(params),
+            width: 150,
+            headerAlign: "center",
+            align: "center",
+        },
+        {
+            field: "expiryDate",
+            headerName: "Expiry Date",
+            valueFormatter: (params) => formatDate(params),
+            width: 150,
+            headerAlign: "center",
+            align: "center",
+        },
+    ];
+
+    return (
+        <div>
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+                <Typography variant="h5" gutterBottom sx={{ flexGrow: 1 }}>
+                    Inventory
+                </Typography>
+                <Box sx={{ display: "flex", gap: 1 }}>
+                    <Tooltip title="Edit Selected Records" arrow>
+                        <IconButton
+                            size="small"
+                            onClick={handleBulkEditOpen}
+                            aria-label="Add Items"
+                            disabled={selectedIds.length === 0}
+                            sx={{ width: "40px" }}
+                        >
+                            <EditIcon />
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Add Items" arrow>
+                        <IconButton size="small" onClick={handleOpen} aria-label="Add Items" sx={{ width: "40px" }}>
+                            <AddIcon />
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Export Data" arrow>
+                        <IconButton size="small" onClick={handleExport} aria-label="Export to CSV" sx={{ width: "40px" }}>
+                            <FileDownloadIcon />
+                        </IconButton>
+                    </Tooltip>
+                    <TextField
+                        label="Search"
+                        value={searchQuery}
+                        onChange={(e) => {
+                            setSearching(true);
+                            setSearchQuery(e.target.value);
+                        }}
+                        variant="outlined"
+                        size="small"
+                        sx={{ width: "250px" }}
+                        InputProps={{
+                            style: {
+                                borderRadius: "16px",
+                            },
+                            endAdornment: <InputAdornment position="end">{searching ? <CircularProgress size={20} /> : null}</InputAdornment>,
+                        }}
+                    />
+                    <FormControl size="small" sx={{ minWidth: 150 }}>
+                        <Select
+                            value={statusFilter}
+                            onChange={(e) => setStatusFilter(e.target.value)}
+                            displayEmpty
+                            sx={{ width: 150, borderRadius: "16px" }}
+                        >
+                            <MenuItem value="">All Status</MenuItem>
+                            <MenuItem value="in stock">In Stock</MenuItem>
+                            <MenuItem value="out of stock">Out of Stock</MenuItem>
+                            <MenuItem value="discontinued">Discontinued</MenuItem>
+                        </Select>
+                    </FormControl>
+                </Box>
+            </Box>
+            <BreadcrumbsComponent breadcrumbs={breadcrumbs} />
             <Box
                 sx={{
-                    height: 636,
+                    height: "calc(100vh - 220px)",
                     width: "100%",
                     maxWidth: "calc(100vw - 280px)",
                     marginTop: 2,
@@ -643,7 +790,7 @@ export default function Inventory() {
                     getRowId={(row) => row._id}
                     paginationMode="server"
                     rowCount={totalCount}
-                    pageSizeOptions={[10, 25, 50]}
+                    pageSizeOptions={[25, 50, 100]}
                     paginationModel={{
                         page: currentPage - 1,
                         pageSize: pageSize,
@@ -655,6 +802,10 @@ export default function Inventory() {
                     disableRowSelectionOnClick
                     disableColumnMenu
                     loading={loading}
+                    checkboxSelection
+                    onRowSelectionModelChange={(newSelection) => {
+                        setSelectedIds(newSelection);
+                    }}
                 />
             </Box>
             <Snackbar
@@ -672,6 +823,8 @@ export default function Inventory() {
                     {message}
                 </Alert>
             </Snackbar>
+            <AddItemModal />
+            <EditModal />
         </div>
     );
 }

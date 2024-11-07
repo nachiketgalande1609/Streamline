@@ -17,7 +17,7 @@ export default function Sales() {
     const [loading, setLoading] = useState(true);
 
     const [currentPage, setCurrentPage] = useState(1);
-    const [pageSize, setPageSize] = useState(10);
+    const [pageSize, setPageSize] = useState(25);
     const [totalCount, setTotalCount] = useState(0);
 
     const breadcrumbs = [
@@ -230,7 +230,7 @@ export default function Sales() {
                 </Typography>
                 <Box sx={{ display: "flex", gap: 1 }}>
                     <Tooltip title="Export Data" arrow>
-                        <IconButton size="small" onClick={handleExport} aria-label="Export to CSV">
+                        <IconButton size="small" onClick={handleExport} aria-label="Export to CSV" sx={{ width: "40px" }}>
                             <FileDownloadIcon />
                         </IconButton>
                     </Tooltip>
@@ -253,7 +253,7 @@ export default function Sales() {
                     getRowId={(row) => row._id}
                     paginationMode="server"
                     rowCount={totalCount}
-                    pageSizeOptions={[10, 25, 50]}
+                    pageSizeOptions={[25, 50, 100]}
                     paginationModel={{
                         page: currentPage - 1,
                         pageSize: pageSize,

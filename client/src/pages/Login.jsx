@@ -64,8 +64,6 @@ export default function Login() {
 
             const loggedinUser = response?.data?.user;
 
-            console.log(loggedinUser);
-
             if (response?.data?.token) {
                 localStorage.setItem("token", response?.data?.token);
                 localStorage.setItem("userId", loggedinUser?.user_id);

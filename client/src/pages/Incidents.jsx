@@ -14,7 +14,7 @@ export default function TicketTable() {
     const [loading, setLoading] = useState(true);
 
     const [currentPage, setCurrentPage] = useState(1);
-    const [pageSize, setPageSize] = useState(10);
+    const [pageSize, setPageSize] = useState(25);
     const [totalCount, setTotalCount] = useState(0);
 
     const breadcrumbs = [
@@ -141,7 +141,7 @@ export default function TicketTable() {
                     getRowId={(row) => row._id}
                     paginationMode="server"
                     rowCount={totalCount}
-                    pageSizeOptions={[10, 25, 50]}
+                    pageSizeOptions={[25, 50, 100]}
                     paginationModel={{
                         page: currentPage - 1,
                         pageSize: pageSize,

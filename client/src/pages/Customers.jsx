@@ -40,7 +40,7 @@ export default function Customers() {
     const [customerToDelete, setCustomerToDelete] = useState(null);
 
     const [currentPage, setCurrentPage] = useState(1);
-    const [pageSize, setPageSize] = useState(10);
+    const [pageSize, setPageSize] = useState(25);
     const [totalCount, setTotalCount] = useState(0);
 
     const breadcrumbs = [
@@ -376,12 +376,12 @@ export default function Customers() {
                 </Typography>
                 <Box sx={{ display: "flex", gap: 1 }}>
                     <Tooltip title="Add Customer" arrow>
-                        <IconButton size="small" onClick={handleOpen} aria-label="Add Items" sx={{ mr: 1 }}>
+                        <IconButton size="small" onClick={handleOpen} aria-label="Add Items" sx={{ width: "40px" }}>
                             <AddIcon />
                         </IconButton>
                     </Tooltip>
                     <Tooltip title="Export Data" arrow>
-                        <IconButton size="small" onClick={handleExport} aria-label="Export to CSV">
+                        <IconButton size="small" onClick={handleExport} aria-label="Export to CSV" sx={{ width: "40px" }}>
                             <FileDownloadIcon />
                         </IconButton>
                     </Tooltip>
@@ -646,7 +646,7 @@ export default function Customers() {
                     getRowId={(row) => row._id}
                     paginationMode="server"
                     rowCount={totalCount}
-                    pageSizeOptions={[10, 25, 50]}
+                    pageSizeOptions={[25, 50, 100]}
                     paginationModel={{
                         page: currentPage - 1,
                         pageSize: pageSize,
