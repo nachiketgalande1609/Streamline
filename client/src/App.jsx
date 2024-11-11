@@ -22,7 +22,7 @@ import Incidents from "./pages/Incidents";
 import IncidentDetails from "./pages/IncidentDetails";
 import FinancialReconciliation from "./pages/FinancialReconciliation";
 
-axios.defaults.baseURL = "http://localhost:3001";
+axios.defaults.baseURL = "https://streamline-backend.onrender.com";
 
 function Layout() {
     const location = useLocation();

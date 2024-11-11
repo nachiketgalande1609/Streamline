@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
+import backgroundImage from "../../assets/duplo30.jpg";
 import {
     Container,
     TextField,
@@ -97,7 +98,7 @@ export default function Register() {
                 height: "100vh",
                 justifyContent: "center",
                 alignItems: "center",
-                backgroundImage: "url('/assets/duplo30.jpg')",
+                backgroundImage: `url(${backgroundImage})`,
                 backgroundSize: "cover",
                 backgroundPosition: "center",
                 backgroundRepeat: "no-repeat",
